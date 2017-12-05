@@ -1,6 +1,6 @@
 # vod-cli
 
-> 广州点播项目--- iam zhu nnnn
+> 广州点播项目--- iam zhu nnnnn
 
 ## Build Setup
 
