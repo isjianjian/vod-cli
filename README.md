@@ -1,6 +1,6 @@
 # vod-cli
 
-> A Vue.js project
+> 广州点播项目
 
 ## Build Setup
 
