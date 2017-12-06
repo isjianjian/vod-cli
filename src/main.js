@@ -5,12 +5,23 @@ import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
 import Home from './components/Home'
+import video from './components/video/index'
+import room from './components/room/index'
+import shop from './components/shop/index'
+import mine from './components/mine/index'
+
 Vue.use(VueRouter)
 
 const routes = [{
   path: '/',
-  component: Home
-
+  component: Home,
+  children: [
+    { path: '/', component: video },
+    { path: 'video', component: video },
+    { path: 'room', component: room },
+    { path: 'shop', component: shop },
+    { path: 'mine', component: mine }
+  ]
 }]
 
 const router = new VueRouter({
