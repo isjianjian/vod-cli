@@ -1,0 +1,264 @@
+会员接口  (tokenType = 1，tokenUserId ：会员id，token：会话id )
+
+
+会员发送验证码
+参数：telPhone  手机号
+localhost:8080/hotel_vod/api/memberSendCode?telPhone=13795489091
+
+返回：
+-------------------------------------------------------------------
+会员手机验证码登录注册
+
+telPhone   手机号
+openid
+sendCode   验证码
+pushOpenId  推送会员微信id
+pushType    推送类型 （1推送影片  2 推送酒店）
+productId   影片id或者酒店id
+localhost:8080/hotel_vod/api/memberLo?telPhone=13795489091&openId=789&sendCode=123&pushOpenId=1122&pushType=1&productId=2
+返回：MemberEntity memberEntity （会员信息，包括会员等级，积分，余额）
+-------------------------------------------------------------------
+会员密码登录
+openid   微信id
+pass     密码
+
+localhost:8080/hotel_vod/api/memberPassLogin?openId=789&pass=789
+返回：MemberEntity memberEntity (会员信息，包括会员等级，积分，余额)
+-------------------------------------------------------------------
+发送验证码，修改密码
+openid   微信id
+token    会话id
+
+localhost:8080/hotel_vod/api/memberPassSendCode?openId=789&token=60ef2672-5261-4f81-8974-cbecb488754f
+
+-------------------------------------------------------------------
+修改密码      55148
+openid      微信id
+sendCode    验证码
+pass        密码
+token    会话id
+localhost:8080/hotel_vod/api/memberChangePass?openId=789&sendCode=123456&token=789&pass=123456
+
+-------------------------------------------------------------------
+
+
+获取积分规则
+openid      微信id
+token    会话id
+localhost:8080/hotel_vod/api/memberGetcharge?openId=789&token=789
+
+返回 ：List<MemberrechargeEntity> memberrechargeList
+-------------------------------------------------------------------
+
+新增发票
+openid      微信id
+unitname   单位名称
+identifier 纳税人识别码
+address    注册地址
+registeredphone   注册电话
+bank       开户银行
+bankaccount  银行账号
+defaultValue 是否默认发票
+token    会话id
+http://localhost:8080/hotel_vod/api/memberAddInvoice?openId=789&token=24751254-621c-41a0-94fa-796c5695fbab&unitname=晟视讯
+&identifier=123&address=深圳&registeredphone=123&bank=中国银行&bankaccount=622823423&defaultValue=3
+
+-------------------------------------------------------------------
+
+修改发票  （包括设置默认发票）
+invoiceId     发票id
+unitname   单位名称       （可为空）
+identifier 纳税人识别码    （可为空）
+address    注册地址       （可为空）
+registeredphone   注册电话 （可为空）
+bank       开户银行         （可为空）
+bankaccount  银行账号        （可为空）
+defaultValue 是否默认发票      （可为空）
+token    会话id
+http://localhost:8080/hotel_vod/api/memberUpdateInvoice?invoiceId=4&token=24751254-621c-41a0-94fa-796c5695fbab&unitname=晟视讯222
+-------------------------------------------------------------------
+查询我的发票
+
+openid     微信id
+token    会话id
+http://localhost:8080/hotel_vod/api/memberQueryInvoice?openId=789&token=24751254-621c-41a0-94fa-796c5695fbab
+-------------------------------------------------------------------
+新增收货地址
+
+openid     微信id
+adress     地址
+phonenumber 联系电话
+contactman   联系人
+defaultValue  是否默认地址
+token    会话id
+http://localhost:8080/hotel_vod/api/memberAddAdress?openId=789&token=24751254-621c-41a0-94fa-796c5695fbab&adress=深圳市&phonenumber
+=123&contactman=l&defaultValue=0
+-------------------------------------------------------------------
+
+修改地址    （包括设置默认地址）
+adressId     地址id
+adress     地址       （可为空）
+phonenumber 联系电话    （可为空）
+contactman   联系人     （可为空）
+defaultValue  是否默认地址 （可为空）
+token    会话id
+http://localhost:8080/hotel_vod/api/memberUpdateAdress?adressId=4&token=24751254-621c-41a0-94fa-796c5695fbab&adress=晟视讯的地方
+-------------------------------------------------------------------
+
+查询我的地址
+
+openid     微信id
+token    会话id
+http://localhost:8080/hotel_vod/api/memberQueryAdress?openId=789&token=24751254-621c-41a0-94fa-796c5695fbab
+-------------------------------------------------------------------
+
+查询余额消费
+
+openid     微信id
+type       1 消费  2 充值  为空代表不限制
+token    会话id
+http://localhost:8080/hotel_vod/api/memberBalance?openId=789&type=1&token=24751254-621c-41a0-94fa-796c5695fbab
+
+返回：List<FinBalanceEntity> finBalanceList
+-------------------------------------------------------------------
+
+查询积分消费
+
+openid     微信id
+costtype       1 出账  2 进账  为空代表不限制
+token    会话id
+http://localhost:8080/hotel_vod/api/memberCredits?openId=789&type=1&token=24751254-621c-41a0-94fa-796c5695fbab
+
+返回：List<FinBalanceEntity> finBalanceList
+-------------------------------------------------------------------
+
+获取影片类型
+
+localhost:8080/hotel_vod/api/vod/classify?openid=123&
+
+-------------------------------------------------------------------
+获取影片信息
+
+openid   会员openid
+mac      房间mac（通过扫码获得）
+limit    每页数量
+page     页码
+keyword  搜索关键字
+cid      类型id
+
+localhost:8080/hotel_vod/api/vod?openid=123&tokenUserId=1&tokenType=1
+
+返回：List<SourceEntity> sourceList   paid 代表是否支付
+
+-------------------------------------------------------------------
+查看我的播放记录
+
+openid   会员openid
+
+
+localhost:8080/hotel_vod/api/vod/playRecord?openid=123&tokenUserId=1&tokenType=1
+
+返回：List<VodPlayRecordEntity> vodPlayRecordEntities    播放记录
+
+-------------------------------------------------------------------
+查看我的购买记录
+
+openid   会员openid
+
+
+localhost:8080/hotel_vod/api/vod/buySource?openid=123&tokenUserId=1&tokenType=1
+
+返回：List<VodBuyRecord> vodBuyRecords    购买记录
+
+-------------------------------------------------------------------
+查看我的优惠观看
+
+openid   会员openid
+
+
+localhost:8080/hotel_vod/api/vod/queryVod?openid=123&tokenUserId=1&tokenType=1
+
+返回：OfferWatch watch   优惠观看列表
+
+-------------------------------------------------------------------
+
+影片播放
+
+openid  会员openid
+sid    资源id
+localhost:8080/hotel_vod/api/vod/play?openid=123&sid=123456
+
+错误代码: 100 未绑定, 110 未支付
+-------------------------------------------------------------------
+
+绑定终端(扫码时绑定终端mac)
+
+openid  会员openid
+mac    mac地址
+localhost:8080/hotel_vod/api/vod/bind?openid=123&mac=123
+
+-------------------------------------------------------------------
+
+终端解绑（退出小程序时解绑房间。）
+
+openid  会员openid
+localhost:8080/hotel_vod/api/vod/bind?openid=123
+
+-------------------------------------------------------------------
+意见反馈
+
+openid     会员openid
+feedback   反馈内容
+localhost:8080/hotel_vod/api/memberFeedback?openid=123&feedback=是东方红卡死了的浩丰科技三大发货快吉安市的分卡萨电话客服就
+&tokenType=1&tokenUserId=1
+
+-------------------------------------------------------------------
+查询积分
+localhost:8080/hotel_vod/api/member/credits/residue
+openid
+-------------------------------------------------------------------
+查询余额
+localhost:8080/hotel_vod/api/member/balance/residue
+openid
+-------------------------------------------------------------------
+            会员支付接口
+-------------------------------------------------------------------
+
+预下单  (获取资源支付信息)
+openid     会员openid
+sid   资源id
+localhost:8080/hotel_vod/api/vod/preorder?openid=123&sid=6
+-------------------------------------------------------------------
+下单  (影片购买下单)
+openid     会员openid
+sid   资源id
+credits 积分使用个数  不使用则为0
+localhost:8080/hotel_vod/api/vod/order?openid=123&sid=6&credits=20
+-------------------------------------------------------------------
+取消订单  (canorder)
+billid 订单id
+localhost:8080/hotel_vod/api/vod/canorder?billid=1
+-------------------------------------------------------------------
+钱包支付
+billid 订单id
+localhost:8080/hotel_vod/api/vod/walletpay?billid=1
+-------------------------------------------------------------------
+微信支付
+billid 订单id
+localhost:8080/hotel_vod/api/vod/wxpay?billid=1
+-------------------------------------------------------------------
+充值送积分信息
+
+localhost:8080/hotel_vod/api/recharge/info
+-------------------------------------------------------------------
+充值支付
+openid 会员id
+amount 充值金额
+localhost:8080/hotel_vod/api/recharge/order
+-------------------------------------------------------------------
+会员订单查询
+openid 会员id
+status 订单状态 1.未支付 2.已支付  (可选 默认全部)
+limit    每页数量
+page     页码
+http://192.168.2.2:8080/hotel_vod/api/bill?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&status=2
