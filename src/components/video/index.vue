@@ -10,6 +10,7 @@
       <tab bar-active-color="#3f9de7" line-width="2" active-color='#3f9de7'
            v-bind:style="{width: catlist.length * 50 + 'px'}">
         <tab-item  v-for="list in catlist" @on-item-click="cat">{{list.name}}</tab-item>
+        <!---->
       </tab>
     </scroller>
 
