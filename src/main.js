@@ -10,10 +10,13 @@ import video from './components/video/index'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
-
+import { WechatPlugin } from 'vux'
 
 Vue.use(VueRouter)
 Vue.use(Resource)
+Vue.use(WechatPlugin)
+
+
 
 const routes = [{
   path: '/',
@@ -26,6 +29,17 @@ const routes = [{
     { path: 'mine', component: mine ,meta: {allowBack: false}}
   ]
 }]
+
+Vue.prototype.wxinfo = {
+  URL:"http%3A%2F%2F19f176814r.imwork.net",
+  APPID : 'wxc24d07d05cfea4d3',
+  APPSECRET : 'bb4d407d1c79e3f31dddcc582077ce24',
+  OPENID:'',
+}
+
+Vue.prototype.getUrlKey = function(name){
+  return decodeURIComponent((new RegExp('[?|&]'+name+'='+'([^&;]+?)(&|#|;|$)').exec(location.href)||[,""])[1].replace(/\+/g,'%20'))||null;
+}
 
 const router = new VueRouter({
   routes
@@ -46,6 +60,8 @@ router.beforeEach((to, from, next) => {
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
+
+
 
 /* eslint-disable no-new */
 new Vue({

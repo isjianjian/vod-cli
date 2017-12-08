@@ -2,7 +2,7 @@
   <div style="height:100%;">
     <view-box ref="viewBox">
     <div  class="userinfo">
-      <div class="h_img"><img width="68" height="68" src="../../assets/images/order.png"></div>
+      <div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>
       <div class="name"><span>我是名字</span><img src="../../assets/images/woman.png"/></div>
       <div class="leave">会员等级</div>
     </div>
