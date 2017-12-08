@@ -19,18 +19,30 @@ const routes = [{
   path: '/',
   component: Home,
   children: [
-    { path: '/', component: video },
-    { path: 'video', component: video },
-    { path: 'room', component: room },
-    { path: 'shop', component: shop },
-    { path: 'mine', component: mine }
+    { path: '/', component: video ,meta: {allowBack: false}},
+    { path: 'video', component: video ,meta: {allowBack: false}},
+    { path: 'room', component: room ,meta: {allowBack: false}},
+    { path: 'shop', component: shop ,meta: {allowBack: false}},
+    { path: 'mine', component: mine ,meta: {allowBack: false}}
   ]
 }]
 
 const router = new VueRouter({
   routes
 })
-
+router.beforeEach((to, from, next) => {
+  next()
+  let allowBack = true    //    给个默认值true
+  if (to.meta.allowBack !== undefined) {
+    allowBack = to.meta.allowBack
+  }
+  if (!allowBack) {
+    history.pushState(null, null, location.href)
+  }
+  // store.dispatch('updateAppSetting', {
+  //   allowBack: allowBack
+  // })
+})
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false

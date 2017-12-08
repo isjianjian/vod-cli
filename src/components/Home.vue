@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <router-view class="router-view"></router-view>
-    <app-footer></app-footer>
+  <div style="height:100%;">
+      <router-view v-bind:style="{height: root_style + 'px'}" class="router-view"></router-view>
+      <app-footer></app-footer>
   </div>
 </template>
 <style>
@@ -14,9 +14,9 @@
     name: "home",
 
     data () {
+      console.log("窗口高度", document.documentElement.clientHeight)
       return {
-        tag: '影院',
-        taglist: ['点播', '订房', '购物', '我的']
+        root_style: document.documentElement.clientHeight - 53
       }
     },
     components: {
