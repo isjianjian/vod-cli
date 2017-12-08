@@ -1,6 +1,7 @@
 <template>
   <div style="background-color: #fff;">
     <flexbox class="top">
+
       <img class="seacher_btn" src="../../assets/images/search.png"/>
       <x-input class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演"/>
       <img class="histroy_btn" src="../../assets/images/menu.png"/>
@@ -8,14 +9,55 @@
 
     <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
       <tab bar-active-color="#3f9de7" line-width="2" active-color='#3f9de7'
-           v-bind:style="{width: catlist.length * 50 + 'px'}">
-        <tab-item  v-for="list in catlist" @on-item-click="cat">{{list.name}}</tab-item>
-        <!---->
+           v-bind:style="'width:'+cat_width +'px'">
+        <tab-item v-for="(item,index) in catlist" @on-item-click="cat" v-bind:selected="index==0">{{item.name}}
+        </tab-item>
       </tab>
+    </scroller>
+    <scroller lock-x :scrollbar-x=false :scrollbar-y=false>
+
+      <div class="active">
+
+        <div class='film' v-for="(item,index) in vodlist">
+          <div style='display:flex;'>
+            <div class='vodimage'>
+              <img :src="item.pic"></img>
+            </div>
+            <div class='detail'>
+              <div class='name'>
+                <div>{{item.name}}
+                </div>
+
+                <div class='times'>{{item.playAmount}}
+                  <span style='font-size:12px'>次</span>
+                </div>
+
+              </div>
+              <div class='star-bottom'>
+                <div class='type'>
+                  {{vodtype}}
+                </div>
+                <div class='time'>
+                  <div>时长:{{item.length}}分钟</div>
+                  <div class='price'>{{item.price}}
+                    <span style='font-size:12px'>元</span>
+                  </div>
+                </div>
+                <div class='star'>
+                  主演:{{item.act}}
+                </div>
+              </div>
+              <button v-bind:class="item.paid?'play':'buy'">{{item.paid?'播放':'购买'}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </scroller>
 
 
   </div>
+
+
 </template>
 
 <script>
@@ -23,11 +65,19 @@
 
   import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox} from 'vux'
   import Search from "vux/src/components/search/index";
+  import Cell from "vux/src/components/cell/index";
+  import Group from "vux/src/components/group/index";
+  import XButton from "vux/src/components/x-button/index";
+  import Toast from "vux/src/components/toast/index";
 
   export default {
     name: "index",
 
     components: {
+      Toast,
+      XButton,
+      Group,
+      Cell,
       Search,
       Flexbox,
       FlexboxItem,
@@ -39,14 +89,16 @@
       return {
         catlist: {},//电影分类
         vodlist: {},//电影列表
+        vodtype: '',
+        cat_width: screen.availWidth,
       }
     }, mounted() {
       this.$http.post("https://15783510.qcloud.la/hotel_vod/api/vod/classify?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ")
         .then(function (res) {
-
           if (res.data.code == 0) {
             this.catlist = res.data.page.list
             console.log("电影分类", this.catlist)
+            this.cat_width = this.catlist.length * 50 > screen.availWidth ? this.catlist.length * 50 : screen.availWidth
             this.cat(0)
           } else {
 
@@ -54,9 +106,11 @@
 
         })
     }, methods: {
-      showPosition(position) {
-        this.position = position
-        this.showPositionValue = true
+      doShowToast() {
+        console.log("sss")
+        this.$vux.toast.show({
+          text: 'toast'
+        })
       },
       keyword(res) {
         console.log(res)
@@ -64,8 +118,10 @@
       ,
       cat(res, keyword) {
         // https://15783510.qcloud.la/hotel_vod/api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&cid=25&page=1&limit=999999
-        console.log(keyword)
+
+        this.vodtype = this.catlist[res].name
         if (keyword != null) {//关键字搜索
+          console.log(keyword)
           keyword = "&keyword=" + keyword
         }
         this.$http.post("https://15783510.qcloud.la/hotel_vod/api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&cid=" + this.catlist[res].id + "&page=1&limit=999999")
@@ -86,6 +142,11 @@
 </script>
 
 <style scoped>
+
+  .active:hover {
+    background-color: #ECECEC;
+  }
+
   .top {
     height: 36px;
     line-height: 36px;
@@ -125,11 +186,11 @@
     border-bottom: 1px solid #efeff4;
   }
 
-  .film .image {
+  .vodimage {
     height: 92.8px;
   }
 
-  .film image {
+  .vodimage img {
     margin-right: 10px;
     width: 70px;
     height: 100%;
@@ -146,7 +207,7 @@
     display: flex;
   }
 
-  .name view {
+  .name div {
     height: 16px;
     font-size: 16px;
     line-height: 16px;
@@ -158,17 +219,6 @@
     color: #3f9de7;
     font-size: 14px;
   }
-
-  /* .film .threeD {
-      background-color: #49d95d;
-      border: 1px solid #efeff4;
-  }
-
-  .film .imax {
-      background-color: transparent;
-      border: 1px solid #efeff4;
-      border-left: none;
-  } */
 
   .star-bottom {
     position: absolute;
@@ -232,6 +282,8 @@
     line-height: 23px;
     text-align: center;
     color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
   }
 
   .play {
@@ -246,6 +298,8 @@
     height: 23px;
     line-height: 23px;
     text-align: center;
+    border-radius: 5px;
+    border: 1px solid #fff;
   }
 
   .loading {
