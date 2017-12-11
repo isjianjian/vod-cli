@@ -1,60 +1,65 @@
 <template>
   <div style="background-color: #fff;">
-    <flexbox class="top">
+    <view-box>
+      <flexbox class="top">
 
-      <img class="seacher_btn" src="../../assets/images/search.png"/>
-      <x-input class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演"/>
-      <img class="histroy_btn" src="../../assets/images/menu.png"/>
-    </flexbox>
+        <img class="seacher_btn" src="../../assets/images/search.png"/>
+        <x-input class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演"/>
+        <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
+        <img class="histroy_btn" src="../../assets/images/menu.png"/>
+      </flexbox>
 
-    <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
-      <tab bar-active-color="#3f9de7" line-width="2" active-color='#3f9de7'
-           v-bind:style="'width:'+cat_width +'px'">
-        <tab-item v-for="(item,index) in catlist" @on-item-click="cat" v-bind:selected="index==0">{{item.name}}
-        </tab-item>
-      </tab>
-    </scroller>
-    <scroller lock-x :scrollbar-x=false :scrollbar-y=false>
+      <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
+        <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
+             v-bind:style="'width:'+cat_width +'px'">
+          <tab-item v-for="(item,index) in catlist" @on-item-click="cat" v-bind:selected="index==0">{{item.name}}
+          </tab-item>
+        </tab>
+      </scroller>
+      <scroller lock-x :scrollbar-x=false :scrollbar-y=false>
 
-      <div class="active">
 
-        <div class='film' v-for="(item,index) in vodlist">
-          <div style='display:flex;'>
-            <div class='vodimage'>
-              <img :src="item.pic"></img>
-            </div>
-            <div class='detail'>
-              <div class='name'>
-                <div>{{item.name}}
-                </div>
+        <div class="vux-tap-active" @on-click="detail">
 
-                <div class='times'>{{item.playAmount}}
-                  <span style='font-size:12px'>次</span>
-                </div>
-
+          <div class='film' v-for="(item,index) in vodlist">
+            <div style='display:flex;'>
+              <div class='vodimage'>
+                <img :src="item.pic"></img>
               </div>
-              <div class='star-bottom'>
-                <div class='type'>
-                  {{vodtype}}
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
+                  </div>
+
+                  <div class='times'>{{item.playAmount}}
+                    <span style='font-size:12px'>次</span>
+                  </div>
+
                 </div>
-                <div class='time'>
-                  <div>时长:{{item.length}}分钟</div>
-                  <div class='price'>{{item.price}}
-                    <span style='font-size:12px'>元</span>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{vodtype}}
+                  </div>
+                  <div class='time'>
+                    <div>时长:{{item.length}}分钟</div>
+                    <div class='price'>{{item.price}}
+                      <span style='font-size:12px'>元</span>
+                    </div>
+                  </div>
+                  <div class='star'>
+                    主演:{{item.act}}
                   </div>
                 </div>
-                <div class='star'>
-                  主演:{{item.act}}
-                </div>
+                <button v-bind:class="item.paid?'play':'buy'">{{item.paid?'播放':'购买'}}</button>
               </div>
-              <button v-bind:class="item.paid?'play':'buy'">{{item.paid?'播放':'购买'}}</button>
             </div>
           </div>
         </div>
-      </div>
-    </scroller>
 
 
+      </scroller>
+
+    </view-box>
   </div>
 
 
@@ -69,11 +74,13 @@
   import Group from "vux/src/components/group/index";
   import XButton from "vux/src/components/x-button/index";
   import Toast from "vux/src/components/toast/index";
+  import ViewBox from "vux/src/components/view-box/index";
 
   export default {
     name: "index",
 
     components: {
+      ViewBox,
       Toast,
       XButton,
       Group,
@@ -100,6 +107,7 @@
             console.log("电影分类", this.catlist)
             this.cat_width = this.catlist.length * 50 > screen.availWidth ? this.catlist.length * 50 : screen.availWidth
             this.cat(0)
+
           } else {
 
           }
@@ -134,6 +142,8 @@
             }
 
           })
+      },detail(res){
+        console.log("ssss")
       }
 
     }
@@ -141,10 +151,11 @@
 
 </script>
 
-<style scoped>
+<style >
 
-  .active:hover {
-    background-color: #ECECEC;
+  .active:active {
+    /*background-color: #ECECEC;*/
+    background-color: #000;
   }
 
   .top {
@@ -339,4 +350,11 @@
     height: 300px;
     overflow: hidden;
   }
+  .weui-search-bar{
+    padding:8px 0px!important;
+  }
+</style>
+<style scoped lang="less">
+  @import '~vux/src/styles/1px.less';
+
 </style>

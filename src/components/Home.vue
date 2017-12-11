@@ -31,6 +31,7 @@
             this.wxinfo.user = res.data.data
           })
       }else {
+        return
         var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+ this.wxinfo.APPID
           +"&redirect_uri="+ this.wxinfo.URL
            +"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
