@@ -36,6 +36,9 @@ Vue.prototype.wxinfo = {
   APPSECRET : 'bb4d407d1c79e3f31dddcc582077ce24',
   OPENID:'',
 }
+Vue.prototype.common = {
+  SERVER_URL:"https://shengvideo.com/hotel_vod/"
+}
 
 Vue.prototype.getUrlKey = function(name){
   return decodeURIComponent((new RegExp('[?|&]'+name+'='+'([^&;]+?)(&|#|;|$)').exec(location.href)||[,""])[1].replace(/\+/g,'%20'))||null;
