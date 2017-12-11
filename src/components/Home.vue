@@ -26,7 +26,7 @@
       var code = this.getUrlKey("code")
       console.log(code)
       if (code != null){
-        this.$http.post(this.common.SERVER_URL + "mp/snsapi_userinfo?code=" + code)
+        this.$http.post("http://noangry.vicp.io/hotel_vod/mp/snsapi_userinfo?code=" + code)
           .then(function (res) {
             this.wxinfo.user = res.data.data
           })
