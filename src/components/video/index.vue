@@ -55,8 +55,6 @@
             </div>
           </div>
         </div>
-
-
       </scroller>
 
     </view-box>

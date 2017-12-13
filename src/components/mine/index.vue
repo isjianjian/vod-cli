@@ -2,12 +2,12 @@
   <div style="height:100%;">
     <view-box ref="viewBox">
     <div  class="userinfo">
-      <!--<div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>-->
-      <div class="name"><span>我是名字</span><img src="../../assets/images/woman.png"/></div>
+      <div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>
+      <div class="name"><span>我是名字</span><img :src="sex_img"/></div>
       <div class="leave">会员等级</div>
     </div>
     <group>
-      <cell title="我的订单" is-link>
+      <cell title="我的订单" link="/mine/order" is-link>
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/order.png">
       </cell>
       <grid>
@@ -51,10 +51,10 @@
       </grid>
     </group>
     <group>
-      <cell title="我的评价" is-link>
+      <cell title="我的评价" is-link v-on:click.native="pay">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/evaluate.png">
       </cell>
-      <cell title="收货地址" is-link>
+      <cell title="收货地址" is-link v-on:click.native="address">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/address.png">
       </cell>
       <cell title="密码设置" is-link>
@@ -115,6 +115,7 @@
     border-radius: 50%;
     vertical-align: middle;
     margin-left: 5px;
+    margin-top: 5px;
   }
 
 
@@ -128,11 +129,14 @@
   import { Divider, Card ,Group, Cell, CellBox,Grid, GridItem} from 'vux'
   import XImg from "vux/src/components/x-img/index";
   import ViewBox from "vux/src/components/view-box/index";
+  import man_img from '../../assets/images/man.png'
+  import woman_img from '../../assets/images/woman.png'
   export default {
     data(){
       return {
         balance:0,
-        integral:0
+        integral:0,
+        sex_img:woman_img
       }
     },
     components: {
@@ -145,6 +149,60 @@
       CellBox,
       Grid,
       GridItem
+    },
+    mounted(){
+      if (this.wxinfo.user.sexId == 1){
+        this.sex_img = man_img
+      }
+      this.walletInfo()
+    },
+    methods:{
+      walletInfo:function () {
+        this.$http.post(this.common.SERVER_URL + "api/member/credits/residue?openid=" + this.wxinfo.user.unionId)
+          .then(function (res) {
+            console.log("credits",res)
+            this.integral = res.data.credits
+          })
+        this.$http.post(this.common.SERVER_URL + "api/member/balance/residue?openid=" + this.wxinfo.user.unionId)
+          .then(function (res) {
+            this.balance = res.data.balance
+          })
+      },
+      address:function () {
+        this.$wechat.openAddress({
+          success: function (res) {
+            console.log("address:",res)
+          },
+          cancel: function (res) {
+            // 用户取消拉出地址
+          }
+        });
+      },
+      pay:function () {
+        var url = this.common.SERVER_URL  + "api/recharge/order?amount=0.01&openid=oMH3q0Nge_IKIvcCAdqFxpbT3Dw8&unionid="
+              +this.wxinfo.user.unionId
+        this.$http.post(url)
+          .then(function (res) {
+            console.log("微信支付",res)
+            WeixinJSBridge.invoke(
+              'getBrandWCPayRequest', {
+                "appId":res.data.data.appId,     //公众号名称，由商户传入
+                "timeStamp":res.data.data.timeStamp,         //时间戳，自1970年以来的秒数
+                "nonceStr":res.data.data.nonceStr, //随机串
+                "package":res.data.data.packageValue,
+                "signType":"MD5",         //微信签名方式：
+                "paySign": res.data.data.paySign //微信签名
+              },
+              function(res){
+                console.log(res)
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                  console.log("支付成功")
+                }
+              }
+            );
+          })
+
+      }
     }
   }
 </script>
