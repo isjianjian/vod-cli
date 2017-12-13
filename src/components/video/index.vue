@@ -1,14 +1,14 @@
 <template>
   <div style="background-color: #fff;">
     <view-box>
-      <flexbox class="top">
 
+      <flexbox class="top">
         <img class="seacher_btn" src="../../assets/images/search.png"/>
-        <x-input class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演"/>
+        <x-input id="keyword" class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演"/>
         <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
         <img class="histroy_btn" src="../../assets/images/menu.png"/>
       </flexbox>
-
+      <!--分类-->
       <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
         <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
              v-bind:style="'width:'+cat_width +'px'">
@@ -16,12 +16,15 @@
           </tab-item>
         </tab>
       </scroller>
+
+      <!--影片list-->
       <scroller lock-x :scrollbar-x=false :scrollbar-y=false>
 
 
-        <div class="vux-tap-active" @on-click="detail">
+        <div class="vux-tap-active">
 
-          <div class='film' v-for="(item,index) in vodlist">
+          <div class='film' v-for="(item,index) in vodlist" :id="item.id" v-on:click="detail">
+
             <div style='display:flex;'>
               <div class='vodimage'>
                 <img :src="item.pic"></img>
@@ -38,7 +41,7 @@
                 </div>
                 <div class='star-bottom'>
                   <div class='type'>
-                    {{vodtype}}
+                    {{catlist[typeindex].name}}
                   </div>
                   <div class='time'>
                     <div>时长:{{item.length}}分钟</div>
@@ -50,22 +53,19 @@
                     主演:{{item.act}}
                   </div>
                 </div>
-                <button v-bind:class="item.paid?'play':'buy'">{{item.paid?'播放':'购买'}}</button>
+                <button v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy">{{item.paid?'播放':'购买'}}
+                </button>
               </div>
             </div>
           </div>
         </div>
       </scroller>
-
     </view-box>
   </div>
-
 
 </template>
 
 <script>
-
-
   import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox} from 'vux'
   import Search from "vux/src/components/search/index";
   import Cell from "vux/src/components/cell/index";
@@ -73,11 +73,13 @@
   import XButton from "vux/src/components/x-button/index";
   import Toast from "vux/src/components/toast/index";
   import ViewBox from "vux/src/components/view-box/index";
+  import DatetimeView from "vux/src/components/datetime-view/index";
 
   export default {
     name: "index",
 
     components: {
+      DatetimeView,
       ViewBox,
       Toast,
       XButton,
@@ -94,19 +96,21 @@
       return {
         catlist: {},//电影分类
         vodlist: {},//电影列表
-        vodtype: '',
-        cat_width: screen.availWidth,
+        typeindex: 0,//电影分类点击下标
+        cat_width: screen.availWidth,//电影分类长度
       }
     }, mounted() {
-      this.$http.post("https://15783510.qcloud.la/hotel_vod/api/vod/classify?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ")
+      this.$http.post(this.common.SERVER_URL + "api/vod/classify?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ")
         .then(function (res) {
           if (res.data.code == 0) {
+
             this.catlist = res.data.page.list
             console.log("电影分类", this.catlist)
             this.cat_width = this.catlist.length * 50 > screen.availWidth ? this.catlist.length * 50 : screen.availWidth
-            this.cat(0)
+            this.cat(this.typeindex, null)
 
           } else {
+            alert(res.data.msg)
 
           }
 
@@ -118,43 +122,49 @@
           text: 'toast'
         })
       },
-      keyword(res) {
-        console.log(res)
+      keyword(keyword) {
+        console.log(keyword)
+        this.cat(null, keyword)
       }
       ,
-      cat(res, keyword) {
-        // https://15783510.qcloud.la/hotel_vod/api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&cid=25&page=1&limit=999999
+      cat(i, word) {
 
-        this.vodtype = this.catlist[res].name
-        if (keyword != null) {//关键字搜索
-          console.log(keyword)
-          keyword = "&keyword=" + keyword
+        this.typeindex = i
+
+        var keyword = ""
+        var cid = ""
+        if (word != null && word != "") {//关键字搜索
+          keyword = "&keyword=" + word
         }
-        this.$http.post("https://15783510.qcloud.la/hotel_vod/api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&cid=" + this.catlist[res].id + "&page=1&limit=999999")
+        if (i != null &&i !=null) {//分类搜索
+          cid = "&cid=" + this.catlist[this.typeindex].id
+        }
+        // alert(this.common.SERVER_URL + "api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ" + cid + "&page=1&limit=999999"+ keyword )
+        this.$http.post(this.common.SERVER_URL + "api/vod?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ" + cid + "&page=1&limit=999999"+ keyword )
           .then(function (res) {
             if (res.data.code == 0) {
               this.vodlist = res.data.page.list
               console.log("电影搜索", this.vodlist)
             } else {
-
             }
 
           })
-      },detail(res){
-        console.log("ssss")
+      }, detail(res) {
+        console.log("详情", res)
+        this.$router.replace("detail", function () {
+          console.log("跳转")
+        })
+
+      }, buy(res) {
+        console.log("购买", res)
       }
 
     }
   }
-
 </script>
 
-<style >
+<style scoped>
 
-  .active:active {
-    /*background-color: #ECECEC;*/
-    background-color: #000;
-  }
 
   .top {
     height: 36px;
@@ -180,6 +190,7 @@
     padding: 8px;
   }
 
+
   .histroy_btn {
     border-left: 1px solid #efeff4;
     width: 20px;
@@ -193,6 +204,10 @@
     background: #fff;
     padding: 8px 10px;
     border-bottom: 1px solid #efeff4;
+  }
+
+  .film:active {
+    background: #ECECEC;
   }
 
   .vodimage {
@@ -295,6 +310,10 @@
     border: 1px solid #fff;
   }
 
+  .buy:active {
+    background: #ECECEC;
+  }
+
   .play {
     float: right;
     color: #fff;
@@ -309,6 +328,10 @@
     text-align: center;
     border-radius: 5px;
     border: 1px solid #fff;
+  }
+
+  .play:active {
+    background: #ECECEC;
   }
 
   .loading {
@@ -348,8 +371,9 @@
     height: 300px;
     overflow: hidden;
   }
-  .weui-search-bar{
-    padding:8px 0px!important;
+
+  .weui-search-bar {
+    padding: 8px 0px !important;
   }
 </style>
 <style scoped lang="less">

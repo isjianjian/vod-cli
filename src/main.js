@@ -10,6 +10,9 @@ import video from './components/video/index'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
+import detail from './components/video/detail'
+
+
 import order from './components/mine/order'
 import { WechatPlugin,LoadingPlugin,ToastPlugin} from 'vux'
 import  { ConfirmPlugin } from 'vux'
@@ -28,27 +31,30 @@ const routes = [{
     { path: 'video', component: video ,meta: {allowBack: false}},
     { path: 'room', component: room ,meta: {allowBack: false}},
     { path: 'shop', component: shop ,meta: {allowBack: false}},
-    { path: 'mine', component: mine ,meta: {allowBack: false},
-    }
+    { path: 'mine', component: mine ,meta: {allowBack: false}}
   ]
+}, {path: '/detail', component: detail, meta: {allowBack: true}
 },{
   path: '/mine/order', component: order
 }]
 
 Vue.prototype.wxinfo = {
-  URL:"http%3A%2F%2F19f176814r.imwork.net",
-  APPID : 'wxc24d07d05cfea4d3',
-  APPSECRET : 'bb4d407d1c79e3f31dddcc582077ce24',
+  URL: "http%3A%2F%2F19f176814r.imwork.net",
+  APPID: 'wxc24d07d05cfea4d3',
+  APPSECRET: 'bb4d407d1c79e3f31dddcc582077ce24',
   user:{}
 }
 Vue.prototype.common = {
+  SERVER_URL: "http://shengvideo.com:8080/hotel_vod/",
   // SERVER_URL:"https://shengvideo.com/hotel_vod/"
-  SERVER_URL:"http://192.168.2.6:8080/hotel_vod/",
+  // SERVER_URL:"http://192.168.2.6:8080/hotel_vod/",
   TOKEN:{}
 }
-
-Vue.prototype.getUrlKey = function(name){
-  return decodeURIComponent((new RegExp('[?|&]'+name+'='+'([^&;]+?)(&|#|;|$)').exec(location.href)||[,""])[1].replace(/\+/g,'%20'))||null;
+Vue.prototype.current = {
+  video: {},
+}
+Vue.prototype.getUrlKey = function (name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 }
 
 const router = new VueRouter({

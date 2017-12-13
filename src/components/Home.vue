@@ -23,6 +23,7 @@
       AppFooter,
     },
     mounted() {
+      return;
       var code = this.getUrlKey("code")
       console.log(code)
       if (code != null){
