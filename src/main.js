@@ -11,9 +11,10 @@ import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
 import detail from './components/video/detail'
-
-
+import wallet from './components/mine/wallet/index'
+import balance from './components/mine/wallet/balance'
 import order from './components/mine/order'
+import welcome from './components/welcome'
 import { WechatPlugin,LoadingPlugin,ToastPlugin} from 'vux'
 import  { ConfirmPlugin } from 'vux'
 Vue.use(ConfirmPlugin)
@@ -36,6 +37,14 @@ const routes = [{
 }, {path: '/detail', component: detail, meta: {allowBack: true}
 },{
   path: '/mine/order', component: order
+},{
+  path: '/mine/wallet',
+  component: wallet,
+  children: [
+    { path: 'balance', component: balance}
+    ]
+},{
+  path: '/wel', component: welcome
 }]
 
 Vue.prototype.wxinfo = {
@@ -45,13 +54,18 @@ Vue.prototype.wxinfo = {
   user:{}
 }
 Vue.prototype.common = {
-  SERVER_URL: "http://shengvideo.com:8080/hotel_vod/",
+  SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
   // SERVER_URL:"https://shengvideo.com/hotel_vod/"
-  // SERVER_URL:"http://192.168.2.6:8080/hotel_vod/",
-  TOKEN:{}
+  TOKEN:{},
+  lastPage:''
 }
 Vue.prototype.current = {
   video: {},
+}
+Vue.prototype.api_post = function (url,success,fail) {
+  url += "&openid=" + this.wxinfo.user.unionId
+
+
 }
 Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;

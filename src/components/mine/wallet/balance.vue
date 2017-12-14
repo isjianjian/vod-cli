@@ -10,8 +10,8 @@
     <div class='ui-yue'>
       <div bindtap='all'>历史记录</div>
       <div class='icon'>
-        <img src="../../images/balance_jia.png" bindtap='jia' />
-        <img src="../../images/balance_jian.png" bindtap='jian' />
+        <img src="" bindtap='jia' />
+        <img src="" bindtap='jian' />
       </div>
     </div>
     <div>
@@ -42,36 +42,9 @@
         },
       mounted(){
         var that = this;
-        console.log("余额查询", app.data.ip + "member/balance/residue?" + app.getidtoken())
-
-        this.$http.post(this.common.SERVER_URL + "api/member/balance/residue?" + code)
+        this.$http.post(this.common.SERVER_URL + "api/member/balance/residue?openid=")
           .then(function (res) {
-
-            this.wxinfo.user = res.data.data
-            var state = { 'page_id': 1, 'user_id': 5 };
-            var title = '11院线';
-            var url = '/#'+ this.$router.currentRoute.path;
-            history.pushState(state, title, url);
-            console.log("res:", res)
-            this.$router.replace(this.$router.currentRoute.path)
-            this.initWechat()
           })
-        wx.request({
-
-
-          url: app.data.ip + "" + app.getidtoken(),
-          method: 'post',
-          success: function (res) {
-            console.log("余额查询", res)
-            if (res.data.code == '0') {
-              that.setData({
-                balance: res.data.balance,
-              })
-            }
-          }
-        })
-
-        that.getdata("")
       },
       methods:{
 
