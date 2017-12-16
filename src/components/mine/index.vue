@@ -30,7 +30,7 @@
       </grid>
     </group>
     <group>
-      <cell title="我的钱包" is-link>
+      <cell title="我的钱包" is-link link="/mine/wallet/balance">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/wallet.png">
       </cell>
       <grid>

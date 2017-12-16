@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+  const socket = io.connect('http://noangry.vicp.io');
+  console.log("开始连接..")
+  socket.on('connect', function (data) {
+    console.log("连接成功");
+    socket.emit('register',"08:00:27:0d:19:88");
+  });
+
+  socket.on('subtitle', function (data) {
+    console.log("subtitle",data);
+  });
+</script>
+</html>

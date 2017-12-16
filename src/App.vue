@@ -21,6 +21,9 @@ export default {
       this.common.lastUrl = window.location.href;
     }
     this.$router.replace('/wel')
+  },
+  methods:{
+
   }
 }
 </script>

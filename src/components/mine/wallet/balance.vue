@@ -10,12 +10,12 @@
     <div class='ui-yue'>
       <div bindtap='all'>历史记录</div>
       <div class='icon'>
-        <img src="" bindtap='jia' />
-        <img src="" bindtap='jian' />
+        <img :src="jia_img"  v-on:click ="balance_jia_m" />
+        <img :src="jian_img" v-on:click ="balance_jian_m"/>
       </div>
     </div>
     <div>
-      <div  v-for="item in balancelist.finBalanceList" >
+      <div  v-for="(item,index) in balancelist" >
         <div class='ui-txt' hover-class='ui-cell_active'>
           <div>
             <div>{{item.body}}</div>
@@ -32,22 +32,62 @@
 </template>
 
 <script>
+    import balance_jia from "../../../assets/images/balance_jia.png"
+    import balance_jian from "../../../assets/images/balance_jian.png"
+    import balance_jia_s from "../../../assets/images/balance_jia_s.png"
+    import balance_jian_s from "../../../assets/images/balance_jian_s.png"
     export default {
         name: "balance",
         data(){
           return{
             balancelist: {},
             balance: 0,
+            jia_img:balance_jia,
+            jian_img:balance_jian,
+            type:0
           }
         },
       mounted(){
         var that = this;
-        this.$http.post(this.common.SERVER_URL + "api/member/balance/residue?openid=")
-          .then(function (res) {
-          })
+        this.reloadData()
+        this.api_post("api/member/balance/residue",function (res) {
+          that.balance =  res.balance
+        })
       },
       methods:{
-
+        reloadData:function () {
+          var that = this;
+          var url = "api/memberBalance"
+          console.log("this.type ",this.type )
+          if (this.type != 0){
+            url += "?type=" + this.type
+          }
+          this.api_post(url,function (res) {
+            that.balancelist =  res.finBalanceList
+          })
+        },
+        balance_jia_m:function () {
+          if (this.type == 2){
+            this.jia_img = balance_jia
+            this.type = 0
+          }else {
+            this.jia_img = balance_jia_s
+            this.jian_img = balance_jian
+            this.type = 2
+          }
+          this.reloadData()
+        },
+        balance_jian_m:function () {
+          if (this.type == 1){
+            this.jian_img = balance_jian
+            this.type = 0
+          }else {
+            this.jian_img = balance_jian_s
+            this.jia_img= balance_jia
+            this.type = 1
+          }
+          this.reloadData()
+        }
       }
     }
 </script>
@@ -72,9 +112,10 @@
     display: flex;
   }
 
-  .icon image {
-    width: 40px;
-    height: 40px;
+  .icon img {
+    width: 32px;
+    height: 32px;
+    margin-left: 5px;
   }
 
   .icon:hover {

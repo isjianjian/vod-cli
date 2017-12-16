@@ -13,6 +13,8 @@ import mine from './components/mine/index'
 import detail from './components/video/detail'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
+import integral from './components/mine/wallet/integral'
+import recharge from './components/mine/wallet/recharge'
 import order from './components/mine/order'
 import welcome from './components/welcome'
 import { WechatPlugin,LoadingPlugin,ToastPlugin} from 'vux'
@@ -41,7 +43,9 @@ const routes = [{
   path: '/mine/wallet',
   component: wallet,
   children: [
-    { path: 'balance', component: balance}
+    { path: 'balance', component: balance},
+    { path: 'integral', component: integral},
+    { path: 'recharge', component: recharge}
     ]
 },{
   path: '/wel', component: welcome
@@ -63,8 +67,28 @@ Vue.prototype.current = {
   video: {},
 }
 Vue.prototype.api_post = function (url,success,fail) {
-  url += "&openid=" + this.wxinfo.user.unionId
-
+   if (new Date() > this.common.TOKEN.expireTime){
+     window.location.reload()
+   }
+   if (url.indexOf("?") == -1){
+     url += "?now_time=" + new Date().getTime()
+   }
+   var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.unionId
+        + "&token=" + this.common.TOKEN.token + "&tokenType=1"
+   this.$http.post(local_url)
+    .then(function (res) {
+      if (res.data.code == 0){
+        success(res.data)
+      }else {
+        if (fail != null){
+          fail(res.data)
+        }else {
+          this.$vux.toast.text(res.data.msg,'center')
+        }
+      }
+    },function (res) {
+      this.$vux.toast.text('连接失败，请检查网络','center')
+    })
 
 }
 Vue.prototype.getUrlKey = function (name) {
