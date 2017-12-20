@@ -56,8 +56,11 @@ const routes = [{
 }]
 
 Vue.prototype.wxinfo = {
-  URL: "http%3A%2F%2F19f176814r.imwork.net",
-  APPID: 'wxc24d07d05cfea4d3',
+  // URL: "http%3A%2F%2F19f176814r.imwork.net",
+  // APPID: 'wxc24d07d05cfea4d3',
+
+  URL: "http://192.168.2.8",
+  APPID: 'wxb636c0b09a3fd9d1',
   // APPID: 'wx4c232a8e7d2158ab',
   user:{}
 }
