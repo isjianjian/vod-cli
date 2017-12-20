@@ -21,7 +21,19 @@
   width: 20px;
   height: 20px;
   padding: 8px;
-
+  background: url("../../assets/images/search.png");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.seacher_btn:active{
+  width: 20px;
+  height: 20px;
+  padding: 8px;
+  background: url("../../assets/images/search_p.png");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .histroy_btn {
@@ -29,8 +41,21 @@
   width: 20px;
   height: 20px;
   padding: 8px;
+  background: url("../../assets/images/menu.png");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
-
+.histroy_btn:active {
+  border-left: 1px solid #efeff4;
+  width: 20px;
+  height: 20px;
+  padding: 8px;
+  background: url("../../assets/images/menu_p.png");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 /* 电影list */
 
 .film {

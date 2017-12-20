@@ -1,20 +1,15 @@
 <template>
   <div style="background-color: #fff;">
     <view-box>
-      <div>ssssssssssssssss</div>
 
       <flexbox class="top">
-        <img class="seacher_btn" src="../../assets/images/search.png" v-on:click="search"/>
-        <x-input readonly="readonly" id="keyword" class="seacher_input" placeholder="输入片名、主演或导演" onclick="search"/>
-        <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
-        <img class="histroy_btn" src="../../assets/images/menu.png"/>
+        <div class="seacher_btn"/>
+        <x-input  focus required="true" class="seacher_input" placeholder="输入片名、主演或导演" @on-change="setkeyword" @on-enter="ok"></x-input>
+        <div class="histroy_btn" v-on:click="histroy"/>
       </flexbox>
-
-      <!--影片list-->
-      <scroller lock-x :scrollbar-x=false :scrollbar-y=false >
-
-
-        <div class="vux-tap-active">
+      <!--影片list  height="-81"-->
+      <scroller lock-x :scrollbar-x=false :scrollbar-y=false @on-scroll-bottom="onScrollBottom">
+        <div>
 
           <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
@@ -34,7 +29,7 @@
                 </div>
                 <div class='star-bottom'>
                   <div class='type'>
-                    {{catlist[typeindex].name}}
+                    <!--{{catlist[index].name}}-->
                   </div>
                   <div class='time'>
                     <div>时长:{{item.length}}分钟</div>
@@ -52,6 +47,7 @@
             </div>
           </div>
         </div>
+        <!--<load-more tip="加载更多"></load-more>-->
       </scroller>
 
     </view-box>
@@ -59,7 +55,7 @@
 </template>
 
 <script>
-  import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox} from 'vux'
+  import {Scroller, XInput, ViewBox} from 'vux'
 
   export default {
     name: "search",
@@ -69,33 +65,49 @@
       ViewBox
     }, data() {
       return {
+        page: 1,
+        limit: 6,
         keyword: '',
+        vodlist: {},//详细
+
+        searchLoadingComplete: false,
+        cnt_style: '',
       }
     }, mounted() {
     }, methods: {
-      keyword(keyword) {
-        this.keyword = keyword
-        this.ok(keyword)
-      }
-      , ok(keyword) {
-        var keyword = ""
-        if (this.keyword != null && this.keyword != "") {//关键字搜索
-          keyword = "&keyword=" + this.keyword
-        }
-        this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + cid + "&page=1&limit=5" + keyword)
-          .then(function (res) {
-            if (res.data.code == 0) {
-              this.vodlist = res.data.page.list
-              console.log("电影搜索", this.vodlist)
-            } else {
-            }
 
-          })
+      setkeyword(res) {
+        this.keyword = res
+      }
+      , ok() {
+
+        var keyword = ""
+        if (this.keyword.trim() != "") {//关键字搜索
+          keyword = "&keyword=" + this.keyword
+
+          this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page="+this.page+"&limit="+this.limit + keyword)
+            .then(function (res) {
+              if (res.data.code == 0) {
+                this.vodlist = res.data.page.list
+              } else {
+
+              }
+            })
+        } else {
+          //输入空
+        }
+
       }, detail(list) {
         console.log("详情", list)
         this.current.video = list
         this.current.vid = list.id
         this.$router.replace("detail?id=" + list.cid, function () {
+        })
+      },onScrollBottom(){
+
+      }, histroy() {
+        this.$router.push("histroy", function () {
+
         })
       }
     }

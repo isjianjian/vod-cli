@@ -3,16 +3,19 @@
     <view-box>
 
       <flexbox class="top">
-        <img class="seacher_btn" src="../../assets/images/search.png" v-on:click="search"/>
-        <x-input readonly="readonly" id="keyword" class="seacher_input" placeholder="输入片名、主演或导演" onclick="search"/>
+        <div class="seacher_btn" v-on:click="search"/>
+        <!--<group >-->
+        <x-input @click.native="search" readonly="readonly" class="seacher_input" placeholder="输入片名、主演或导演"></x-input>
+        <!--</group>-->
         <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
-        <img class="histroy_btn" src="../../assets/images/menu.png"/>
+        <div class="histroy_btn" v-on:click="histroy"/>
+
       </flexbox>
       <!--分类-->
       <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
         <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
              v-bind:style="'width:'+cat_width +'px'">
-          <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item)" v-bind:selected="index==0" >
+          <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item)" v-bind:selected="index==0">
             {{item.name}}
           </tab-item>
         </tab>
@@ -120,13 +123,9 @@
           }
 
         })
+      this.doShowToast()
     }, methods: {
-      doShowToast() {
-        console.log("sss")
-        this.$vux.toast.show({
-          text: 'toast'
-        })
-      }, recat(list) {//重置分类
+      recat(list) {//重置分类
 
         // console.log(list)
         this.page = 0;
@@ -149,18 +148,21 @@
             if (res.data.code == 0) {
               // console.log("加载更多", res)
               var list = this.vodlist
-
               console.log("NOW:" + list.length + "**********ADD:" + res.data.page.list.length)
-
               if (res.data.page.list.length > 0) {
                 this.page = page
                 for (var i = 0; i < res.data.page.list.length; i++) {
                   list.push(res.data.page.list[i])
                 }
+              } else {
+                this.$vux.toast.show({
+                  text: res.data.msg,
+                })
               }
               this.loadmore = false;
               this.vodlist = list
             } else {
+
 
             }
 
@@ -175,6 +177,11 @@
       }, search() {
         console.log("搜索")
         this.$router.push("search", function () {
+
+        })
+      }, histroy() {
+        this.$router.push("histroy", function () {
+
         })
       }, buy(res) {
         console.log("购买", res)
@@ -195,6 +202,6 @@
 
 </style>
 <!--<style scoped lang="less">-->
-  <!--@import '~vux/src/styles/1px.less';-->
+<!--@import '~vux/src/styles/1px.less';-->
 
 <!--</style>-->
