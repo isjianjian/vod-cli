@@ -1,28 +1,18 @@
 <template>
-  <div style="background-color: #fff;">
-    <view-box>
-
+  <view-box>
+    <div>
       <flexbox class="top">
-        <img class="seacher_btn" src="../../assets/images/search.png" v-on:click="search"/>
-        <x-input readonly="readonly" id="keyword" class="seacher_input" placeholder="输入片名、主演或导演" onclick="search"/>
+        <img class="seacher_btn" src="../../assets/images/search.png"/>
+        <x-input id="keyword" class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演" @on-enter="ok"/>
         <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
         <img class="histroy_btn" src="../../assets/images/menu.png"/>
       </flexbox>
-      <!--分类-->
-      <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
-        <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
-             v-bind:style="'width:'+cat_width +'px'">
-          <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item)" v-bind:selected="index==0">
-            {{item.name}}
-          </tab-item>
-        </tab>
-      </scroller>
 
       <!--影片list-->
-      <scroller height="-53" ref="scroller1" lock-x :scrollbar-x=false :scrollbar-y=false @on-scroll-bottom="onScrollBottom">
+      <scroller lock-x :scrollbar-x=false :scrollbar-y=false height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
 
 
-        <div>
+        <div class="vux-tap-active">
 
           <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
@@ -42,7 +32,7 @@
                 </div>
                 <div class='star-bottom'>
                   <div class='type'>
-                    {{catlist[index].name}}
+                    {{catlist[typeindex].name}}
                   </div>
                   <div class='time'>
                     <div>时长:{{item.length}}分钟</div>
@@ -60,113 +50,45 @@
             </div>
           </div>
         </div>
-        <load-more tip="加载更多"></load-more>
       </scroller>
-    </view-box>
-  </div>
+    </div>
 
+  </view-box>
 </template>
 
 <script>
-  import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox} from 'vux'
-  import Search from "vux/src/components/search/index";
-  import Cell from "vux/src/components/cell/index";
-  import Group from "vux/src/components/group/index";
-  import XButton from "vux/src/components/x-button/index";
-  import Toast from "vux/src/components/toast/index";
   import ViewBox from "vux/src/components/view-box/index";
-  import LoadMore from "vux/src/components/load-more/index";
+  import XInput from "vux/src/components/x-input/index";
+  import Scroller from "vux/src/components/scroller/index";
 
   export default {
-    name: "index",
-
+    name: "search",
     components: {
-      LoadMore,
-      ViewBox,
-      Toast,
-      XButton,
-      Group,
-      Cell,
-      Search,
-      Flexbox,
-      FlexboxItem,
-      XInput,
       Scroller,
-      TabItem,
-      Tab
+      XInput,
+      ViewBox
     }, data() {
       return {
-        catlist: {},//电影分类
-        vodlist: [],//电影列表
-        cid: '',
-        cat_width: screen.availWidth,//电影分类长度
-
-        loadmore: false,
-        page: 0,
-        limit: 5,
+        keyword: '',
       }
     }, mounted() {
-
-      // console.log("电影分类", this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
-      this.$http.post(this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
-        .then(function (res) {
-          if (res.data.code == 0) {
-
-            this.catlist = res.data.page.list
-            // console.log("电影分类", this.catlist)
-            this.cat_width = this.catlist.length * 50 > window.innerWidth ? this.catlist.length * 50 : window.innerWidth
-            this.recat(this.catlist[0])
-          } else {
-            alert(res.data.msg)
-          }
-
-        })
     }, methods: {
-      doShowToast() {
-        console.log("sss")
-        this.$vux.toast.show({
-          text: 'toast'
-        })
-      }, recat(list) {//重置分类
-
-        // console.log(list)
-        this.page = 0;
-        this.vodlist = []
-        console.log(list != null)
-        if (list != null) {
-          this.cid = "&cid=" + list.id
-          // console.log(this.cid)
+      keyword(keyword) {
+        this.keyword = keyword
+        this.ok(keyword)
+      }
+      , ok(keyword) {
+        var keyword = ""
+        if (this.keyword != null && this.keyword != "") {//关键字搜索
+          keyword = "&keyword=" + this.keyword
         }
-        this.cat(list)
-        console.log('this',  this.$children[0].$refs.viewBoxBody.children.scroller1)
-        this.$children[0].$refs.viewBoxBody.children.scroller1.reset({
-          top: 0
-        })
-
-      }, cat(list) {
-        var page = this.page + 1
-        console.log(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + page + "&limit=" + this.limit)
-
-        this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + page + "&limit=" + this.limit)
+        this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + cid + "&page=1&limit=5" + keyword)
           .then(function (res) {
             if (res.data.code == 0) {
-              // console.log("加载更多", res)
-              var list = this.vodlist
-
-              console.log("NOW:" + list.length + "**********ADD:" + res.data.page.list.length)
-
-              if (res.data.page.list.length > 0) {
-                this.page = page
-                for (var i = 0; i < res.data.page.list.length; i++) {
-                  list.push(res.data.page.list[i])
-                }
-              }
-              this.loadmore = false;
-              this.vodlist = list
+              this.vodlist = res.data.page.list
+              console.log("电影搜索", this.vodlist)
             } else {
-
             }
-
 
           })
       }, detail(list) {
@@ -175,24 +97,13 @@
         this.current.vid = list.id
         this.$router.replace("detail?id=" + list.cid, function () {
         })
-      }, search() {
-        this.$router.replace("search", function () {
-        })
-      }, buy(res) {
-        console.log("购买", res)
-      }, onScrollBottom() {
-        if (!this.loadmore) {
-          this.loadmore = true;
-          this.cat()
-        }
       }
-
     }
+
   }
 </script>
 
 <style scoped>
-
 
   .top {
     height: 36px;
@@ -365,9 +276,5 @@
     color: #efeff4;
     font-size: 16px;
   }
-
-</style>
-<style scoped lang="less">
-  @import '~vux/src/styles/1px.less';
 
 </style>
