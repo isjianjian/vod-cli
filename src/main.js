@@ -17,7 +17,8 @@ import integral from './components/mine/wallet/integral'
 import recharge from './components/mine/wallet/recharge'
 import order from './components/mine/order'
 import welcome from './components/welcome'
-import { WechatPlugin,LoadingPlugin,ToastPlugin} from 'vux'
+import recharge_msg from './components/mine/wallet/msg'
+import { WechatPlugin,LoadingPlugin,ToastPlugin,AlertPlugin} from 'vux'
 import  { ConfirmPlugin } from 'vux'
 Vue.use(ConfirmPlugin)
 Vue.use(VueRouter)
@@ -25,6 +26,7 @@ Vue.use(Resource)
 Vue.use(WechatPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
+Vue.use(AlertPlugin)
 
 const routes = [{
   path: '/',
@@ -49,19 +51,22 @@ const routes = [{
     ]
 },{
   path: '/wel', component: welcome
+},{
+  path: '/recharge/msg', component: recharge_msg
 }]
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
   APPID: 'wxc24d07d05cfea4d3',
-  APPSECRET: 'bb4d407d1c79e3f31dddcc582077ce24',
+  // APPID: 'wx4c232a8e7d2158ab',
   user:{}
 }
 Vue.prototype.common = {
   SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
   // SERVER_URL:"https://shengvideo.com/hotel_vod/"
   TOKEN:{},
-  lastPage:''
+  lastPage:'',
+  wxinit:false
 }
 Vue.prototype.current = {
   video: {},
@@ -91,6 +96,8 @@ Vue.prototype.api_post = function (url,success,fail) {
     })
 
 }
+
+
 Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 }
@@ -99,13 +106,21 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  next()
-  let allowBack = true    //    给个默认值true
-  if (to.meta.allowBack !== undefined) {
-    allowBack = to.meta.allowBack
-  }
-  if (!allowBack) {
-    history.pushState(null, null, location.href)
+  console.log("wxinfo",router.app.wxinfo.user)
+  if (router.app.wxinfo.user.unionId == null && to.path != "/wel"){
+    console.log("替换:",to.path)
+    router.app.common.lastPage = to.path;
+    router.app.common.lastUrl = window.location.href;
+    next({path:"/wel"})
+  }else {
+    next()
+    let allowBack = true    //    给个默认值true
+    if (to.meta.allowBack !== undefined) {
+      allowBack = to.meta.allowBack
+    }
+    if (!allowBack) {
+      history.pushState(null, null, location.href)
+    }
   }
   // store.dispatch('updateAppSetting', {
   //   allowBack: allowBack

@@ -12,7 +12,7 @@
           充值
         </tab-item>
       </tab>
-      <router-view class="router-view">
+      <router-view @ref-tab="ref_tab" class="router-view">
       </router-view>
   </div>
 </template>
@@ -28,15 +28,7 @@
         ViewBox},
       name: "index",
       mounted(){
-        if(this.$router.currentRoute.path == "/mine/wallet/balance"){
-          this.tab_index = 0
-        }
-        if(this.$router.currentRoute.path == "/mine/wallet/integral"){
-          this.tab_index = 1
-        }
-        if(this.$router.currentRoute.path == "/mine/wallet/recharge"){
-          this.tab_index = 2
-        }
+        this.ref_tab()
       },
       data(){
         return{
@@ -45,6 +37,7 @@
       },
       methods:{
         cat:function (res) {
+          this.tab_index = res
           if(res == 0){
             this.$router.replace("/mine/wallet/balance")
           }
@@ -54,6 +47,18 @@
           if(res == 2){
             this.$router.replace("/mine/wallet/recharge")
           }
+        },
+        ref_tab:function () {
+          if(this.$router.currentRoute.path == "/mine/wallet/balance"){
+            this.tab_index = 0
+          }
+          if(this.$router.currentRoute.path == "/mine/wallet/integral"){
+            this.tab_index = 1
+          }
+          if(this.$router.currentRoute.path == "/mine/wallet/recharge"){
+            this.tab_index = 2
+          }
+          console.log("ref_tab2",this.tab_index)
         }
       }
     }

@@ -48,6 +48,7 @@
           }
         },
       mounted(){
+        this.$emit('ref-tab')
         var that = this;
         this.reloadData()
         this.api_post("api/member/balance/residue",function (res) {

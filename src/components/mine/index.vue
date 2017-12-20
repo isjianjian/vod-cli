@@ -34,15 +34,15 @@
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/wallet.png">
       </cell>
       <grid>
-        <grid-item link="" label="余额">
+        <grid-item link="/mine/wallet/balance" label="余额">
           <img  slot="icon" src="../../assets/images/balance.png">
           <span style="color:#F5C25F;" slot="label">余额({{balance}})</span>
         </grid-item>
-        <grid-item link="" >
+        <grid-item link="/mine/wallet/integral" >
           <img slot="icon" src="../../assets/images/integral.png">
           <span style="color:#EB62FF;" slot="label">积分({{integral}})</span>
         </grid-item>
-        <grid-item link="">
+        <grid-item link="/mine/wallet/recharge">
           <img slot="icon" src="../../assets/images/recharge.png">
           <span style="color:#49E8C1;" slot="label">充值</span>
         </grid-item>
@@ -179,28 +179,6 @@
         });
       },
       pay:function () {
-        var url = this.common.SERVER_URL  + "api/recharge/order?amount=0.01&openid=oMH3q0Nge_IKIvcCAdqFxpbT3Dw8&unionid="
-              +this.wxinfo.user.unionId
-        this.$http.post(url)
-          .then(function (res) {
-            console.log("微信支付",res)
-            WeixinJSBridge.invoke(
-              'getBrandWCPayRequest', {
-                "appId":res.data.data.appId,     //公众号名称，由商户传入
-                "timeStamp":res.data.data.timeStamp,         //时间戳，自1970年以来的秒数
-                "nonceStr":res.data.data.nonceStr, //随机串
-                "package":res.data.data.packageValue,
-                "signType":"MD5",         //微信签名方式：
-                "paySign": res.data.data.paySign //微信签名
-              },
-              function(res){
-                console.log(res)
-                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                  console.log("支付成功")
-                }
-              }
-            );
-          })
 
       }
     }

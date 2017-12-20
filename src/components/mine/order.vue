@@ -1,7 +1,7 @@
 <template>
   <div>
-    <view-box ref="viewBox">
-      <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
+    <!--<view-box ref="viewBox">-->
+      <tab id="state" name="state" bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
            style="width: 100%">
         <tab-item  @on-item-click="cat" v-bind:selected="tab_index==0">
           全部
@@ -19,23 +19,15 @@
           已退款
         </tab-item>
       </tab>
-      <scroller lock-x :scrollbar-x=false :scrollbar-y=false>
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"  @on-pulldown-loading="reload" @on-pullup-loading="add" :use-pulldown="true" :use-pullup="true" ref="scroller" height="-43" lock-x :scrollbar-x=false :scrollbar-y=false>
         <div hover-class="ui-cell_active">
           <div class="page__bd">
             <div v-if="list.length == 0" class='loading'>
-              <text style='color:#B6B6B6'>
+              <span style='color:#B6B6B6'>
                 暂无数据
-              </text>
+              </span>
             </div>
-            <div v-if="start_loading" class='loading'>
-              <text>
-                {{loading_text}}
-              </text>
-            </div>
-            <div v-if="loading" class='loading'>
-              <image style='height:14px;width:14px;' src='/pages/images/loading.gif'></image>
-            </div>
-            <div v-for="(item,index) in list" v-key='index' class="weui-cells weui-cells_after-title">
+            <div v-for="(item,index) in list"  class="weui-cells weui-cells_after-title">
               <div  class="weui-cell">
                 <div class="weui-cell__hd">
                   <img slot="icon" :src="item.img" style="margin-right: 5px;vertical-align: middle;"></img>
@@ -94,10 +86,11 @@
               </div>
             </div>
           </div>
-          <div v-if="bloading" class='bloading' >{{bloading_text}}</div>
         </div>
+        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
       </scroller>
-    </view-box>
+
+    <!--</view-box>-->
   </div>
 </template>
 
@@ -108,14 +101,17 @@
     import XButton from "vux/src/components/x-button/index";
     import Flexbox from "vux/src/components/flexbox/flexbox";
     import FlexboxItem from "vux/src/components/flexbox/flexbox-item";
+    import LoadMore from "vux/src/components/load-more/index";
     export default {
       components: {
+        LoadMore,
         FlexboxItem,
         Flexbox,
         XButton,
         Scroller,
         ViewBox,TabItem,
-        Tab},
+        Tab
+      },
       name: "order",
       data(){
         return{
@@ -123,14 +119,31 @@
           activeIndex:0,
           list:[],
           cnt_style:'',
-          loading:false,
-          bloading: false,
-          loading_text:'下拉刷新',
-          bloading_text:'正在加载...',
           start_loading:false,
           loaddata:false,
           page:1,
-          nowDate: new Date()
+          nowDate: new Date(),
+          // sc_height:document.documentElement.clientHeight - 45
+          nodata:false,
+          downconfig:{
+            content: '下拉刷新',
+            height: 60,
+            autoRefresh: false,
+            downContent: '下拉刷新',
+            upContent: '松手刷新数据',
+            loadingContent: '正在刷新...',
+            clsPrefix: 'xs-plugin-pulldown-'
+          },
+          upconfig:{
+            content: '上拉加载',
+            pullUpHeight: 60,
+            height: 40,
+            autoRefresh: false,
+            downContent: '上拉加载',
+            upContent: '加载更多数据',
+            loadingContent: '正在加载...',
+            clsPrefix: 'xs-plugin-pullup-'
+          }
         }
       },
       mounted(){
@@ -142,44 +155,12 @@
           that.activeIndex = res
           this.reload()
         },
-        scroll:function(res){
-          var scrollTop = res.detail.scrollTop
-          if (this.data.loading){
-            return;
-          }
-          if (scrollTop < -5 && scrollTop > -50){
-            this.setData({
-              start_loading: true,
-              loading_text: '刷新列表'
-            })
-          }
-          if (scrollTop > -5 && this.data.start_loading) {
-            this.setData({
-              start_loading: false
-            })
-          }
-          if (scrollTop < -50) {
-            xx = true
-            this.setData({
-              loading_text: '释放刷新'
-            })
-          }
-          if (scrollTop > -10 && xx && !this.data.loaddata){
-            xx = false
-            this.setData({
-              loading: true,
-              start_loading: false
-            })
-            this.reload()
-          }
-          if (scrollTop >= 0 && this.data.loaddata) {
-            this.setData({
-              loaddata: false
-            })
-          }
-        },reload:function(){
+        reload:function(){
           this.page = 1
-
+          this.loadData()
+        },
+        add:function(){
+          this.page += 1
           this.loadData()
         }
         ,
@@ -188,78 +169,41 @@
             text: 'Loading'
           })
           var that = this
-          that.loaddata = true
-          var url = that.common.SERVER_URL + "api/bill?limit=8&page=" + this.page + "&openid=" + this.wxinfo.OPENID
-          url += "&token=ff4bfbd8-572c-4e24-b415-b854d2e23c02&tokenType=1"
+          var url =  "api/bill?limit=8&page=" + this.page
           if (this.activeIndex != 0){
             url += "&status=" + this.activeIndex
           }
-          this.$http.post(url).then( function (res) {
-            console.log(res.data.code)
-            if (res.data.code == '0') {
-              that.list = res.data.page.list
-              that.nowDate = new Date()
-
-            } else {
-              this.$vux.toast.text(res.data.msg,'center')
-            }
-            this.$vux.loading.hide()
-            that.loading = false
-            that.bloading = false
-          },function(){
-            this.$vux.loading.hide()
-            that.loading = false
-            that.bloading = false
-
-          })
-
-        },
-        addData:function(){
-          var that = this
-          that.setData({
-            bloading: true
-          })
-          var page = this.data.page + 1
-          var url = getApp().data.ip + "bill?limit=8&page=" + page + "&" + getApp().getidtoken()
-          if (this.data.activeIndex != 0) {
-            url += "&status=" + this.data.activeIndex
-          }
-          wx.showLoading({
-            title: '',
-          })
-          wx.request({
-            url: url,
-            method: 'post',
-            success: function (res) {
-              var list = that.data.list
-
-              if (res.data.code == '0') {
-                if (res.data.page.list.length > 0){
-                  that.setData({
-                    page: page,
-                  })
-                }else{
-                  that.setData({
-                    bloading_text: '没有更多了'
-                  })
-                }
-                for (var i = 0; i < res.data.page.list.length;i++){
-                  list.push(res.data.page.list[i])
-                }
-                that.setData({
-                  list: list,
-                  nowDate:new Date()
-                })
-
-              } else {
-                wx.showToast({
-                  title: res.data.msg,
-                })
+          this.api_post(url,function (res) {
+            if (that.page == 1){
+              that.list = res.page.list
+              that.$refs.scroller.reset({
+                top: 0
+              })
+              that.$refs.scroller.donePulldown()
+            }else {
+              for (var i = 0; i < res.page.list.length;i++){
+                that.list.push(res.page.list[i])
               }
-            }, complete: function () {
-              wx.hideLoading()
-
+              that.$refs.scroller.donePullup()
+              that.$refs.scroller.reset()
             }
+            if(res.page.list.length == 0){
+              that.$refs.scroller.disablePullup()
+              if (that.page != 1){
+                that.nodata = true
+              }
+            }else {
+              that.nodata = false
+              that.$refs.scroller.enablePullup()
+            }
+            if (res.page.list.length < 8 && that.page == 1){
+              that.$refs.scroller.disablePullup()
+            }
+            that.nowDate = new Date()
+            that.$vux.loading.hide()
+          },function(res){
+            that.$vux.loading.hide()
+            that.$vux.toast.text(res.msg,'center')
           })
         },
         toPay:function(res){
@@ -523,5 +467,11 @@
 
   body {
     background-color: #fbf9fe;
+  }
+</style>
+<style>
+  .weui-loadmore {
+     width: 100%!important;
+    margin-top: 30px;
   }
 </style>

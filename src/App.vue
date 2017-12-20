@@ -15,12 +15,6 @@ export default {
         history.go(1)
       }
     }
-    if (this.$router.currentRoute.path != '/wel'){
-      console.log("替换:",this.$router.currentRoute.path)
-      this.common.lastPage = this.$router.currentRoute.path;
-      this.common.lastUrl = window.location.href;
-    }
-    this.$router.replace('/wel')
   },
   methods:{
 
