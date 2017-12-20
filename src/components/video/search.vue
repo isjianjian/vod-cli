@@ -1,15 +1,17 @@
 <template>
-  <view-box>
-    <div>
+  <div style="background-color: #fff;">
+    <view-box>
+      <div>ssssssssssssssss</div>
+
       <flexbox class="top">
-        <img class="seacher_btn" src="../../assets/images/search.png"/>
-        <x-input id="keyword" class="seacher_input" @on-change="keyword" placeholder="输入片名、主演或导演" @on-enter="ok"/>
+        <img class="seacher_btn" src="../../assets/images/search.png" v-on:click="search"/>
+        <x-input readonly="readonly" id="keyword" class="seacher_input" placeholder="输入片名、主演或导演" onclick="search"/>
         <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
         <img class="histroy_btn" src="../../assets/images/menu.png"/>
       </flexbox>
 
       <!--影片list-->
-      <scroller lock-x :scrollbar-x=false :scrollbar-y=false height="200px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="200">
+      <scroller lock-x :scrollbar-x=false :scrollbar-y=false >
 
 
         <div class="vux-tap-active">
@@ -51,15 +53,13 @@
           </div>
         </div>
       </scroller>
-    </div>
 
-  </view-box>
+    </view-box>
+  </div>
 </template>
 
 <script>
-  import ViewBox from "vux/src/components/view-box/index";
-  import XInput from "vux/src/components/x-input/index";
-  import Scroller from "vux/src/components/scroller/index";
+  import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox} from 'vux'
 
   export default {
     name: "search",
@@ -104,177 +104,5 @@
 </script>
 
 <style scoped>
-
-  .top {
-    height: 36px;
-    line-height: 36px;
-    display: flex;
-    background: #fff;
-    border-bottom: 1px solid #efeff4;
-  }
-
-  .seacher_input {
-    margin-top: 3px;
-    margin-bottom: 3px;
-    flex: 1;
-    border-left: 1px solid #efeff4;
-    font-size: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .seacher_btn {
-    width: 20px;
-    height: 20px;
-    padding: 8px;
-
-  }
-
-  .histroy_btn {
-    border-left: 1px solid #efeff4;
-    width: 20px;
-    height: 20px;
-    padding: 8px;
-  }
-
-  /* 电影list */
-
-  .film {
-    background: #fff;
-    padding: 8px 10px;
-    border-bottom: 1px solid #efeff4;
-  }
-
-  .film:active {
-    background: #ECECEC;
-  }
-
-  .vodimage {
-    height: 92.8px;
-  }
-
-  .vodimage img {
-    margin-right: 10px;
-    width: 70px;
-    height: 100%;
-  }
-
-  .film .detail {
-    flex: 1;
-    position: relative;
-    top: 0;
-    left: 0;
-  }
-
-  .name {
-    display: flex;
-  }
-
-  .name div {
-    height: 16px;
-    font-size: 16px;
-    line-height: 16px;
-  }
-
-  .times {
-    position: absolute;
-    right: 0px;
-    color: #3f9de7;
-    font-size: 14px;
-  }
-
-  .star-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-
-  .type {
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .time {
-    margin-bottom: 6px;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    font-size: 14px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .price {
-    position: absolute;
-    right: 0px;
-    bottom: 30px;
-    font-size: 14px;
-  }
-
-  .star {
-    height: 14px;
-    font-size: 14px;
-    line-height: 14px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .buy {
-    float: right;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: red;
-    font-size: 10px;
-    width: 50px;
-    height: 23px;
-    line-height: 23px;
-    text-align: center;
-    color: #fff;
-    border-radius: 5px;
-  }
-
-  .buy:active {
-    background: #ECECEC;
-  }
-
-  .play {
-    float: right;
-    color: #fff;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: #3f9de7;
-    font-size: 10px;
-    width: 50px;
-    height: 23px;
-    line-height: 23px;
-    text-align: center;
-    border-radius: 5px;
-  }
-
-  .play:active {
-    background: #ECECEC;
-  }
-
-  .loading {
-    text-align: center;
-    color: #efeff4;
-    font-size: 16px;
-  }
-
+  @import 'video.css';
 </style>
