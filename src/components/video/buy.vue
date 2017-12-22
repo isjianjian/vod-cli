@@ -1,13 +1,213 @@
 <template>
+  <div>
+    <group title="购买影片">
+      <cell :title="movie.name"  :inline-desc="'点播费用: ￥' + movie.price + ' (有效期1个月)'">
+        <img slot="icon" width="44" height="56" style="display:block;margin-right:10px;" :src="movie.pic" />
+      </cell>
+      <cell v-if="preorder.discounts" title="优惠观看" >
+        <img slot="icon" width="20"  style="display:block;" :src="youhui" />
+        <div>
+          <span style="color: red">-￥{{preorder.discounts_amount}}</span>
+        </div>
+      </cell>
+      <x-switch v-model="use_credit" @on-change="use_credits" :disabled="preorder.credits < preorder.can_use_credits"  :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"  :inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' " ></x-switch>
+    </group>
+    <flexbox class="buybar">
+      <flexbox-item :span="4"><div style="text-align: center;">已优惠 ￥{{discounts}}</div></flexbox-item>
+      <flexbox-item :span="4"><div style="text-align: center; font-size: 16px;">合计 ￥{{total}}</div></flexbox-item>
+      <flexbox-item><div v-on:click ='order' class="buybutton">提交订单</div></flexbox-item>
+    </flexbox>
+    <div v-transfer-dom>
 
+      <popup  v-model="pay_done" height="40%">
+        <div>
+            <form-preview header-label="金额" :header-value="'￥' + oldOrder.total || 0 " :body-items="oldOrderItem" :footer-buttons="buttons1"></form-preview>
+        </div>
+      </popup>
+    </div>
+
+  </div>
 </template>
 
 <script>
+    import Group from "vux/src/components/group/index";
+    import Cell from "vux/src/components/cell/index";
+    import XSwitch from "vux/src/components/x-switch/index";
+    import youhui from "../../assets/images/youhui.png"
+    import Flexbox from "vux/src/components/flexbox/flexbox";
+    import FlexboxItem from "vux/src/components/flexbox/flexbox-item";
+    import FormPreview from "vux/src/components/form-preview/index";
+    import Popup from "vux/src/components/popup/index";
+    import { TransferDom } from 'vux'
     export default {
-        name: "buy"
+      directives: {
+        TransferDom
+      },
+      components: {
+        Popup,
+        FormPreview,
+        FlexboxItem,
+        Flexbox,
+        XSwitch,
+        Cell,
+        Group},
+      name: "buy",
+      mounted(){
+        var that = this
+        var sid = this.$router.currentRoute.query.id
+        sid = 2
+        var url = 'api/vod/preorder?sid=' + sid
+        this.api_post("api/vod/" + sid,function (res) {
+          that.movie = res.data
+          that.api_post(url,function (res) {
+            that.preorder = res.data
+            that.total = that.movie.price
+            if (that.preorder.discounts){
+              that.total = preorder.discounts_amount
+              that.discounts = that.movie.price -  that.total
+            }
+
+          })
+        })
+
+
+      },
+      data(){
+        return{
+          youhui:youhui,
+          preorder:{},
+          discounts:0,
+          total:0,
+          movie:{},
+          use_credit:false,
+          oldOrder:{},
+          oldOrderItem:[],
+          buttons1: [{
+            style: 'default',
+            text: '取消订单',
+            onButtonClick:(name) => {
+              this.toCancel()
+            }
+          }, {
+            style: 'primary',
+            text: "去支付",
+            link: '/pay'
+          }],
+          pay_done:false
+
+        }
+      },
+      methods:{
+        order:function () {
+          var that = this
+          console.log('提交订单')
+          var url = 'api/vod/order?sid=' + this.movie.id
+          if (this.use_credit){
+            url +=  '&credits=' + this.preorder.can_use_credits
+          }else {
+            url +=  '&credits=' + 0
+          }
+          this.api_post(url,function (res) {
+            console.log(res)
+          },
+            function (res) {
+              if (res.code == 100){
+                that.$vux.confirm.show({
+                  confirmText:"扫描二维码",
+                  title:"未认证设备",
+                  content:"购买影片时需扫描你所在酒店播放设备显示的二维码",
+                  onCancel () {
+                  },
+                  onConfirm () {
+                    that.QRcode()
+                  }
+                })
+
+              }
+              if(res.code == 202){
+                var data = that.oldOrder = res.data
+                that.$vux.confirm.show({
+                  confirmText:"查看详情",
+                  title:"提交订单",
+                  content:"你有一份未支付的订单,请勿重复下单",
+                  onCancel () {
+                  },
+                  onConfirm () {
+                    var list = []
+                    list.push({label:'内容',value:data.body})
+                    list.push({label:'流水号',value:data.id})
+                    list.push({label:'下单时间',value:data.timeStart})
+                    list.push({label:'失效时间',value:data.timeExpire})
+                    that.oldOrderItem = list
+                    that.pay_done = true
+                  }
+                })
+              }
+            }
+          )
+        },
+        use_credits:function (res) {
+          if (res){
+            this.total -=  this.preorder.can_use_credits/this.preorder.credits_ratio
+            this.discounts += this.preorder.can_use_credits/this.preorder.credits_ratio
+          }else {
+            this.total += this.preorder.can_use_credits/this.preorder.credits_ratio
+            this.discounts -= this.preorder.can_use_credits/this.preorder.credits_ratio
+          }
+        },
+        toCancel: function (res){
+          var that = this
+          this.$vux.confirm.show({
+            title: '取消订单?',
+            content: '',
+            onConfirm () {
+              that.cancleorder(that.oldOrder.id);
+            }
+          })
+
+        },
+        cancleorder(billid) {
+          this.$vux.loading.show({
+            text: 'Loading'
+          })
+          var that = this;
+          var url =  that.common.SERVER_URL + "api/canorder?billid=" + billid
+          this.$http.post(url).then( function (res) {
+            console.log(res.data.code)
+            if (res.data.code == '0') {
+              that.pay_done = false
+              this.$vux.toast.text("取消成功", 'center')
+            } else {
+              this.$vux.toast.text(res.data.msg, 'center')
+            }
+            this.$vux.loading.hide()
+          },function(){
+            this.$vux.loading.hide()
+          })
+
+        }
+
+      }
     }
 </script>
 
 <style scoped>
-
+  .buybar{
+    position: fixed;
+    bottom: 0px;
+    background: #3F9DE7;
+    height: 48px;
+    line-height: 48px;
+    color: white;
+    font-size: 14px;
+  }
+  .buybutton{
+    background-color: #DF1C19;
+    text-align: center;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .buybutton:active{
+    background-color: #9C1920;
+  }
 </style>

@@ -11,6 +11,7 @@ import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
 import detail from './components/video/detail'
+import buy from './components/video/buy'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
 import integral from './components/mine/wallet/integral'
@@ -33,12 +34,12 @@ const routes = [{
   component: Home,
   children: [
     { path: '/', component: video ,meta: {allowBack: false}},
-    { path: 'video', component: video ,meta: {allowBack: false}},
-    { path: 'room', component: room ,meta: {allowBack: false}},
-    { path: 'shop', component: shop ,meta: {allowBack: false}},
-    { path: 'mine', component: mine ,meta: {allowBack: false}}
+    { path: '/video', component: video ,meta: {allowBack: false}},
+    { path: '/room', component: room ,meta: {allowBack: false}},
+    { path: '/shop', component: shop ,meta: {allowBack: false}},
+    { path: '/mine', component: mine ,meta: {allowBack: false}}
   ]
-}, {path: '/detail', component: detail, meta: {allowBack: true}
+}, {path: '/detail', component: detail
 },{
   path: '/mine/order', component: order
 },{
@@ -53,6 +54,8 @@ const routes = [{
   path: '/wel', component: welcome
 },{
   path: '/recharge/msg', component: recharge_msg
+},{
+  path: '/video/buy', component: buy
 }]
 
 Vue.prototype.wxinfo = {
@@ -60,6 +63,11 @@ Vue.prototype.wxinfo = {
   APPID: 'wxc24d07d05cfea4d3',
   // APPID: 'wx4c232a8e7d2158ab',
   user:{}
+}
+Vue.prototype.his = {
+  from:'',
+  to:'',
+  time:0
 }
 Vue.prototype.common = {
   SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
@@ -102,18 +110,71 @@ Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 }
 
+Vue.prototype.QRcode = function () {
+  var that = this
+  this.$wechat.scanQRCode({
+    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
+    success: function (res) {
+      var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+      console.log("result",result)
+      try {
+        var obj = JSON.parse(result);
+        if (obj.mac == null){
+          that.$vux.toast.text('错误二维码','center')
+          return
+        }
+        if (new Date().getTime() - obj.time > 2 * 60 * 60 * 1000){
+          that.$vux.toast.text('二维码已失效','center')
+          return
+        }
+        that.api_post("api/vod/bind?mac=" + obj.mac,function (res) {
+          that.$vux.alert.show({
+            title: '认证成功',
+            content: '播放设备已认证,您可以继续之前的操作',
+            onShow () {
+            },
+            onHide () {
+            }
+          })
+        })
+
+      } catch(e) {
+        that.$vux.toast.text('错误二维码','center')
+      }
+
+    }
+  });
+}
+
 const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  console.log("wxinfo",router.app.wxinfo.user)
+  console.log("to",to.path)
+  console.log("from",from.path)
+  console.log("history",history)
   if (router.app.wxinfo.user.unionId == null && to.path != "/wel"){
     console.log("替换:",to.path)
     router.app.common.lastPage = to.path;
     router.app.common.lastUrl = window.location.href;
     next({path:"/wel"})
+
   }else {
+    if(to.path == "/wel" && router.app.wxinfo.user.unionId != null){
+      next({path:"/"})
+      return
+    }
     next()
+    // if(router.app.his.from == to.path &&
+    //   router.app.his.to == from.path && new Date().getTime() - router.app.his.time < 200){
+    //   console.log("拒绝返回",from.path)
+    //   //router.replace(from.path)
+    //   //history.back()
+    //   // history.pushState(null, null, "/#" + from.path)
+    //   // return false
+    //   router.history.go(-1)
+    // }
     let allowBack = true    //    给个默认值true
     if (to.meta.allowBack !== undefined) {
       allowBack = to.meta.allowBack
@@ -121,7 +182,17 @@ router.beforeEach((to, from, next) => {
     if (!allowBack) {
       history.pushState(null, null, location.href)
     }
+
+    router.app.his.from = from.path
+    router.app.his.to = to.path
+    router.app.his.time = new Date().getTime()
   }
+
+
+
+
+
+
   // store.dispatch('updateAppSetting', {
   //   allowBack: allowBack
   // })

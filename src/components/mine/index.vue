@@ -7,23 +7,23 @@
       <div class="leave">会员等级</div>
     </div>
     <group>
-      <cell title="我的订单" link="/mine/order" is-link>
+      <cell title="我的订单" link="/mine/order?i=0" is-link>
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/order.png">
       </cell>
       <grid>
-        <grid-item link="" label="余额">
+        <grid-item link="/mine/order?i=1" label="余额">
           <img  slot="icon" src="../../assets/images/obligation.png">
           <span style="color:#8DE93A;" slot="label">待付款</span>
         </grid-item>
-        <grid-item link="" >
+        <grid-item link="/mine/order?i=3" >
           <img slot="icon" src="../../assets/images/dis_evaluate.png">
           <span style="color:#F9D48E;" slot="label">待评价</span>
         </grid-item>
-        <grid-item link="">
+        <grid-item link="/mine/order?i=2">
           <img slot="icon" src="../../assets/images/completed.png">
           <span style="color:#FF5555;" slot="label">已完成</span>
         </grid-item>
-        <grid-item link="">
+        <grid-item link="/mine/order?i=4">
           <img slot="icon" src="../../assets/images/refund.png">
           <span style="color:#55B9FF;" slot="label">退款</span>
         </grid-item>
@@ -51,7 +51,7 @@
       </grid>
     </group>
     <group>
-      <cell title="我的评价" is-link v-on:click.native="pay">
+      <cell title="我的评价" is-link link="/video/buy">
         <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/evaluate.png">
       </cell>
       <cell title="收货地址" is-link v-on:click.native="address">

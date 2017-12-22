@@ -15,7 +15,7 @@
             <span class="name">{{list.name}}</span>
             <span class="year"> ({{list.year}})</span>
           </div>
-          <div style="width: 60vw;"> 类型: 科幻片</div>
+          <div style="width: 60vw;"> 类型: {{list.cName}}</div>
           <div style="width: 60vw;"> 时长: {{list.length}}</div>
           <div style="width: 60vw;"> 导演: {{list.director}}</div>
           <div style="width: 60vw;"> 演员: {{list.act}}</div>
@@ -56,12 +56,13 @@
     mounted(res) {
       this.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
       var vid = 0;
-      if (this.$router.currentRoute.params.id != null) {
-        vid = router.currentRoute.params.id;
+      console.log("获取影片详情", this.$router.currentRoute.query)
+      if (this.$router.currentRoute.query.id != null) {
+        vid = this.$router.currentRoute.query.id;
       } else {
         vid = this.current.vid;
       }
-      console.log("获取影片详情", vid)
+
       this.$http.post(this.common.SERVER_URL + "api/vod/" + vid + "?openid=" + this.wxinfo.user.unionId)
         .then(function (res) {
           if (res.data.code == '0') {
