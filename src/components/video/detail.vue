@@ -73,8 +73,9 @@
         })
     }, methods: {
       ok(res) {
+        console.log("res,",res)
         if (!res.paid) {//购买
-
+          this.$router.replace({ path: '/video/buy', query: { id: res.id}})
         } else {//播放
 
         }
