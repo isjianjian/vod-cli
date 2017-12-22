@@ -1,10 +1,11 @@
 <template>
   <view-box>
 
+
     <flexbox class="top">
-      <div class="seacher_btn"   v-on:click="search"/>
-      <x-input readonly="readonly" class="seacher_input" placeholder="输入片名、主演或导演"></x-input>
-      <div class="histroy_btn"   v-on:click="other" />
+      <div class="seacher_btn" v-on:click="search"/>
+      <x-input readonly="readonly" @click.native="search" class="seacher_input" placeholder="输入片名、主演或导演"></x-input>
+      <div class="histroy_btn"/>
     </flexbox>
 
     <cell title="历史记录" is-link v-on:click.native="">
@@ -21,7 +22,7 @@
 </template>
 
 <script>
-  import {Scroller, XInput, ViewBox} from 'vux'
+  import {Scroller, XInput, ViewBox, Flexbox} from 'vux'
   import Cell from "vux/src/components/cell/index";
   import Group from "vux/src/components/group/index";
 
@@ -31,11 +32,17 @@
       Group,
       Cell,
       Scroller,
-      XInput,
-      ViewBox
+      XInput, 
+      ViewBox,
+      Flexbox
     }, data() {
-    },methods:{
-      search(){}
+      return {}
+    }, methods: {
+      search() {
+        this.$router.replace("search", function () {
+
+        })
+      }
     }
   }
 </script>

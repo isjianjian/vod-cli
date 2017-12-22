@@ -31,7 +31,7 @@
         {{list.descript}}
       </div>
       <div v-bind:class="list.paid?'play':'buy'" v-on:click="ok(list)">
-        <!--{{list.paid? "播放":"购买"}}-->
+        {{list.paid? "播放":"购买"}}
       </div>
     </div>
 
@@ -214,33 +214,31 @@
     position: absolute;
     width: 100%;
     bottom: 0;
-    height: 50px;
-    /*background: red;*/
-    /*color: #fff;*/
-    /*text-align: center;*/
-    /*padding: 10px 0;*/
-    background-image: url("../../assets/images/buy_n.png");
+    background: red;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    /*background-image: url("../../assets/images/buy_n.png");*/
   }
 
   .buy:active {
-    /*background: #ECECEC;*/
-    background-image: url("../../assets/images/buy_p.png");
+    /*background: #3f9de7;*/
+    /*background-image: url("../../assets/images/buy_p.png");*/
   }
 
   .play {
     position: absolute;
     width: 100%;
     bottom: 0;
-    height: 50px;
-    /*background: #3f9de7;*/
-    /*color: #fff;*/
-    /*text-align: center;*/
-    /*padding: 10px 0;*/
-    background-image: url("../../assets/images/play_n.png");
+    background: #3f9de7;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    /*background-image: url("../../assets/images/play_n.png");*/
   }
 
   .play:active {
-    /*background: #ECECEC;*/
-    background-image: url("../../assets/images/play_p.png");
+    /*background: red;*/
+    /*background-image: url("../../assets/images/play_p.png");*/
   }
 </style>

@@ -4,7 +4,7 @@
 
       <flexbox class="top">
         <div class="seacher_btn"/>
-        <x-input  focus required="true" class="seacher_input" placeholder="输入片名、主演或导演" @on-change="setkeyword" @on-enter="ok"></x-input>
+        <x-input class="seacher_input" placeholder="输入片名、主演或导演" @on-change="setkeyword" @on-enter="ok"></x-input>
         <div class="histroy_btn" v-on:click="histroy"/>
       </flexbox>
       <!--影片list  height="-81"-->
@@ -47,7 +47,7 @@
             </div>
           </div>
         </div>
-        <!--<load-more tip="加载更多"></load-more>-->
+
       </scroller>
 
     </view-box>
@@ -55,14 +55,15 @@
 </template>
 
 <script>
-  import {Scroller, XInput, ViewBox} from 'vux'
+  import {Scroller, XInput, ViewBox, Flexbox} from 'vux'
 
   export default {
     name: "search",
     components: {
       Scroller,
       XInput,
-      ViewBox
+      ViewBox,
+      Flexbox
     }, data() {
       return {
         page: 1,
@@ -85,7 +86,7 @@
         if (this.keyword.trim() != "") {//关键字搜索
           keyword = "&keyword=" + this.keyword
 
-          this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page="+this.page+"&limit="+this.limit + keyword)
+          this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page=" + this.page + "&limit=" + this.limit + keyword)
             .then(function (res) {
               if (res.data.code == 0) {
                 this.vodlist = res.data.page.list
@@ -103,10 +104,10 @@
         this.current.vid = list.id
         this.$router.replace("detail?id=" + list.cid, function () {
         })
-      },onScrollBottom(){
+      }, onScrollBottom() {
 
       }, histroy() {
-        this.$router.push("histroy", function () {
+        this.$router.replace("histroy", function () {
 
         })
       }

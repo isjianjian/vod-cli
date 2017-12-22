@@ -9,6 +9,7 @@ import Home from './components/Home'
 import video from './components/video/index'
 import search from './components/video/search'
 import histroy from './components/video/histroy'
+import buy from './components/video/buy'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
@@ -44,6 +45,7 @@ const routes = [{
 }, {path: '/detail', component: detail, meta: {allowBack: true}
 }, {path: '/search', component: search, meta: {allowBack: true}
 }, {path: '/histroy', component: histroy, meta: {allowBack: true}
+}, {path: '/buy', component: buy, meta: {allowBack: true}
 },{
   path: '/mine/order', component: order
 },{

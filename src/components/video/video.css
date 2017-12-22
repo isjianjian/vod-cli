@@ -5,13 +5,14 @@
   display: flex;
   background: #fff;
   border-bottom: 1px solid #efeff4;
+  position: absolute;
+
 }
 
 .seacher_input {
   margin-top: 3px;
   margin-bottom: 3px;
   flex: 1;
-  border-left: 1px solid #efeff4;
   font-size: 14px;
   padding-left: 10px;
   padding-right: 10px;
@@ -25,8 +26,10 @@
   background-size: 20px;
   background-repeat: no-repeat;
   background-position: center;
+  border-right: 1px solid #efeff4;
 }
-.seacher_btn:active{
+
+.seacher_btn:active {
   width: 20px;
   height: 20px;
   padding: 8px;
@@ -46,6 +49,7 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
 .histroy_btn:active {
   border-left: 1px solid #efeff4;
   width: 20px;
@@ -56,6 +60,7 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
 /* 电影list */
 
 .film {
