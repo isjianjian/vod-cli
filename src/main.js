@@ -15,6 +15,7 @@ import shop from './components/shop/index'
 import mine from './components/mine/index'
 import detail from './components/video/detail'
 import buy from './components/video/buy'
+import pay from './components/video/pay'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
 import integral from './components/mine/wallet/integral'
@@ -64,6 +65,8 @@ const routes = [{
   path: '/recharge/msg', component: recharge_msg
 },{
   path: '/video/buy', component: buy
+},{
+  path: '/video/pay', component: pay
 }]
 
 Vue.prototype.wxinfo = {
@@ -78,8 +81,8 @@ Vue.prototype.his = {
   time:0
 }
 Vue.prototype.common = {
-  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
-  SERVER_URL:"https://shengvideo.com/hotel_vod/",
+  SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
+ // SERVER_URL:"https://shengvideo.com/hotel_vod/",
   TOKEN:{},
   lastPage:'',
   wxinit:false
@@ -156,12 +159,11 @@ Vue.prototype.QRcode = function () {
 }
 
 const router = new VueRouter({
-  routes
+  routes: routes
 })
 router.beforeEach((to, from, next) => {
   console.log("to",to.path)
   console.log("from",from.path)
-  console.log("history",history)
   if (router.app.wxinfo.user.unionId == null && to.path != "/wel"){
     console.log("替换:",to.path)
     router.app.common.lastPage = to.path;
@@ -173,16 +175,17 @@ router.beforeEach((to, from, next) => {
       next({path:"/"})
       return
     }
-    next()
     // if(router.app.his.from == to.path &&
     //   router.app.his.to == from.path && new Date().getTime() - router.app.his.time < 200){
     //   console.log("拒绝返回",from.path)
-    //   //router.replace(from.path)
-    //   //history.back()
+    //
+    //
     //   // history.pushState(null, null, "/#" + from.path)
     //   // return false
-    //   router.history.go(-1)
+    //
     // }
+    next()
+
     let allowBack = true    //    给个默认值true
     if (to.meta.allowBack !== undefined) {
       allowBack = to.meta.allowBack
@@ -195,11 +198,6 @@ router.beforeEach((to, from, next) => {
     router.app.his.to = to.path
     router.app.his.time = new Date().getTime()
   }
-
-
-
-
-
 
   // store.dispatch('updateAppSetting', {
   //   allowBack: allowBack

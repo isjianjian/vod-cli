@@ -14,7 +14,7 @@
     </group>
     <flexbox class="buybar">
       <flexbox-item :span="4"><div style="text-align: center;">已优惠 ￥{{discounts}}</div></flexbox-item>
-      <flexbox-item :span="4"><div style="text-align: center; font-size: 16px;">合计 ￥{{total}}</div></flexbox-item>
+      <flexbox-item :span="4"><div style="text-align: right; font-size: 16px;">合计 ￥{{total}} </div></flexbox-item>
       <flexbox-item><div v-on:click ='order' class="buybutton">提交订单</div></flexbox-item>
     </flexbox>
     <div v-transfer-dom>
@@ -55,7 +55,6 @@
       mounted(){
         var that = this
         var sid = this.$router.currentRoute.query.id
-        sid = 2
         var url = 'api/vod/preorder?sid=' + sid
         this.api_post("api/vod/" + sid,function (res) {
           that.movie = res.data
@@ -91,12 +90,27 @@
           }, {
             style: 'primary',
             text: "去支付",
-            link: '/pay'
+            onButtonClick:(name) => {
+              var data = this.oldOrder
+              var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire}
+              this.$router.replace({ path: '/video/pay', query: query})
+            }
           }],
           pay_done:false
 
         }
       },
+      beforeRouteLeave(to, from, next){
+        var router = this.$router
+        if(router.app.his.from == to.path &&
+          router.app.his.to == from.path && new Date().getTime() - router.app.his.time < 200){
+          console.log("拒绝返回",from.path)
+          next(false)
+        }else {
+          next()
+        }
+      }
+      ,
       methods:{
         order:function () {
           var that = this
@@ -109,6 +123,10 @@
           }
           this.api_post(url,function (res) {
             console.log(res)
+            var data = res.data
+            var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire}
+            that.$router.replace({ path: '/video/pay', query: query})
+
           },
             function (res) {
               if (res.code == 100){
@@ -128,8 +146,8 @@
                 var data = that.oldOrder = res.data
                 that.$vux.confirm.show({
                   confirmText:"查看详情",
-                  title:"提交订单",
-                  content:"你有一份未支付的订单,请勿重复下单",
+                  title:"请勿重复下单",
+                  content:"你有一份未支付的订单",
                   onCancel () {
                   },
                   onConfirm () {
@@ -142,6 +160,9 @@
                     that.pay_done = true
                   }
                 })
+              }
+              if (res.code == 500){
+                that.$vux.toast.text(res.msg, 'center')
               }
             }
           )
@@ -195,19 +216,19 @@
   .buybar{
     position: fixed;
     bottom: 0px;
-    background: #3F9DE7;
+    background: #6E6E6E;
     height: 48px;
     line-height: 48px;
     color: white;
     font-size: 14px;
   }
   .buybutton{
-    background-color: #DF1C19;
+    background-color: #17ac66;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 2px;
     font-weight: 600;
   }
   .buybutton:active{
-    background-color: #9C1920;
+    background-color: #60ac6f;
   }
 </style>
