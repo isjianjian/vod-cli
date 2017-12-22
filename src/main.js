@@ -7,6 +7,8 @@ import Resource from 'vue-resource'
 import App from './App'
 import Home from './components/Home'
 import video from './components/video/index'
+import search from './components/video/search'
+import histroy from './components/video/histroy'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
@@ -19,6 +21,7 @@ import recharge from './components/mine/wallet/recharge'
 import order from './components/mine/order'
 import welcome from './components/welcome'
 import recharge_msg from './components/mine/wallet/msg'
+
 import { WechatPlugin,LoadingPlugin,ToastPlugin,AlertPlugin} from 'vux'
 import  { ConfirmPlugin } from 'vux'
 Vue.use(ConfirmPlugin)
@@ -40,6 +43,9 @@ const routes = [{
     { path: '/mine', component: mine ,meta: {allowBack: false}}
   ]
 }, {path: '/detail', component: detail
+}, {path: '/detail', component: detail, meta: {allowBack: true}
+}, {path: '/search', component: search, meta: {allowBack: true}
+}, {path: '/histroy', component: histroy, meta: {allowBack: true}
 },{
   path: '/mine/order', component: order
 },{
@@ -70,8 +76,8 @@ Vue.prototype.his = {
   time:0
 }
 Vue.prototype.common = {
-  SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
-  // SERVER_URL:"https://shengvideo.com/hotel_vod/"
+  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
+  SERVER_URL:"https://shengvideo.com/hotel_vod/",
   TOKEN:{},
   lastPage:'',
   wxinit:false

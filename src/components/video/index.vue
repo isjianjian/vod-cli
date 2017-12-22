@@ -3,10 +3,13 @@
     <view-box>
 
       <flexbox class="top">
-        <img class="seacher_btn" src="../../assets/images/search.png" v-on:click="search"/>
-        <x-input readonly="readonly" id="keyword" class="seacher_input" placeholder="输入片名、主演或导演" onclick="search"/>
+        <div class="seacher_btn" v-on:click="search"/>
+        <!--<group >-->
+        <x-input @click.native="search" readonly="readonly" class="seacher_input" placeholder="输入片名、主演或导演"></x-input>
+        <!--</group>-->
         <!--<search placeholder="输入片名、主演或导演"  style=""></search>-->
-        <img class="histroy_btn" src="../../assets/images/menu.png"/>
+        <div class="histroy_btn" v-on:click="histroy"/>
+
       </flexbox>
       <!--分类-->
       <scroller lock-y :scrollbar-x=false :scrollbar-y=false>
@@ -19,9 +22,8 @@
       </scroller>
 
       <!--影片list-->
-      <scroller height="-53" ref="scroller1" lock-x :scrollbar-x=false :scrollbar-y=false @on-scroll-bottom="onScrollBottom">
-
-
+      <scroller height="-81" ref="scroller1" lock-x :scrollbar-x=false :scrollbar-y=false
+                @on-scroll-bottom="onScrollBottom">
         <div>
 
           <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
@@ -121,13 +123,9 @@
           }
 
         })
+      this.doShowToast()
     }, methods: {
-      doShowToast() {
-        console.log("sss")
-        this.$vux.toast.show({
-          text: 'toast'
-        })
-      }, recat(list) {//重置分类
+      recat(list) {//重置分类
 
         // console.log(list)
         this.page = 0;
@@ -138,10 +136,8 @@
           // console.log(this.cid)
         }
         this.cat(list)
-        console.log('this',  this.$children[0].$refs.viewBoxBody.children.scroller1)
-        this.$children[0].$refs.viewBoxBody.children.scroller1.reset({
-          top: 0
-        })
+        console.log('ss', this.$refs.scrollerEvent)
+        this.$refs.scrollerEvent.reset({top: 0})
 
       }, cat(list) {
         var page = this.page + 1
@@ -152,18 +148,21 @@
             if (res.data.code == 0) {
               // console.log("加载更多", res)
               var list = this.vodlist
-
               console.log("NOW:" + list.length + "**********ADD:" + res.data.page.list.length)
-
               if (res.data.page.list.length > 0) {
                 this.page = page
                 for (var i = 0; i < res.data.page.list.length; i++) {
                   list.push(res.data.page.list[i])
                 }
+              } else {
+                this.$vux.toast.show({
+                  text: res.data.msg,
+                })
               }
               this.loadmore = false;
               this.vodlist = list
             } else {
+
 
             }
 
@@ -173,10 +172,16 @@
         console.log("详情", list)
         this.current.video = list
         this.current.vid = list.id
-        this.$router.replace("detail?id=" + list.cid, function () {
+        this.$router.push("detail?id=" + list.cid, function () {
         })
       }, search() {
-        this.$router.replace("search", function () {
+        console.log("搜索")
+        this.$router.push("search", function () {
+
+        })
+      }, histroy() {
+        this.$router.push("histroy", function () {
+
         })
       }, buy(res) {
         console.log("购买", res)
@@ -192,182 +197,11 @@
 </script>
 
 <style scoped>
+  @import 'video.css';
 
-
-  .top {
-    height: 36px;
-    line-height: 36px;
-    display: flex;
-    background: #fff;
-    border-bottom: 1px solid #efeff4;
-  }
-
-  .seacher_input {
-    margin-top: 3px;
-    margin-bottom: 3px;
-    flex: 1;
-    border-left: 1px solid #efeff4;
-    font-size: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .seacher_btn {
-    width: 20px;
-    height: 20px;
-    padding: 8px;
-
-  }
-
-  .histroy_btn {
-    border-left: 1px solid #efeff4;
-    width: 20px;
-    height: 20px;
-    padding: 8px;
-  }
-
-  /* 电影list */
-
-  .film {
-    background: #fff;
-    padding: 8px 10px;
-    border-bottom: 1px solid #efeff4;
-  }
-
-  .film:active {
-    background: #ECECEC;
-  }
-
-  .vodimage {
-    height: 92.8px;
-  }
-
-  .vodimage img {
-    margin-right: 10px;
-    width: 70px;
-    height: 100%;
-  }
-
-  .film .detail {
-    flex: 1;
-    position: relative;
-    top: 0;
-    left: 0;
-  }
-
-  .name {
-    display: flex;
-  }
-
-  .name div {
-    height: 16px;
-    font-size: 16px;
-    line-height: 16px;
-  }
-
-  .times {
-    position: absolute;
-    right: 0px;
-    color: #3f9de7;
-    font-size: 14px;
-  }
-
-  .star-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-
-  .type {
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .time {
-    margin-bottom: 6px;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    font-size: 14px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .price {
-    position: absolute;
-    right: 0px;
-    bottom: 30px;
-    font-size: 14px;
-  }
-
-  .star {
-    height: 14px;
-    font-size: 14px;
-    line-height: 14px;
-    color: #666;
-    width: auto;
-    max-width: 80%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .buy {
-    float: right;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: red;
-    font-size: 10px;
-    width: 50px;
-    height: 23px;
-    line-height: 23px;
-    text-align: center;
-    color: #fff;
-    border-radius: 5px;
-  }
-
-  .buy:active {
-    background: #ECECEC;
-  }
-
-  .play {
-    float: right;
-    color: #fff;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: #3f9de7;
-    font-size: 10px;
-    width: 50px;
-    height: 23px;
-    line-height: 23px;
-    text-align: center;
-    border-radius: 5px;
-  }
-
-  .play:active {
-    background: #ECECEC;
-  }
-
-  .loading {
-    text-align: center;
-    color: #efeff4;
-    font-size: 16px;
-  }
 
 </style>
-<style scoped lang="less">
-  @import '~vux/src/styles/1px.less';
+<!--<style scoped lang="less">-->
+<!--@import '~vux/src/styles/1px.less';-->
 
-</style>
+<!--</style>-->
