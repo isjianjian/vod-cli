@@ -71,7 +71,7 @@
               <div class='cell_botton weui-flex'>
                 <div class='weui-flex__item'>
                   <div v-if="item.type == 1" >
-                    <x-button :data-id='item.cmid' v-on:click.native='toMovie'  type="default" mini plain>影片详情</x-button>
+                    <x-button :cmid='item.cmid' v-on:click.native='toMovie'  type="default" mini plain>影片详情</x-button>
                   </div>
                   <div v-if="item.status == 1 && new Date(item.timeExpire) < nowDate" >
                     <x-button :billid='item.billid' v-on:click.native='toDelete' type="default" mini plain>删除订单</x-button>
@@ -140,13 +140,18 @@
             height: 40,
             autoRefresh: false,
             downContent: '上拉加载',
-            upContent: '加载更多数据',
+            upContent: '加载更多',
             loadingContent: '正在加载...',
             clsPrefix: 'xs-plugin-pullup-'
           }
         }
       },
       mounted(){
+        var i = this.$router.currentRoute.query.i;
+        if (i == null){
+          i = 0
+        }
+        this.tab_index = this.activeIndex = i
         this.reload()
       },
       methods:{
@@ -213,24 +218,10 @@
           })
         },
         toMovie: function (res){
-          var id = res.currentTarget.dataset.id
-          var url = getApp().data.ip + "vod/" + id + "?"+ getApp().getidtoken()
-          wx.request({
-            url: url,
-            method: 'post',
-            success: function (res) {
-              if (res.data.code == '0') {
-                getApp().setvideo(res.data.data)
-                wx.navigateTo({
-                  url: '/pages/video/detail/detail?vodtype=',
-                })
-              } else {
-                wx.showToast({
-                  title: res.data.msg,
-                })
-              }
-            }
-          })
+          console.log("toMovie",res)
+          var cmid = res.target.attributes.cmid.value
+          this.$router.replace({ path: '/detail', query: { id: cmid }})
+          //this.$router.push({ path: '/detail', query: { id: cmid }})
         },
         toCancel: function (res){
           console.log(res)
