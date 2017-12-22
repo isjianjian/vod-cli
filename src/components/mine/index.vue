@@ -8,7 +8,7 @@
     </div>
     <group>
       <cell title="我的订单" link="/mine/order?i=0" is-link>
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/order.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/order.png">
       </cell>
       <grid>
         <grid-item link="/mine/order?i=1" label="余额">
@@ -31,7 +31,7 @@
     </group>
     <group>
       <cell title="我的钱包" is-link link="/mine/wallet/balance">
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/wallet.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/wallet.png">
       </cell>
       <grid>
         <grid-item link="/mine/wallet/balance" label="余额">
@@ -52,19 +52,19 @@
     </group>
     <group>
       <cell title="我的评价" is-link link="/video/buy">
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/evaluate.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/evaluate.png">
       </cell>
       <cell title="收货地址" is-link v-on:click.native="address">
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/address.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/address.png">
       </cell>
-      <cell title="密码设置" is-link>
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/password.png">
+      <cell title="密码设置" is-link link="/video/pay">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/password.png">
       </cell>
       <cell title="关于我们" is-link>
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/about.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/about.png">
       </cell>
       <cell title="发票" is-link>
-        <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
+        <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
       </cell>
     </group>
     </view-box>
@@ -90,9 +90,6 @@
   .weui-cells{
     font-size: 14px!important;
     margin-top: 0em!important;
-  }
-  .weui-cell__hd img{
-    width: 26px;
   }
   .userinfo{
     display: flex;
