@@ -55,7 +55,6 @@
       mounted(){
         var that = this
         var sid = this.$router.currentRoute.query.id
-        sid = 2
         var url = 'api/vod/preorder?sid=' + sid
         this.api_post("api/vod/" + sid,function (res) {
           that.movie = res.data
