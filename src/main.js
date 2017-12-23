@@ -9,7 +9,6 @@ import Home from './components/Home'
 import video from './components/video/index'
 import search from './components/video/search'
 import histroy from './components/video/histroy'
-import buy from './components/video/buy'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
@@ -71,8 +70,8 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-  APPID: 'wxc24d07d05cfea4d3',
-  // APPID: 'wx4c232a8e7d2158ab',
+  // APPID: 'wxc24d07d05cfea4d3',
+  APPID: 'wxb636c0b09a3fd9d1',
   user:{}
 }
 Vue.prototype.his = {
@@ -81,8 +80,8 @@ Vue.prototype.his = {
   time:0
 }
 Vue.prototype.common = {
-  SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
- // SERVER_URL:"https://shengvideo.com/hotel_vod/",
+  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
+ SERVER_URL:"https://shengvideo.com/hotel_vod/",
   TOKEN:{},
   lastPage:'',
   wxinit:false

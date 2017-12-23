@@ -4,7 +4,7 @@
 
       <flexbox class="top">
         <search ref="search" placeholder="输入片名、主演或导演" @on-change="setkeyword"
-                @on-submit="ok" @on-focus="searchshow" @on-cancel="searchhide"></search>
+                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide"></search>
 
         <div v-bind:hidden="showsearch" class="histroy_btn" v-on:click="histroyshow"/>
 
@@ -20,51 +20,49 @@
         </tab>
       </scroller>
 
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="revideo"
+                @on-pullup-loading="addvideo"
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-124" lock-x :scrollbar-x=false
+                :scrollbar-y=false
+                style="position:absolute;width: 100%;top: 81px;" :hidden="showsearch">
+        <div>
+          <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
-      <scroller @on-scroll-bottom="updatevideo" height="300" v-bind:hidden="showsearch"
-                style="position:absolute;width: 100%;top: 81px;" lock-x
-                :scrollbar-x=false
-                :scrollbar-y=false>
-
-        <!--<load-more v-bind:hidden="!onFetching" tip="加载更多"></load-more>-->
-
-        <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
-
-          <div style='display:flex;'>
-            <div class='vodimage'>
-              <img :src="item.pic"></img>
-            </div>
-            <div class='detail'>
-              <div class='name'>
-                <div>{{item.name}}
-                </div>
-
-                <div class='times'>{{item.playAmount}}
-                  <span style='font-size:12px'>次</span>
-                </div>
-
+            <div style='display:flex;'>
+              <div class='vodimage'>
+                <img :src="item.pic"></img>
               </div>
-              <div class='star-bottom'>
-                <div class='type'>
-                  {{catlist[index].name}}
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
+                  </div>
+
+                  <div class='times'>{{item.playAmount}}
+                    <span style='font-size:12px'>次</span>
+                  </div>
+
                 </div>
-                <div class='time'>
-                  <div>时长:{{item.length}}分钟</div>
-                  <div class='price'>{{item.price}}
-                    <span style='font-size:12px'>元</span>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{catlist[index].name}}
+                  </div>
+                  <div class='time'>
+                    <div>时长:{{item.length}}分钟</div>
+                    <div class='price'>{{item.price}}
+                      <span style='font-size:12px'>元</span>
+                    </div>
+                  </div>
+                  <div class='star'>
+                    主演:{{item.act}}
                   </div>
                 </div>
-                <div class='star'>
-                  主演:{{item.act}}
+                <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
                 </div>
-              </div>
-              <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
               </div>
             </div>
           </div>
         </div>
-
-
       </scroller>
 
 
@@ -81,48 +79,52 @@
                src="../../assets/images/discount_icon.png">
         </cell>
       </div>
-
-      <scroller v-bind:hidden="!showsearch" style="position:absolute;z-index: 2;width: 100%;top: 37px;" lock-x
-                :scrollbar-x=false
+      <!---->
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="research"
+                @on-pullup-loading="addsearch"
+                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-80" lock-x :scrollbar-x=false
                 :scrollbar-y=false
-                @on-scroll-bottom="onScrollBottom2">
 
-        <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
+                style="position:absolute;z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
 
-          <div style='display:flex;'>
-            <div class='vodimage'>
-              <img :src="item.pic"></img>
-            </div>
-            <div class='detail'>
-              <div class='name'>
-                <div>{{item.name}}
-                </div>
+        <div>
+          <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
 
-                <div class='times'>{{item.playAmount}}
-                  <span style='font-size:12px'>次</span>
-                </div>
-
+            <div style='display:flex;'>
+              <div class='vodimage'>
+                <img :src="item.pic"></img>
               </div>
-              <div class='star-bottom'>
-                <div class='type'>
-                  <!--{{catlist[index].name}}-->
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
+                  </div>
+
+                  <div class='times'>{{item.playAmount}}
+                    <span style='font-size:12px'>次</span>
+                  </div>
+
                 </div>
-                <div class='time'>
-                  <div>时长:{{item.length}}分钟</div>
-                  <div class='price'>{{item.price}}
-                    <span style='font-size:12px'>元</span>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    <!--{{catlist[index].name}}-->
+                  </div>
+                  <div class='time'>
+                    <div>时长:{{item.length}}分钟</div>
+                    <div class='price'>{{item.price}}
+                      <span style='font-size:12px'>元</span>
+                    </div>
+                  </div>
+                  <div class='star'>
+                    主演:{{item.act}}
                   </div>
                 </div>
-                <div class='star'>
-                  主演:{{item.act}}
+                <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
                 </div>
-              </div>
-              <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
               </div>
             </div>
           </div>
         </div>
-
       </scroller>
     </view-box>
   </div>
@@ -159,6 +161,25 @@
       Tab
     }, data() {
       return {
+        downconfig: {
+          content: '下拉刷新',
+          height: 60,
+          autoRefresh: false,
+          downContent: '下拉刷新',
+          upContent: '松手刷新数据',
+          loadingContent: '正在刷新...',
+          clsPrefix: 'xs-plugin-pulldown-'
+        },
+        upconfig: {
+          content: '上拉加载',
+          pullUpHeight: 60,
+          height: 40,
+          autoRefresh: false,
+          downContent: '上拉加载',
+          upContent: '加载更多',
+          loadingContent: '正在加载...',
+          clsPrefix: 'xs-plugin-pullup-'
+        },
         catlist: {},//电影分类
         vodlist: [],//电影列表
         searchlist: [],//电影搜索
@@ -190,77 +211,127 @@
             this.cat_width = this.catlist.length * 50 > window.innerWidth ? this.catlist.length * 50 : window.innerWidth
             this.recat(this.catlist[0])
           } else {
-            alert(res.data.msg)
+            // alert(res.data.msg)
           }
 
         })
     }, methods: {
       recat(list) {//重置分类
-        this.page = 1;
-        this.vodlist = []
-        // console.log(list != null)
+
 
         if (list != null) {
           this.cid = "&cid=" + list.id
         }
-        this.initvideo(list)
+        this.revideo(list)
 
-        // this.$nextTick(() => {
-        //   this.$refs.scroller.reset({
-        //     top: 0
-        //   })
-        // })
 
-      }, initvideo(list) {
-        console.log(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + this.page + "&limit=" + this.limit)
-        this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + this.page + "&limit=" + this.limit)
-          .then(function (res) {
-            if (res.data.code == 0) {
-              this.vodlist = res.data.page.list
-            } else {
+        setTimeout(() => {
+          that.resetvideotop()
+        }, 500)
+      }, revideo(list) {//点击分类初始化列表
+        this.page = 1;
+        this.vodlist = []
+        var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
+        console.log(url)
+        that.api_post(url, function (res) {
+          console.log(res)
+          that.vodlist = res.page.list
+
+          setTimeout(() => {
+            that.$refs.scroller.donePulldown()
+            that.resetvideotop()
+          }, 500)
+        })
+
+
+      }, resetvideotop() {//回到到顶部
+        this.$refs.scroller.reset({
+          top: 0
+        })
+      }, addvideo() {//影片下拉加载
+        var page = that.page + 1
+        var url = "api/vod?page=" + page + "&limit=" + that.limit + that.cid;
+        // console.log(url)
+        that.api_post(url, function (res) {
+          var list = that.vodlist
+
+          if (res.page.list.length > 0) {
+            that.page = page
+            for (var i = 0; i < res.page.list.length; i++) {
+              list.push(res.page.list[i])
             }
-          })
-      }, detail(list) {
-        if (!this.clickbuy) {
-          console.log("详情", list)
-          this.current.video = list
-          this.current.vid = list.id
-          this.$router.push("detail?id=" + list.cid, function () {
-          })
-        }
-      }, searchshow() {
+          } else {
+
+          }
+          that.vodlist = list
+          console.log("NOW:" + that.vodlist.length + "**********ADD:" + res.page.list.length)
+          that.$refs.scroller.donePullup()
+        })
+      }, searchshow() {//聚焦输入框
         this.showsearch = true
         this.showhistroy = false
-
-      }, searchhide() {
+      }, searchhide() {//输入框失去焦点
         this.showsearch = false
-      }, setkeyword(res) {
+      }, setkeyword(res) {//输入关键词
         this.keyword = res
       }
-      , ok() {
+      , research() {//确定搜索
         var keyword = ""
-        if (this.keyword.trim() != "") {//关键字搜索
-          keyword = "&keyword=" + this.keyword
+        if (this.keyword.trim() != "") {
+          keyword = "&keyword=" + that.keyword
+          this.searchpage = 1;
+          this.searchlist = []
 
-          console.log(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page=" + this.searchpage + "&limit=" + this.searchlimit + keyword)
-          this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page=" + this.searchpage + "&limit=" + this.searchlimit + keyword)
-            .then(function (res) {
-              console.log(res)
-              if (res.data.code == 0) {
-                this.searchlist = res.data.page.list;
-              } else {
-              }
-            })
+          var url = "api/vod?page=" + that.searchpage + "&limit=" + that.searchlimit + keyword;
+          console.log(url)
+          that.api_post(url, function (res) {
+            console.log(res)
+            that.searchlist = res.page.list;
+
+            setTimeout(() => {
+              that.$refs.scroller1.donePulldown()
+              that.resetsearchtop()
+            }, 500)
+          })
         } else {
           //输入空
         }
 
-      }, histroyshow() {
+      }, resetsearchtop() {//回到到顶部
+        this.$refs.scroller1.reset({
+          top: 0
+        })
+      }, addsearch() {
+        var keyword = ""
+        if (this.keyword.trim() != "") {
+          keyword = "&keyword=" + that.keyword
+          var page = that.searchpage + 1
+          var url = "api/vod?page=" + page + "&limit=" + that.searchlimit + keyword;
+          // console.log(url)
+          that.api_post(url, function (res) {
+            var list = that.searchlist
+
+            if (res.page.list.length > 0) {
+              that.searchpage = page
+              for (var i = 0; i < res.page.list.length; i++) {
+                list.push(res.page.list[i])
+              }
+            } else {
+
+            }
+            that.searchlist = list
+            console.log("NOW:" + that.searchlist.length + "**********ADD:" + res.page.list.length)
+
+            that.$refs.scroller1.donePullup()
+          })
+        } else {
+        }
+      }, histroyshow() {//历史记录
         this.showhistroy = !this.showhistroy
         // this.$router.push("histroy", function () {
         //
         // })
-      }, buy(list) {
+      }, buy(list) {// 购买&播放
         if (!this.clickbuy) {
           this.clickbuy = true
           this.current.video = list
@@ -270,7 +341,7 @@
 
           } else {
             // 购买
-            this.$router.push("buy")
+            this.$router.push("buy?id=" + list.id)
           }
 
 
@@ -278,48 +349,16 @@
             this.clickbuy = false
           }, 2000)
         }
-      }
-
-      , updatevideo() {
-        var that = this
-        if (this.onFetching) {
-
-        } else {
-          // console.log("上拉刷新")
-          this.onFetching = true
-          // that.addvideo()
-          setTimeout(function () {
-            that.onFetching = false
-          }, 2000)
+      }, detail(list) {//详情
+        if (!this.clickbuy) {//未点击购买
+          console.log("详情", list)
+          this.current.video = list
+          this.current.vid = list.id
+          this.$router.push("detail?id=" + list.id, function () {
+          })
         }
-      }, addvideo(list) {
-        // var page = this.page + 1
-        // console.log(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + page + "&limit=" + this.limit)
-        //
-        // this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + this.cid + "&page=" + page + "&limit=" + this.limit)
-        //   .then(function (res) {
-        //     if (res.data.code == 0) {
-        //       // console.log("加载更多", res)
-        //       var list = this.vodlist
-        //       console.log("NOW:" + list.length + "**********ADD:" + res.data.page.list.length)
-        //       if (res.data.page.list.length > 0) {
-        //         this.page = page
-        //         for (var i = 0; i < res.data.page.list.length; i++) {
-        //           list.push(res.data.page.list[i])
-        //         }
-        //       } else {
-        //
-        //       }
-        //       this.vodlist = list
-        //     } else {
-        //
-        //
-        //     }
-        //
-        //
-        //   })
-      }, onScrollBottom2() {
       }
+
 
     }
   }
