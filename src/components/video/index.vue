@@ -67,14 +67,14 @@
 
 
       <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-        <cell title="历史记录" is-link v-on:click.native="">
+        <cell title="历史记录" is-link v-on:click.native="record">
           <img slot="icon" width="20" style="display:block;margin-right:5px;"
                src="../../assets/images/histroy_icon.png">
         </cell>
-        <cell title="已购买影片" is-link v-on:click.native="">
+        <cell title="已购买影片" is-link link="/bought">
           <img slot="icon" width="20" style="display:block;margin-right:5px;" src="../../assets/images/ispay_icon.png">
         </cell>
-        <cell title="优惠影片" is-link v-on:click.native="">
+        <cell title="优惠影片" is-link link="/discounts">
           <img slot="icon" width="20" style="display:block;margin-right:5px;"
                src="../../assets/images/discount_icon.png">
         </cell>
@@ -341,7 +341,7 @@
           this.current.vid = list.id
           if (list.paid) {
             // 播放
-
+            that.Play(list.id);
           } else {
             // 购买
             this.$router.push("buy?id=" + list.id)
@@ -360,6 +360,8 @@
           this.$router.push("detail?id=" + list.id, function () {
           })
         }
+      },record(){
+        this.$router.replace("record")
       }
 
 

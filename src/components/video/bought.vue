@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <scroller :pulldown-config="downconfig"
@@ -9,24 +10,30 @@
 
           <div style='display:flex;'>
             <div class='vodimage'>
-              <img :src="item.spic"></img>
+              <img :src="item.pic"></img>
             </div>
             <div class='detail' style="margin-top: 10px;">
 
               <flexbox orient="vertical">
                 <flexbox-item>
-                  <div class="star">{{item.lastTime}}</div>
+                  <div>{{item.name}}</div>
                 </flexbox-item>
                 <flexbox-item>
-                  <div>{{item.sdesc}}</div>
+                  <div  class="star">购买时间：{{item.buyTime}}</div>
+
                 </flexbox-item>
                 <flexbox-item>
-                  <div class="star">上次观看至{{item.m}}分钟{{item.s}}秒</div>
+                  <div class="star">失效时间：{{item.failureTime}}</div>
                 </flexbox-item>
               </flexbox>
+
+              <div class="toplay" v-on:click="play(item)">播放</div>
+
             </div>
 
           </div>
+
+
         </div>
       </div>
     </scroller>
@@ -67,14 +74,13 @@
 
     }, methods: {
       reloaddata() {
-        var url = "api/vod/playRecord"
+        var url = "api/vod/buySource"
         console.log(url)
         that.api_post(url, function (res) {
           console.log(res)
-          var list = res.vodPlayRecordEntities
+          var list = res.vodBuyRecords
           for (var i = 0; i < list.length; i++) {
-            list[i].m = parseInt(list[i].lastLength / 1000 / 60)
-            list[i].s = parseInt(list[i].lastLength / 1000) % 60
+
           }
           that.vodlist = list
 
@@ -90,10 +96,17 @@
         }, 1000)
 
       }, detail(list) {//详情
-        console.log("详情", list)
-        this.$router.push("detail?id=" + list.sid, function () {
-        })
+        // console.log("详情", list)
+        // this.current.video = list
+        // this.current.vid = list.id
+        // this.$router.push("detail?id=" + list.id, function () {
+        // })
+        that.play(list);
+      },play(list){
+        that.Play(list.id);
       }
+
+
     }
   }
 </script>
@@ -101,4 +114,21 @@
 <style scoped>
   @import "video.css";
 
+  .toplay {
+    color: #fff;
+    position: absolute;
+    right: 0;
+    bottom: 30px;
+    background: #3f9de7;
+    font-size: 10px;
+    width: 50px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    border-radius: 5px;
+  }
+
+  .toplay:active {
+    background: #ECECEC;
+  }
 </style>

@@ -30,7 +30,7 @@
       <div class="desc">
         {{list.descript}}
       </div>
-      <div v-bind:class="list.paid?'play':'buy'" v-on:click="ok(list)">
+      <div v-bind:class="list.paid?'play':'buy'" v-on:click="buy(list)">
         {{list.paid? "播放":"购买"}}
       </div>
     </div>
@@ -72,12 +72,13 @@
           }
         })
     }, methods: {
-      ok(res) {
-        console.log("res,",res)
-        if (!res.paid) {//购买
-          this.$router.replace({ path: '/video/buy', query: { id: res.id}})
-        } else {//播放
-
+      buy(list) {
+        if (list.paid) {
+          // 播放
+          this.Play(list.id);
+        }else {
+          // 购买
+          this.$router.replace({path: '/video/buy', query: {id: list.id}})
         }
       }
     }
