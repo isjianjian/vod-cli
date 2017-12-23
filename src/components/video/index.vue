@@ -202,19 +202,16 @@
     }, mounted() {
       that = this
       // console.log("电影分类", this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
-      this.$http.post(this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
-        .then(function (res) {
-          if (res.data.code == 0) {
+      var url = "api/vod/classify"
+      console.log(url)
+      that.api_post(url, function (res) {
+        console.log(res)
+        that.catlist = res.page.list
+        // console.log("电影分类", this.catlist)
+        that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
+        that.recat(that.catlist[0])
+      })
 
-            this.catlist = res.data.page.list
-            // console.log("电影分类", this.catlist)
-            this.cat_width = this.catlist.length * 50 > window.innerWidth ? this.catlist.length * 50 : window.innerWidth
-            this.recat(this.catlist[0])
-          } else {
-            // alert(res.data.msg)
-          }
-
-        })
     }, methods: {
       recat(list) {//重置分类
 
@@ -225,9 +222,9 @@
         this.revideo(list)
 
 
-        setTimeout(() => {
-          that.resetvideotop()
-        }, 500)
+        // setTimeout(() => {
+        that.resetvideotop()
+        // }, 500)
       }, revideo(list) {//点击分类初始化列表
         this.page = 1;
         this.vodlist = []
@@ -235,37 +232,44 @@
         console.log(url)
         that.api_post(url, function (res) {
           console.log(res)
-          that.vodlist = res.page.list
+          if (res.page.list.length > 0) {
+            that.vodlist = res.page.list
 
-          setTimeout(() => {
             that.$refs.scroller.donePulldown()
             that.resetvideotop()
-          }, 500)
+          } else {
+
+          }
+
+
         })
 
 
       }, resetvideotop() {//回到到顶部
+        that.$refs.scroller.enablePullup();
         this.$refs.scroller.reset({
           top: 0
         })
       }, addvideo() {//影片下拉加载
         var page = that.page + 1
         var url = "api/vod?page=" + page + "&limit=" + that.limit + that.cid;
-        // console.log(url)
+        console.log(url)
         that.api_post(url, function (res) {
           var list = that.vodlist
 
           if (res.page.list.length > 0) {
+
             that.page = page
             for (var i = 0; i < res.page.list.length; i++) {
               list.push(res.page.list[i])
             }
-          } else {
+            that.vodlist = list
+            that.$refs.scroller.donePullup()
 
+          } else {
+            that.$refs.scroller.disablePullup();
           }
-          that.vodlist = list
           console.log("NOW:" + that.vodlist.length + "**********ADD:" + res.page.list.length)
-          that.$refs.scroller.donePullup()
         })
       }, searchshow() {//聚焦输入框
         this.showsearch = true
@@ -286,46 +290,45 @@
           console.log(url)
           that.api_post(url, function (res) {
             console.log(res)
-            that.searchlist = res.page.list;
 
-            setTimeout(() => {
+            if (res.page.list.length > 0) {
+              that.searchlist = res.page.list;
+              // setTimeout(() => {
               that.$refs.scroller1.donePulldown()
               that.resetsearchtop()
-            }, 500)
+              // }, 500)
+            }
+
           })
         } else {
           //输入空
         }
 
       }, resetsearchtop() {//回到到顶部
+        that.$refs.scroller1.enablePullup();
         this.$refs.scroller1.reset({
           top: 0
         })
       }, addsearch() {
-        var keyword = ""
-        if (this.keyword.trim() != "") {
-          keyword = "&keyword=" + that.keyword
-          var page = that.searchpage + 1
-          var url = "api/vod?page=" + page + "&limit=" + that.searchlimit + keyword;
-          // console.log(url)
-          that.api_post(url, function (res) {
-            var list = that.searchlist
+        var page = that.searchpage + 1
+        var url = "api/vod?page=" + page + "&limit=" + that.searchlimit + "&keyword=" + that.keyword;
+        // console.log(url)
+        that.api_post(url, function (res) {
+          var list = that.searchlist
 
-            if (res.page.list.length > 0) {
-              that.searchpage = page
-              for (var i = 0; i < res.page.list.length; i++) {
-                list.push(res.page.list[i])
-              }
-            } else {
-
+          if (res.page.list.length > 0) {
+            that.searchpage = page
+            for (var i = 0; i < res.page.list.length; i++) {
+              list.push(res.page.list[i])
             }
-            that.searchlist = list
-            console.log("NOW:" + that.searchlist.length + "**********ADD:" + res.page.list.length)
-
             that.$refs.scroller1.donePullup()
-          })
-        } else {
-        }
+            that.searchlist = list
+          } else {
+            that.$refs.scroller1.disablePullup()
+          }
+          console.log("NOW:" + that.searchlist.length + "**********ADD:" + res.page.list.length)
+        })
+
       }, histroyshow() {//历史记录
         this.showhistroy = !this.showhistroy
         // this.$router.push("histroy", function () {
