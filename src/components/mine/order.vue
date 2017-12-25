@@ -255,7 +255,7 @@
             text: 'Loading'
           })
           var that = this;
-          var url =  that.common.SERVER_URL + "api/canorder?billid=" + billid
+          var url =  that.common.SERVER_URL + "api/mp/canorder?billid=" + billid
           this.$http.post(url).then( function (res) {
             console.log(res.data.code)
             if (res.data.code == '0') {

@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
   console.log("from",from.path)
   if (router.app.wxinfo.user.unionId == null && to.path != "/wel"){
     console.log("替换:",to.path)
-    router.app.common.lastPage = to.path;
+    router.app.common.lastPage =  to.fullPath;
     router.app.common.lastUrl = window.location.href;
     next({path:"/wel"})
 

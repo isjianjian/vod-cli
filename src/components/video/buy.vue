@@ -92,7 +92,7 @@
             text: "去支付",
             onButtonClick:(name) => {
               var data = this.oldOrder
-              var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire}
+              var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire,cmid:data.comdId}
               this.$router.replace({ path: '/video/pay', query: query})
             }
           }],
@@ -124,7 +124,7 @@
           this.api_post(url,function (res) {
             console.log(res)
             var data = res.data
-            var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire}
+            var query = {id:data.id,body:data.body,total:data.total,timeExpire:data.timeExpire,cmid:data.comdId}
             that.$router.replace({ path: '/video/pay', query: query})
 
           },
@@ -192,7 +192,7 @@
             text: 'Loading'
           })
           var that = this;
-          var url =  that.common.SERVER_URL + "api/canorder?billid=" + billid
+          var url =  that.common.SERVER_URL + "api/mp/canorder?billid=" + billid
           this.$http.post(url).then( function (res) {
             console.log(res.data.code)
             if (res.data.code == '0') {

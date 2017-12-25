@@ -2,7 +2,6 @@
   <view-box v-bind:style="windowHeight">
     <div>
       <div>
-
         <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
         <img class="top-bg2"/>
         <img class="top-bg3"/>
@@ -33,24 +32,46 @@
       <div v-bind:class="list.paid?'play':'buy'" v-on:click="ok(list)">
         <!--{{list.paid? "播放":"购买"}}-->
       </div>
+      <div v-if="!show_share" @click="show_share = true" class="flow">
+        <img src="../../assets/images/flow.png" />
+      </div>
     </div>
-
+    <div v-transfer-dom>
+      <x-dialog  v-model="show_share" hide-on-blur :dialog-style="{'max-width': '100%', width: '100%', height: '90%', 'background-color': 'transparent'}">
+        <div style="color:#fff; height:100%;" @click="show_share = false" >
+          <div style="margin-left: 120px">
+            <img  src="../../assets/images/point.png"/>
+          </div>
+          <div style="text-align: center;font-size: 20px;color: #D1D0CE;">
+            好东西就要一起分享
+          </div>
+          <div style="text-indent:2em;font-size: 16px;text-align: left; margin-top: 20px;color: #3F9DE7;">
+             已购买的影片发送给好友，Ta只需支付一元即可获取本片(限新用户)，并且您也能得到一定积分哦
+          </div>
+        </div>
+      </x-dialog>
+    </div>
   </view-box>
 
 </template>
 
 <script>
   import ViewBox from "vux/src/components/view-box/index";
-
+  import { XDialog, TransferDomDirective as TransferDom } from 'vux'
   export default {
+    directives: {
+      TransferDom
+    },
     name: "detail",
     components: {
+      XDialog,
       ViewBox
     },
     data() {
       return {
         windowHeight: '',
         list: '',
+        show_share:false
       }
     },
     mounted(res) {
@@ -244,5 +265,27 @@
   .play:active {
     /*background: #ECECEC;*/
     background-image: url("../../assets/images/play_p.png");
+  }
+  .flow{
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+    width: 40px;
+    height: 40px;
+    background: red;
+    border-radius: 20px;
+    border: 1px solid #696;
+    padding: 1px 0;text-align: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    -webkit-box-shadow: #666 0px 0px 10px;
+    -moz-box-shadow: #666 0px 0px 10px;
+
+    box-shadow: #666 0px 0px 10px;
+  }
+  .flow img{
+    height: 34px;
+    width: 34px;
   }
 </style>
