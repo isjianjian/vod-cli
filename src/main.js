@@ -183,6 +183,8 @@ Vue.prototype.Play = function (sid) {
 const router = new VueRouter({
   routes: routes
 })
+
+
 router.beforeEach((to, from, next) => {
   console.log("to", to.path)
   console.log("from", from.path)

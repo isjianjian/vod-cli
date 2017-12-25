@@ -1,6 +1,6 @@
 <template>
-  <div>
-    room page
+  <div style="text-align: center;">
+    功能建设中...
   </div>
 </template>
 
