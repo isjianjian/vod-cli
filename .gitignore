@@ -1,12 +1,11 @@
 .DS_Store
 node_modules/
-<<<<<<< HEAD
+HEAD
 dist/
 npm-debug.log
 yarn-error.log
-=======
 /dist/
->>>>>>> vuejs-templates-master
+vuejs-templates-master
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
