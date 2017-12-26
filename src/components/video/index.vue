@@ -20,12 +20,12 @@
         </tab>
       </scroller>
 
-      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+      <scroller :hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="revideo"
                 @on-pullup-loading="addvideo"
                 :use-pulldown="true" :use-pullup="true" ref="scroller" height="-124" lock-x :scrollbar-x=false
                 :scrollbar-y=false
-                style="position:absolute;width: 100%;top: 81px;" :hidden="showsearch">
+                style="position:absolute;width: 100%;top: 81px;" >
         <div>
           <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
@@ -201,13 +201,13 @@
       }
     }, mounted() {
       that = this
-      // console.log("电影分类", this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
+      // console.log("电影分类", that.common.SERVER_URL + "api/vod/classify?openid=" + that.wxinfo.user.unionId)
       var url = "api/vod/classify"
       console.log(url)
       that.api_post(url, function (res) {
         console.log(res)
         that.catlist = res.page.list
-        // console.log("电影分类", this.catlist)
+        // console.log("电影分类", that.catlist)
         that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
         that.recat(that.catlist[0])
       })
@@ -217,17 +217,17 @@
 
 
         if (list != null) {
-          this.cid = "&cid=" + list.id
+          that.cid = "&cid=" + list.id
         }
-        this.revideo(list)
+        that.revideo(list)
 
 
         // setTimeout(() => {
         that.resetvideotop()
         // }, 500)
       }, revideo(list) {//点击分类初始化列表
-        this.page = 1;
-        this.vodlist = []
+        that.page = 1;
+        that.vodlist = []
         var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
         console.log(url)
         that.api_post(url, function (res) {
@@ -247,7 +247,7 @@
 
       }, resetvideotop() {//回到到顶部
         that.$refs.scroller.enablePullup();
-        this.$refs.scroller.reset({
+        that.$refs.scroller.reset({
           top: 0
         })
       }, addvideo() {//影片下拉加载
@@ -272,19 +272,19 @@
           console.log("NOW:" + that.vodlist.length + "**********ADD:" + res.page.list.length)
         })
       }, searchshow() {//聚焦输入框
-        this.showsearch = true
-        this.showhistroy = false
+        that.showsearch = true
+        that.showhistroy = false
       }, searchhide() {//输入框失去焦点
-        this.showsearch = false
+        that.showsearch = false
       }, setkeyword(res) {//输入关键词
-        this.keyword = res
+        that.keyword = res
       }
       , research() {//确定搜索
         var keyword = ""
-        if (this.keyword.trim() != "") {
+        if (that.keyword.trim() != "") {
           keyword = "&keyword=" + that.keyword
-          this.searchpage = 1;
-          this.searchlist = []
+          that.searchpage = 1;
+          that.searchlist = []
 
           var url = "api/vod?page=" + that.searchpage + "&limit=" + that.searchlimit + keyword;
           console.log(url)
@@ -306,7 +306,7 @@
 
       }, resetsearchtop() {//回到到顶部
         that.$refs.scroller1.enablePullup();
-        this.$refs.scroller1.reset({
+        that.$refs.scroller1.reset({
           top: 0
         })
       }, addsearch() {
@@ -330,38 +330,38 @@
         })
 
       }, histroyshow() {//历史记录
-        this.showhistroy = !this.showhistroy
-        // this.$router.push("histroy", function () {
+        that.showhistroy = !that.showhistroy
+        // that.$router.push("histroy", function () {
         //
         // })
       }, buy(list) {// 购买&播放
-        if (!this.clickbuy) {
-          this.clickbuy = true
-          this.current.video = list
-          this.current.vid = list.id
+        if (!that.clickbuy) {
+          that.clickbuy = true
+          that.current.video = list
+          that.current.vid = list.id
           if (list.paid) {
             // 播放
             that.Play(list.id);
           } else {
             // 购买
-            this.$router.push("buy?id=" + list.id)
+            that.$router.push("buy?id=" + list.id)
           }
 
 
           setTimeout(() => {
-            this.clickbuy = false
+            that.clickbuy = false
           }, 2000)
         }
       }, detail(list) {//详情
-        if (!this.clickbuy) {//未点击购买
+        if (!that.clickbuy) {//未点击购买
           console.log("详情", list)
-          this.current.video = list
-          this.current.vid = list.id
-          this.$router.push("detail?id=" + list.id, function () {
+          that.current.video = list
+          that.current.vid = list.id
+          that.$router.push("detail?id=" + list.id, function () {
           })
         }
       }, record() {
-        this.$router.replace("record")
+        that.$router.replace("record")
       }
 
 
