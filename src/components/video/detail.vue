@@ -45,8 +45,8 @@
           <div style="text-align: center;font-size: 20px;color: #D1D0CE;">
             好东西就要一起分享
           </div>
-          <div style="text-indent:2em;font-size: 16px;text-align: left; margin-top: 20px;color: #3F9DE7;">
-             已购买的影片发送给好友，Ta只需支付一元即可获取本片(限新用户)，并且您也能得到一定积分哦
+          <div style="text-indent:2em;font-size: 14px;text-align: left; margin-top: 20px;color: #3F9DE7;">
+             已购买的影片发送给好友，Ta只需支付<span style="color: red">{{account.giftseemoney}}</span>元即可获取本片(限新用户)，并且您也能得到一定积分哦
           </div>
         </div>
       </x-dialog>
@@ -71,10 +71,12 @@
       return {
         windowHeight: '',
         list: '',
-        show_share:false
+        show_share:false,
+        account:{}
       }
     },
     mounted(res) {
+      var that = this
       this.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
       var vid = 0;
       console.log("获取影片详情", this.$router.currentRoute.query)
@@ -92,6 +94,27 @@
             alert(res.data.msg)
           }
         })
+      this.api_post("api/account",function (res) {
+        console.log("api/account",res)
+        that.account = res.data
+      })
+      var basdUel = window.location.href.substring(0,window.location.href.indexOf("#"));
+      var link = basdUel + "#/act?openid=" + this.wxinfo.user.openId + "&sid=" + vid
+      console.log("link",link)
+      this.$wechat.onMenuShareAppMessage({
+        title: '好友赠送你一部影片', // 分享标题
+        desc: '好友赠送你一部影片', // 分享描述
+        link: link, // 分享链接
+        imgUrl: 'https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1040759678,2647214604&fm=58', // 分享图标
+        success: function () {
+          that.show_share = false
+          that.$vux.toast.text('分享成功！', 'center')
+        },
+        cancel: function () {
+          // 用户取消分享后执行的回调函数
+        }
+      });
+
     }, methods: {
       buy(list) {
         if (list.paid) {

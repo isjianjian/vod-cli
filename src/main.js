@@ -17,6 +17,7 @@ import mine from './components/mine/index'
 import detail from './components/video/detail'
 import buy from './components/video/buy'
 import pay from './components/video/pay'
+import act from './components/video/act'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
 import integral from './components/mine/wallet/integral'
@@ -61,7 +62,7 @@ const routes = [{
 }, {
   path: '/discounts', component: discounts, meta: {allowBack: true, title: '优惠影片'}
 }, {
-  path: '/buy', component: buy, meta: {allowBack: true, title: '购买'}
+  path: '/video/buy', component: buy, meta: {allowBack: true, title: '购买'}
 }, {
   path: '/mine/order', component: order, meta: {allowBack: true, title: '我的订单'}
 }, {
@@ -82,6 +83,8 @@ const routes = [{
   path: '/mine/about/about', component: about, meta: {allowBack: true, title: '关于我们'}
 }, {
   path: '/wel', component: welcome, meta: {allowBack: true, title: '加载中...'}
+},{
+  path: '/act', component: act, meta: {allowBack: true, title: '加载中...'}
 }, {
   path: '/recharge/msg', component: recharge_msg
 }, {
@@ -90,8 +93,8 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-  // APPID: 'wxc24d07d05cfea4d3',
-  APPID: 'wxb636c0b09a3fd9d1',
+   APPID: 'wxc24d07d05cfea4d3',
+  //APPID: 'wxb636c0b09a3fd9d1',
   user: {}
 }
 Vue.prototype.his = {
@@ -100,8 +103,8 @@ Vue.prototype.his = {
   time: 0
 }
 Vue.prototype.common = {
-  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
-  SERVER_URL: "https://shengvideo.com/hotel_vod/",
+   SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
+  //SERVER_URL: "https://shengvideo.com/hotel_vod/",
   TOKEN: {},
   lastPage: '',
   wxinit: false
