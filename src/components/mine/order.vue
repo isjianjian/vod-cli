@@ -19,7 +19,8 @@
           已退款
         </tab-item>
       </tab>
-      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"  @on-pulldown-loading="reload" @on-pullup-loading="add" :use-pulldown="true" :use-pullup="true" ref="scroller" height="-43" lock-x :scrollbar-x=false :scrollbar-y=false>
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"  @on-pulldown-loading="reload" @on-pullup-loading="add"
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-43" lock-x :scrollbar-x=false :scrollbar-y=false>
         <div hover-class="ui-cell_active">
           <div class="page__bd">
             <div v-if="list.length == 0" class='loading'>
@@ -170,6 +171,7 @@
         }
         ,
         loadData:function(){
+
           this.$vux.loading.show({
             text: 'Loading'
           })
