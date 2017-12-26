@@ -20,6 +20,10 @@ import pay from './components/video/pay'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
 import integral from './components/mine/wallet/integral'
+import  aboutindex from './components/mine/about/index'
+import advice from './components/mine/about/advice'
+import agree from './components/mine/about/agree'
+import about from './components/mine/about/about'
 import recharge from './components/mine/wallet/recharge'
 import order from './components/mine/order'
 import welcome from './components/welcome'
@@ -40,42 +44,48 @@ const routes = [{
   path: '/',
   component: Home,
   children: [
-    {path: '/', component: video, meta: {allowBack: false}},
-    {path: '/video', component: video, meta: {allowBack: false}},
-    {path: '/room', component: room, meta: {allowBack: false}},
-    {path: '/shop', component: shop, meta: {allowBack: false}},
-    {path: '/mine', component: mine, meta: {allowBack: false}}
+    {path: '/', component: video, meta: {allowBack: false, title: '点播'}},
+    {path: '/video', component: video, meta: {allowBack: false, title: '点播'}},
+    {path: '/room', component: room, meta: {allowBack: false, title: '订房'}},
+    {path: '/shop', component: shop, meta: {allowBack: false, title: '购物'}},
+    {path: '/mine', component: mine, meta: {allowBack: false, title: '我的'}}
   ]
 }, {
-  path: '/detail', component: detail, meta: {allowBack: true}
+  path: '/detail', component: detail, meta: {allowBack: true, title: '详情'}
 }, {
-  path: '/search', component: search, meta: {allowBack: true}
+  path: '/search', component: search, meta: {allowBack: true, title: '搜索'}
 }, {
-  path: '/record', component: record, meta: {allowBack: true}
+  path: '/record', component: record, meta: {allowBack: true, title: '历史记录'}
 }, {
-  path: '/bought', component: bought, meta: {allowBack: true}
+  path: '/bought', component: bought, meta: {allowBack: true, title: '已购买影片'}
 }, {
-  path: '/discounts', component: discounts, meta: {allowBack: true}
+  path: '/discounts', component: discounts, meta: {allowBack: true, title: '优惠影片'}
 }, {
-  path: '/buy', component: buy, meta: {allowBack: true}
+  path: '/buy', component: buy, meta: {allowBack: true, title: '购买'}
 }, {
-  path: '/mine/order', component: order
+  path: '/mine/order', component: order, meta: {allowBack: true, title: '我的订单'}
 }, {
   path: '/mine/wallet',
   component: wallet,
   children: [
-    {path: 'balance', component: balance},
-    {path: 'integral', component: integral},
-    {path: 'recharge', component: recharge}
-  ]
+    {path: 'balance', component: balance, meta: {allowBack: true, title: '余额'}},
+    {path: 'integral', component: integral, meta: {allowBack: true, title: '积分'}},
+    {path: 'recharge', component: recharge, meta: {allowBack: true, title: '充值'}}
+  ], meta: {allowBack: true, title: '我的钱包'}
 }, {
-  path: '/wel', component: welcome
+  path: '/mine/about/index', component: aboutindex, meta: {allowBack: true, title: '关于我们'}
+}, {
+  path: '/mine/about/advice', component: advice, meta: {allowBack: true, title: '意见反馈'}
+}, {
+  path: '/mine/about/agree', component: agree, meta: {allowBack: true, title: '服务条款'}
+}, {
+  path: '/mine/about/about', component: about, meta: {allowBack: true, title: '关于我们'}
+}, {
+  path: '/wel', component: welcome, meta: {allowBack: true, title: '加载中...'}
 }, {
   path: '/recharge/msg', component: recharge_msg
 }, {
-  path: '/video/buy', component: buy
-}, {
-  path: '/video/pay', component: pay
+  path: '/video/pay', component: pay, meta: {allowBack: true, title: '支付'}
 }]
 
 Vue.prototype.wxinfo = {
@@ -85,9 +95,9 @@ Vue.prototype.wxinfo = {
   user: {}
 }
 Vue.prototype.his = {
-  from:'',
-  to:'',
-  time:0
+  from: '',
+  to: '',
+  time: 0
 }
 Vue.prototype.common = {
   // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
@@ -172,8 +182,8 @@ Vue.prototype.Play = function (sid) {
   var url = "api/vod/play?sid=" + sid;
   this.api_post(url, function (res) {
     that.$vux.toast.text('播放成功！', 'center')
-  },function (res) {
-    if(res.code == 100){
+  }, function (res) {
+    if (res.code == 100) {
       that.QRcode()
     }
   })
@@ -186,11 +196,12 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
-  console.log(to)
-  console.log(from)
-  console.log(next)
-  console.log("to", to.path)
-  console.log("from", from.path)
+  // console.log("to", to.path)
+  // console.log("from", from.path)
+
+  window.document.title = to.meta.title;
+
+
   if (router.app.wxinfo.user.unionId == null && to.path != "/wel") {
     console.log("替换:", to.path)
     router.app.common.lastPage = to.path;
@@ -207,13 +218,15 @@ router.beforeEach((to, from, next) => {
     //   console.log("拒绝返回",from.path)
     //
     //
-    //   // history.pushState(null, null, "/#" + from.path)
-    //   // return false
+    //   history.pushState(null, null, "/#" + from.path)
+    //   return false
     //
     // }
-    next(false)
+    next()
 
     let allowBack = true    //    给个默认值true
+
+
     if (to.meta.allowBack !== undefined) {
       allowBack = to.meta.allowBack
     }
@@ -240,3 +253,4 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app-box')
+

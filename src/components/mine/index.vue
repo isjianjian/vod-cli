@@ -60,7 +60,7 @@
       <cell title="密码设置" is-link link="/video/pay">
         <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/password.png">
       </cell>
-      <cell title="关于我们" is-link>
+      <cell title="关于我们" is-link link="/mine/about/index">
         <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/about.png">
       </cell>
       <cell title="发票" is-link>

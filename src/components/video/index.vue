@@ -360,7 +360,7 @@
           this.$router.push("detail?id=" + list.id, function () {
           })
         }
-      },record(){
+      }, record() {
         this.$router.replace("record")
       }
 
