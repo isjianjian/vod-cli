@@ -20,13 +20,18 @@
         </tab>
       </scroller>
 
-      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+      <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="revideo"
                 @on-pullup-loading="addvideo"
-                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-124" lock-x :scrollbar-x=false
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-134" lock-x :scrollbar-x=false
                 :scrollbar-y=false
-                style="position:absolute;width: 100%;top: 81px;" :hidden="showsearch">
+                style="position:absolute;width: 100%;top: 81px;">
         <div>
+          <div v-if="vodlist.length == 0" class='loading'>
+              <span style='color:#B6B6B6'>
+                暂无数据
+              </span>
+          </div>
           <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
             <div style='display:flex;'>
@@ -45,7 +50,7 @@
                 </div>
                 <div class='star-bottom'>
                   <div class='type'>
-                    {{catlist[index].name}}
+                    {{item.cName}}
                   </div>
                   <div class='time'>
                     <div>时长:{{item.length}}分钟</div>
@@ -63,11 +68,12 @@
             </div>
           </div>
         </div>
+        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
       </scroller>
 
 
       <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-        <cell title="历史记录" is-link v-on:click.native="record">
+        <cell title="历史记录" is-link link="/record">
           <img slot="icon" width="20" style="display:block;margin-right:5px;"
                src="../../assets/images/histroy_icon.png">
         </cell>
@@ -83,12 +89,17 @@
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="research"
                 @on-pullup-loading="addsearch"
-                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-80" lock-x :scrollbar-x=false
+                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
                 :scrollbar-y=false
-
                 style="position:absolute;z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
 
         <div>
+          <div v-if="searchlist.length == 0" class='loading'>
+              <span style='color:#B6B6B6'>
+                暂无数据
+              </span>
+          </div>
+
           <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
 
             <div style='display:flex;'>
@@ -107,7 +118,7 @@
                 </div>
                 <div class='star-bottom'>
                   <div class='type'>
-                    <!--{{catlist[index].name}}-->
+                    {{item.cName}}
                   </div>
                   <div class='time'>
                     <div>时长:{{item.length}}分钟</div>
@@ -125,6 +136,7 @@
             </div>
           </div>
         </div>
+        <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
       </scroller>
     </view-box>
   </div>
@@ -161,6 +173,8 @@
       Tab
     }, data() {
       return {
+        nodata: false,
+        searchnodata: false,
         downconfig: {
           content: '下拉刷新',
           height: 60,
@@ -188,7 +202,7 @@
 
         onFetching: false,
         page: 1,
-        limit: 5,
+        limit: 6,
 
 
         showsearch: false,
@@ -201,170 +215,183 @@
       }
     }, mounted() {
       that = this
-      // console.log("电影分类", this.common.SERVER_URL + "api/vod/classify?openid=" + this.wxinfo.user.unionId)
+      // console.log("电影分类", that.common.SERVER_URL + "api/vod/classify?openid=" + that.wxinfo.user.unionId)
       var url = "api/vod/classify"
       console.log(url)
       that.api_post(url, function (res) {
         console.log(res)
         that.catlist = res.page.list
-        // console.log("电影分类", this.catlist)
+        // console.log("电影分类", that.catlist)
         that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
         that.recat(that.catlist[0])
       })
 
     }, methods: {
       recat(list) {//重置分类
-
-
-        if (list != null) {
-          this.cid = "&cid=" + list.id
+        var cid = list.id
+        if (cid != null) {
+          that.cid = "&cid=" + cid
+          that.revideo(list)
         }
-        this.revideo(list)
-
-
-        // setTimeout(() => {
-        that.resetvideotop()
-        // }, 500)
       }, revideo(list) {//点击分类初始化列表
-        this.page = 1;
-        this.vodlist = []
+        that.page = 1;
+        that.getvideo()
+      }, resetvideotop() {//回到到顶部
+        setTimeout(() => {
+          that.$refs.scroller.reset({
+            top: 0
+          })
+          that.$refs.scroller.donePulldown()
+        }, 1 * 800)
+      }, getvideo() {
+        that.$vux.loading.show({
+          text: 'Loading'
+        })
         var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
-        console.log(url)
         that.api_post(url, function (res) {
-          console.log(res)
-          if (res.page.list.length > 0) {
+          if (that.page == 1) {
             that.vodlist = res.page.list
-
-            that.$refs.scroller.donePulldown()
             that.resetvideotop()
           } else {
+            for (var i = 0; i < res.page.list.length; i++) {
+              that.vodlist.push(res.page.list[i])
+            }
+            setTimeout(() => {
+              that.$refs.scroller.donePullup()
+              that.$refs.scroller.reset()
+            }, 1 * 800)
 
           }
 
+          if (res.page.list.length == 0) {
+            that.$refs.scroller.disablePullup()
+            if (that.page != 1) {
+              that.nodata = true
+            }
+          } else {
+            that.nodata = false
+            that.$refs.scroller.enablePullup()
+          }
+          if (res.page.list.length < that.limit && that.page == 1) {
+            that.$refs.scroller.disablePullup()
+          }
+          setTimeout(() => {
+            that.$vux.loading.hide()
+          }, 1 * 200)
 
-        })
-
-
-      }, resetvideotop() {//回到到顶部
-        that.$refs.scroller.enablePullup();
-        this.$refs.scroller.reset({
-          top: 0
+        }, function (res) {
+          setTimeout(() => {
+            that.$vux.loading.hide()
+          }, 1 * 200)
+          that.$vux.toast.text(res.msg, 'center')
         })
       }, addvideo() {//影片下拉加载
-        var page = that.page + 1
-        var url = "api/vod?page=" + page + "&limit=" + that.limit + that.cid;
-        console.log(url)
-        that.api_post(url, function (res) {
-          var list = that.vodlist
-
-          if (res.page.list.length > 0) {
-
-            that.page = page
-            for (var i = 0; i < res.page.list.length; i++) {
-              list.push(res.page.list[i])
-            }
-            that.vodlist = list
-            that.$refs.scroller.donePullup()
-
-          } else {
-            that.$refs.scroller.disablePullup();
-          }
-          console.log("NOW:" + that.vodlist.length + "**********ADD:" + res.page.list.length)
-        })
+        that.page = that.page + 1;
+        that.getvideo()
       }, searchshow() {//聚焦输入框
-        this.showsearch = true
-        this.showhistroy = false
+        that.showsearch = true
+        that.showhistroy = false
+        if (that.searchlist.length < that.searchlimit && that.searchpage == 1) {
+          that.$refs.scroller1.disablePullup()
+        }
       }, searchhide() {//输入框失去焦点
-        this.showsearch = false
+        that.showsearch = false
       }, setkeyword(res) {//输入关键词
-        this.keyword = res
+        that.keyword = res
       }
-      , research() {//确定搜索
+      , research() {//搜索下拉刷新
+        that.searchpage = 1
+        that.getsearch()
+      }, addsearch() {//搜索上拉加载更多
+        that.searchpage = that.searchpage + 1
+        that.getsearch()
+      }, getsearch() {
         var keyword = ""
-        if (this.keyword.trim() != "") {
+        if (that.keyword.trim() != "") {
+          that.$vux.loading.show({
+            text: 'Loading'
+          })
           keyword = "&keyword=" + that.keyword
-          this.searchpage = 1;
-          this.searchlist = []
 
           var url = "api/vod?page=" + that.searchpage + "&limit=" + that.searchlimit + keyword;
-          console.log(url)
+          // console.log(url)
           that.api_post(url, function (res) {
             console.log(res)
 
-            if (res.page.list.length > 0) {
-              that.searchlist = res.page.list;
-              // setTimeout(() => {
-              that.$refs.scroller1.donePulldown()
+            if (that.searchpage == 1) {
+              that.searchlist = res.page.list
               that.resetsearchtop()
-              // }, 500)
+            } else {
+              for (var i = 0; i < res.page.list.length; i++) {
+                that.searchlist.push(res.page.list[i])
+              }
+              setTimeout(() => {
+                that.$refs.scroller1.donePullup()
+                that.$refs.scroller1.reset()
+              }, 1 * 800)
+
             }
 
+            if (res.page.list.length == 0) {
+              that.$refs.scroller1.disablePullup()
+              if (that.searchpage != 1) {
+                that.searchnodata = true
+              }
+            } else {
+              that.searchnodata = false
+              that.$refs.scroller1.enablePullup()
+            }
+            if (res.page.list.length < that.searchlimit && that.searchpage == 1) {
+              that.$refs.scroller1.disablePullup()
+            }
+            setTimeout(() => {
+              that.$vux.loading.hide()
+            }, 1 * 200)
+
+          }, function (res) {
+            setTimeout(() => {
+              that.$vux.loading.hide()
+            }, 1 * 200)
+            that.$vux.toast.text(res.msg, 'center')
           })
         } else {
           //输入空
+          if (that.searchpage == 1) {
+            that.resetsearchtop()
+          }
         }
-
       }, resetsearchtop() {//回到到顶部
-        that.$refs.scroller1.enablePullup();
-        this.$refs.scroller1.reset({
-          top: 0
-        })
-      }, addsearch() {
-        var page = that.searchpage + 1
-        var url = "api/vod?page=" + page + "&limit=" + that.searchlimit + "&keyword=" + that.keyword;
-        // console.log(url)
-        that.api_post(url, function (res) {
-          var list = that.searchlist
-
-          if (res.page.list.length > 0) {
-            that.searchpage = page
-            for (var i = 0; i < res.page.list.length; i++) {
-              list.push(res.page.list[i])
-            }
-            that.$refs.scroller1.donePullup()
-            that.searchlist = list
-          } else {
-            that.$refs.scroller1.disablePullup()
-          }
-          console.log("NOW:" + that.searchlist.length + "**********ADD:" + res.page.list.length)
-        })
-
+        setTimeout(() => {
+          that.$refs.scroller1.reset({
+            top: 0
+          })
+          that.$refs.scroller1.donePulldown()
+        }, 1 * 800)
       }, histroyshow() {//历史记录
-        this.showhistroy = !this.showhistroy
-        // this.$router.push("histroy", function () {
-        //
-        // })
+        that.showhistroy = !that.showhistroy
       }, buy(list) {// 购买&播放
-        if (!this.clickbuy) {
-          this.clickbuy = true
-          this.current.video = list
-          this.current.vid = list.id
-          if (list.paid) {
-            // 播放
+        if (!that.clickbuy) {
+          that.clickbuy = true
+          that.current.video = list
+          that.current.vid = list.id
+          if (list.paid) {// 播放
             that.Play(list.id);
-          } else {
-            // 购买
-            this.$router.push("buy?id=" + list.id)
+          } else {// 购买
+            that.$router.push("buy?id=" + list.id)
           }
-
-
           setTimeout(() => {
-            this.clickbuy = false
+            that.clickbuy = false
           }, 2000)
         }
       }, detail(list) {//详情
-        if (!this.clickbuy) {//未点击购买
+        if (!that.clickbuy) {//未点击购买
           console.log("详情", list)
-          this.current.video = list
-          this.current.vid = list.id
-          this.$router.push("detail?id=" + list.id, function () {
+          that.current.video = list
+          that.current.vid = list.id
+          that.$router.push("detail?id=" + list.id, function () {
           })
         }
-      }, record() {
-        this.$router.replace("record")
       }
-
-
     }
   }
 </script>
