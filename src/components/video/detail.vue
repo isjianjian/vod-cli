@@ -122,7 +122,7 @@
           this.Play(list.id);
         }else {
           // 购买
-          this.$router.replace({path: '/video/buy', query: {id: list.id}})
+          this.$router.push({path: '/video/buy', query: {id: list.id}})
         }
       }
     }

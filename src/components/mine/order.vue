@@ -220,7 +220,7 @@
         toMovie: function (res){
           console.log("toMovie",res)
           var cmid = res.target.attributes.cmid.value
-          this.$router.replace({ path: '/detail', query: { id: cmid }})
+          this.$router.push({ path: '/detail', query: { id: cmid }})
           //this.$router.push({ path: '/detail', query: { id: cmid }})
         },
         toCancel: function (res){
