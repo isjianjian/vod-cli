@@ -21,7 +21,7 @@ import act from './components/video/act'
 import wallet from './components/mine/wallet/index'
 import balance from './components/mine/wallet/balance'
 import integral from './components/mine/wallet/integral'
-import  aboutindex from './components/mine/about/index'
+import aboutindex from './components/mine/about/index'
 import advice from './components/mine/about/advice'
 import agree from './components/mine/about/agree'
 import about from './components/mine/about/about'
@@ -83,7 +83,7 @@ const routes = [{
   path: '/mine/about/about', component: about, meta: {allowBack: true, title: '关于我们'}
 }, {
   path: '/wel', component: welcome, meta: {allowBack: true, title: '加载中...'}
-},{
+}, {
   path: '/act', component: act, meta: {allowBack: true, title: '加载中...'}
 }, {
   path: '/recharge/msg', component: recharge_msg
@@ -93,8 +93,9 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-   // APPID: 'wxc24d07d05cfea4d3',
-  APPID: 'wxb636c0b09a3fd9d1',
+  // APPID: 'wxc24d07d05cfea4d3',
+  // APPID: 'wxb636c0b09a3fd9d1',
+  APPID: 'wx4c232a8e7d2158ab',
   user: {}
 }
 Vue.prototype.his = {
@@ -103,7 +104,7 @@ Vue.prototype.his = {
   time: 0
 }
 Vue.prototype.common = {
-   // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
+  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
   SERVER_URL: "https://shengvideo.com/hotel_vod/",
   TOKEN: {},
   lastPage: '',
@@ -187,7 +188,16 @@ Vue.prototype.Play = function (sid) {
     that.$vux.toast.text('播放成功！', 'center')
   }, function (res) {
     if (res.code == 100) {
-      that.QRcode()
+      that.$vux.confirm.show({
+        confirmText: "扫描二维码",
+        title: "未认证设备",
+        content: "播放影片时需扫描你所在酒店播放设备显示的二维码",
+        onCancel() {
+        },
+        onConfirm() {
+          that.QRcode()
+        }
+      })
     }
   })
 }

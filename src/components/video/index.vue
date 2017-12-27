@@ -377,7 +377,8 @@
           if (list.paid) {// 播放
             that.Play(list.id);
           } else {// 购买
-            that.$router.push("buy?id=" + list.id)
+            that.$router.push("/video/buy?id=" + list.id)
+
           }
           setTimeout(() => {
             that.clickbuy = false
@@ -388,7 +389,7 @@
           console.log("详情", list)
           that.current.video = list
           that.current.vid = list.id
-          that.$router.push("detail?id=" + list.id, function () {
+          that.$router.push("/detail?id=" + list.id, function () {
           })
         }
       }
