@@ -8,6 +8,10 @@
       padding-top: 10px;padding-bottom: 10px;">
       你已拥有优惠,不能重复获取哦
   </div>
+  <div v-if="state != 402 && state != 1 " style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
+      padding-top: 10px;padding-bottom: 10px;">
+      该优惠已失效
+  </div>
   <div style="margin-top: 80px;" class="weui-cells weui-cells_after-title">
     <div  class="weui-cell">
       <div class="weui-cell__hd">
@@ -28,9 +32,10 @@
       <span><span style="font-weight: 600;font-size: 21px;">{{account.giftseemoney}}</span>元观看</span>
       <img src="../../assets/images/watch.png" style="width: 20px;margin-left:5px;position: relative;top:4px;"/>
   </div>
-  <div v-if="state == 402" class="buy" style="background-color: #3f9de7" v-on:click="detail">
+  <div v-if="state == 402 || state == 401 || state == 400" class="buy" style="background-color: #3f9de7" v-on:click="detail">
     <span>查看详情</span>
   </div>
+
 </div>
 </template>
 
@@ -70,7 +75,7 @@
           buy:function () {
             this.$router.replace('/video/buy?id=' + this.sid)
           },
-          detailfunction () {
+          detail:function () {
             this.$router.replace('/detail?id=' + this.sid)
           }
       }

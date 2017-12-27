@@ -32,7 +32,7 @@
       <div v-bind:class="list.paid?'play':'buy'" v-on:click="buy(list)">
         {{list.paid? "播放":"购买"}}
       </div>
-      <div v-if="!show_share" @click="show_share = true" class="flow">
+      <div v-if="!show_share && list.paid" @click="show_share = true" class="flow">
         <img src="../../assets/images/flow.png" />
       </div>
     </div>
