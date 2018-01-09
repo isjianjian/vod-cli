@@ -39,13 +39,13 @@
                     <div class="weui-flex__item left">
                       订单编号:{{item.billid}}
                     </div>
-                    <div v-if="item.status == 1 && new Date(item.timeExpire) > nowDate" class="weui-flex__item right">
+                    <div v-if="item.status == 1 && !item.isExpire" class="weui-flex__item right">
                       等待付款
                     </div>
                     <div style='color:#00FF00' v-if="item.status == 2 " class="weui-flex__item right">
                       已完成
                     </div>
-                    <div style='color:#D3D3D3' v-if="new Date(item.timeExpire) < nowDate && item.status == 1" class="weui-flex__item right">
+                    <div style='color:#D3D3D3' v-if="item.isExpire && item.status == 1" class="weui-flex__item right">
                       已失效
                     </div>
                   </div>
@@ -74,14 +74,14 @@
                   <div v-if="item.type == 1" >
                     <x-button :cmid='item.cmid' v-on:click.native='toMovie'  type="default" mini plain>影片详情</x-button>
                   </div>
-                  <div v-if="item.status == 1 && new Date(item.timeExpire) < nowDate" >
+                  <div v-if="item.status == 1 && item.isExpire" >
                     <x-button :billid='item.billid' v-on:click.native='toDelete' type="default" mini plain>删除订单</x-button>
                   </div>
-                  <div v-if="item.status == 1 && new Date(item.timeExpire) > nowDate" >
+                  <div v-if="item.status == 1 && !item.isExpire" >
                     <x-button :billid='item.billid' v-on:click.native='toCancel' type="warn" mini plain >取消订单</x-button>
                   </div>
-                  <div v-if="item.status == 1 && new Date(item.timeExpire) > nowDate" >
-                    <x-button v-on:click.native='toPay' :data-bill='item'  type="primary" mini plain >去付款</x-button>
+                  <div v-if="item.status == 1 && !item.isExpire" >
+                    <x-button v-on:click.native='toPay' :data-bill='JSON.stringify(item)'  type="primary" mini plain >去付款</x-button>
                   </div>
                 </div>
               </div>
@@ -182,14 +182,21 @@
           }
           this.api_post(url,function (res) {
             if (that.page == 1){
+              for (var i = 0; i < res.page.list.length;i++){
+                var item = res.page.list[i];
+                item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime()
+              }
               that.list = res.page.list
+
               that.$refs.scroller.reset({
                 top: 0
               })
               that.$refs.scroller.donePulldown()
             }else {
               for (var i = 0; i < res.page.list.length;i++){
-                that.list.push(res.page.list[i])
+                var item = res.page.list[i]
+                item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime()
+                that.list.push(item)
               }
               that.$refs.scroller.donePullup()
               that.$refs.scroller.reset()
@@ -214,22 +221,18 @@
           })
         },
         toPay:function(res){
-          var bill = res.currentTarget.dataset.bill
-          wx.navigateTo({
-            url: "/pages/video/pay/pay?billid=" + bill.billid + "&body=" + bill.body + "&total=" + bill.total + "&timeExpire=" + bill.timeExpire,
-          })
+          var bill = JSON.parse(res.target.dataset.bill)
+          console.log(res,bill);
+          this.$router.push("/video/pay?id=" + bill.billid + "&body=" + bill.body + "&total=" + bill.total + "&timeExpire=" + bill.timeExpire)
         },
         toMovie: function (res){
-          console.log("toMovie",res)
           var cmid = res.target.attributes.cmid.value
           this.$router.push({ path: '/detail', query: { id: cmid }})
           //this.$router.push({ path: '/detail', query: { id: cmid }})
         },
         toCancel: function (res){
-          console.log(res)
           var that = this
           var billid = res.target.attributes.billid.value
-          console.log("billid:",billid)
           this.$vux.confirm.show({
             title: '取消订单?',
             content: '',

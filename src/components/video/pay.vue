@@ -143,7 +143,7 @@
           })
         },
         success:function () {
-          this.show_success == true
+          this.show_success = true
         },
         play:function () {
           this.$router.replace("/detail?id=" + this.cmid);
