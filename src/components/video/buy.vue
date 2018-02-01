@@ -10,7 +10,7 @@
           <span style="color: red">-￥{{preorder.discounts_amount}}</span>
         </div>
       </cell>
-      <x-switch v-model="use_credit" @on-change="use_credits"  :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +
+      <x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +
        '  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"
                 :inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' "
                 prevent-default @on-click="dis"></x-switch>
@@ -49,6 +49,7 @@
   import FormPreview from "vux/src/components/form-preview/index";
   import Popup from "vux/src/components/popup/index";
   import {TransferDom} from 'vux'
+  import JQ from 'jquery';
 
   export default {
     directives: {
@@ -61,25 +62,64 @@
       Flexbox,
       XSwitch,
       Cell,
-      Group
+      Group,
+      JQ
     },
     name: "buy",
     mounted() {
       var that = this
       var sid = this.$router.currentRoute.query.id
-      var url = 'api/vod/preorder?sid=' + sid
-      this.api_post("api/vod/" + sid, function (res) {
-        that.movie = res.data
-        that.api_post(url, function (res) {
-          that.preorder = res.data
-          that.total = that.movie.price
-          if (that.preorder.discounts) {
-            that.total = preorder.discounts_amount
-            that.discounts = that.movie.price - that.total
-          }
+      var pid = this.$router.currentRoute.query.pid
 
-        })
-      })
+      var vurl = that.HOTEL_URL_DAOQI + "/if/movie_detail.php?id=" + pid;
+      // console.log("111111111111111111", url)
+      that.$http.get(vurl).then(function (res) {
+          // console.log("111111111111111111",res)
+
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_detail']");
+          var listtmp = []
+          JQ(styles).each(function (i, e) {
+            // console.log("e", e)
+            var el = {}
+            el.id = JQ(e).find("[name='id']").html()
+            el.lib_id = JQ(e).find("[name='lib_id']").html()
+            el.pic = JQ(e).find("[name='org_poster']").html()
+            el.name = JQ(e).find("[name='name']").html()
+            el.price = JQ(e).find("[name='price']").html()
+
+            listtmp.push(el)
+          })
+          that.movie = listtmp[0]
+
+        var url = 'api/vod/preorder?sid=' + sid
+        // console.log(url);
+        that.api_post(url, function (res) {
+            // console.log(res)
+            that.preorder = res.data
+            that.total = that.movie.price
+            if (that.preorder.discounts) {
+              that.total = preorder.discounts_amount
+              that.discounts = that.movie.price - that.total
+            }
+
+          }, function (res) {
+            if (res.code == 202) {
+              that.$vux.toast.show("未绑定手机号")
+
+              setTimeout(function () {
+                that.$router.push("/mine/phone")
+              }, 1500)
+
+            } else {
+              that.$vux.toast.text(res.msg, "center")
+            }
+          })
+
+
+        }
+      )
+
+
 
 
     },
@@ -134,7 +174,7 @@
       order: function () {
         var that = this
         console.log('提交订单')
-        var url = 'api/vod/order?sid=' + this.movie.id
+        var url = 'api/vod/order?sid=' + this.movie.lib_id
         if (this.use_credit) {
           url += '&credits=' + this.preorder.can_use_credits
         } else {
@@ -143,7 +183,14 @@
         this.api_post(url, function (res) {
             console.log(res)
             var data = res.data
-            var query = {id: data.id, body: data.body, total: data.total, timeExpire: data.timeExpire, cmid: data.comdId}
+            var query = {
+              id: data.id,
+              body: data.body,
+              total: data.total,
+              timeExpire: data.timeExpire,
+              cmid: data.comdId,
+              lib_id: that.movie.lib_id
+            }
             that.$router.replace({path: '/video/pay', query: query})
 
           },
@@ -152,7 +199,7 @@
               that.$vux.confirm.show({
                 confirmText: "扫描二维码",
                 title: "未认证设备",
-                content: "购买影片时需扫描你所在酒店播放设备显示的二维码",
+                content: "购买影片时需扫描你所在酒店播放/设备显示的二维码",
                 onCancel() {
                 },
                 onConfirm() {
@@ -189,8 +236,10 @@
         if (this.preorder.credits < this.preorder.can_use_credits) {
           console.log(newVal, oldVal)
           this.$vux.toast.text("积分不足", 'center')
+          return
           // this.use_credit = false
         }
+        this.use_credit = !this.use_credit
       },
       use_credits: function (res) {
 
@@ -218,7 +267,8 @@
           text: 'Loading'
         })
         var that = this;
-        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid
+        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.openId
+          + "&token=" + this.common.TOKEN.token + "&tokenType=1"
         this.$http.post(url).then(function (res) {
           console.log(res.data.code)
           if (res.data.code == '0') {

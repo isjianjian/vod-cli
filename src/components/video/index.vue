@@ -4,10 +4,11 @@
 
       <flexbox class="top">
         <search ref="search" placeholder="输入片名、主演或导演" @on-change="setkeyword"
-                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide"></search>
+                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
+        </search>
 
-        <div v-bind:hidden="showsearch" class="histroy_btn" v-on:click="histroyshow"/>
-
+        <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
+             v-on:click="histroyshow"/>
       </flexbox>
       <!--分类-->
       <scroller v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
@@ -28,7 +29,7 @@
                 style="position:absolute;width: 100%;top: 81px;">
         <div>
           <div v-if="vodlist.length == 0" class='loading'>
-              <span style='color:#B6B6B6'>
+              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
           </div>
@@ -53,7 +54,7 @@
                     {{item.cName}}
                   </div>
                   <div class='time'>
-                    <div>时长:{{item.length}}分钟</div>
+                    <div>{{item.length}}</div>
                     <div class='price'>{{item.price}}
                       <span style='font-size:12px'>元</span>
                     </div>
@@ -62,7 +63,8 @@
                     主演:{{item.act}}
                   </div>
                 </div>
-                <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
+                <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                  {{item.paid?'播放':'购买'}}
                 </div>
               </div>
             </div>
@@ -95,7 +97,7 @@
 
         <div>
           <div v-if="searchlist.length == 0" class='loading'>
-              <span style='color:#B6B6B6'>
+              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
           </div>
@@ -121,7 +123,7 @@
                     {{item.cName}}
                   </div>
                   <div class='time'>
-                    <div>时长:{{item.length}}分钟</div>
+                    <div>{{item.length}}</div>
                     <div class='price'>{{item.price}}
                       <span style='font-size:12px'>元</span>
                     </div>
@@ -130,7 +132,8 @@
                     主演:{{item.act}}
                   </div>
                 </div>
-                <div v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">{{item.paid?'播放':'购买'}}
+                <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                  {{item.paid?'播放':'购买'}}
                 </div>
               </div>
             </div>
@@ -152,6 +155,7 @@
   import Toast from "vux/src/components/toast/index";
   import ViewBox from "vux/src/components/view-box/index";
   import LoadMore from "vux/src/components/load-more/index";
+  import JQ from 'jquery';
 
   var that
   export default {
@@ -170,7 +174,8 @@
       XInput,
       Scroller,
       TabItem,
-      Tab
+      Tab,
+      JQ,
     }, data() {
       return {
         nodata: false,
@@ -206,84 +211,150 @@
 
 
         showsearch: false,
+
         keyword: '',
         searchpage: 1,
         searchlimit: 6,
         showhistroy: false,
 
         clickbuy: false,
+
+        histroy_n: '',
+        histroy_p: '',
+
+
       }
     }, mounted() {
-      that = this
-      // console.log("电影分类", that.common.SERVER_URL + "api/vod/classify?openid=" + that.wxinfo.user.unionId)
-      var url = "api/vod/classify"
-      console.log(url)
-      that.api_post(url, function (res) {
-        console.log(res)
-        that.catlist = res.page.list
-        // console.log("电影分类", that.catlist)
-        that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
-        that.recat(that.catlist[0])
-      })
 
+      that = this
+0
+
+      // console.log("电影分类", that.common.SERVER_URL + "api/vod/classify?openid=" + that.wxinfo.user.openId)
+      // var url = "api/vod/classify"
+      // console.log(url)
+      // that.api_post(url, function (res) {
+      //   // console.log(res)
+      //   that.catlist = res.page.list
+      //   // console.log("电影分类", that.catlist)
+      //   that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
+      //   that.recat(that.catlist[0])
+      // })
+      that.getcat()
     }, methods: {
+      getcat() {
+
+        // var url = "http://cms.kfg365.com/if/movie_home.php";
+        var url = that.HOTEL_URL_DAOQI + "/if/movie_home.php"
+        // console.log(url)
+        that.$http.get(url).then(function (res) {
+            // var cc = JQ(res.bodyText.replace(/param/g, "p")).find("p[name='code']");
+            // console.log("111111111111111111",cc)
+
+            var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='home_tag'] entry");
+            var list = []
+            var el = {id: '', name: "全部"}
+
+            list.push(el)
+            JQ(styles).each(function (i, e) {
+              // console.log("e", e)
+              var el = {}
+              // console.log("  JQ(e).find(\"[name='id']\")", JQ(e))
+              el.id = JQ(e).find("[name='id']").html()
+              el.name = JQ(e).find("[name='name']").html()
+              list.push(el)
+            })
+            that.catlist = list
+            that.cat_width = that.catlist.length * 65 > window.innerWidth ? that.catlist.length * 65 : window.innerWidth
+
+            that.recat(that.catlist[0])
+
+            // console.log("list", that.catlist)
+
+          }, function (res) {
+
+          }
+        )
+
+      },
+
+
       recat(list) {//重置分类
-        var cid = list.id
-        if (cid != null) {
-          that.cid = "&cid=" + cid
+        if (list.id != null) {
+          that.cid = "&tid=" + list.id
           that.revideo(list)
+        } else {
+          that.cid = "";
         }
       }, revideo(list) {//点击分类初始化列表
         that.page = 1;
         that.getvideo()
       }, resetvideotop() {//回到到顶部
+        // console.log("*****", that.$refs.scroller)
         setTimeout(() => {
           that.$refs.scroller.reset({
             top: 0
           })
           that.$refs.scroller.donePulldown()
-        }, 1 * 800)
+        }, 1 * 500)
       }, getvideo() {
+
         that.$vux.loading.show({
           text: 'Loading'
         })
-        var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
-        that.api_post(url, function (res) {
+        // var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
+        // var url = "http://cms.kfg365.com/if/movie_list.php";
+
+        var url = that.HOTEL_URL_DAOQI + "/if/movie_list.php?page=" + that.page + "&pagesize=" + that.limit + that.cid
+        // console.log(url)
+        that.$http.get(url).then(function (res) {
+
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='movie_list'] entry")
+          var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_list']").find("[name='base']").html()
+
+
+          var list = []
+          JQ(styles).each(function (i, e) {
+            var el = {}
+            el.id = JQ(e).find("[name='movie_id']").html()//影片id
+            el.lib_id = JQ(e).find("[name='lib_id']").html()//影片lib_id
+            el.pic = host + JQ(e).find("[name='img_list']").html()//海报
+            el.name = JQ(e).find("[name='name']").html()//影片名称
+            el.playAmount = 0//播放次数
+            el.cName = JQ(e).find("[name='tname_list']").html()//分类名
+            el.length = JQ(e).find("[name='publish']").html()//时长年份
+            el.price = 0//价格
+            el.act = JQ(e).find("[name='actor']").html()//演员
+            el.director = JQ(e).find("[name='director']").html()//导演
+            list.push(el)
+          })
+
           if (that.page == 1) {
-            that.vodlist = res.page.list
+            that.vodlist = list
             that.resetvideotop()
           } else {
-            for (var i = 0; i < res.page.list.length; i++) {
-              that.vodlist.push(res.page.list[i])
+            for (var i = 0; i < list.length; i++) {
+              that.vodlist.push(list[i])
             }
-            setTimeout(() => {
-              that.$refs.scroller.donePullup()
-              that.$refs.scroller.reset()
-            }, 1 * 800)
-
+            that.$refs.scroller.donePullup()
+            that.$refs.scroller.reset()
           }
+          // console.log(that.vodlist)
 
-          if (res.page.list.length == 0) {
+          if (that.page != 1) {
+            that.nodata = true
+          }
+          if (list.length < that.limit) {
             that.$refs.scroller.disablePullup()
-            if (that.page != 1) {
-              that.nodata = true
-            }
-          } else {
+          } else if (list.length == that.limit) {
             that.nodata = false
             that.$refs.scroller.enablePullup()
           }
-          if (res.page.list.length < that.limit && that.page == 1) {
-            that.$refs.scroller.disablePullup()
-          }
-          setTimeout(() => {
-            that.$vux.loading.hide()
-          }, 1 * 200)
 
+
+          that.$vux.loading.hide()
         }, function (res) {
-          setTimeout(() => {
-            that.$vux.loading.hide()
-          }, 1 * 200)
-          that.$vux.toast.text(res.msg, 'center')
+          that.$vux.loading.hide()
+          that.resetvideotop()
         })
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
@@ -294,12 +365,17 @@
         if (that.searchlist.length < that.searchlimit && that.searchpage == 1) {
           that.$refs.scroller1.disablePullup()
         }
-      }, searchhide() {//输入框失去焦点
+      }, searchhide() {//点击取消
         that.showsearch = false
       }, setkeyword(res) {//输入关键词
         that.keyword = res
+        that.research2()
       }
       , research() {//搜索下拉刷新
+        this.$refs.search.setBlur()
+        that.searchpage = 1
+        that.getsearch()
+      }, research2() {//搜索下拉刷新
         that.searchpage = 1
         that.getsearch()
       }, addsearch() {//搜索上拉加载更多
@@ -311,55 +387,68 @@
           that.$vux.loading.show({
             text: 'Loading'
           })
-          keyword = "&keyword=" + that.keyword
 
-          var url = "api/vod?page=" + that.searchpage + "&limit=" + that.searchlimit + keyword;
-          // console.log(url)
-          that.api_post(url, function (res) {
-            console.log(res)
+          // var url = "http://cms.kfg365.com/if/movie_list.php";
+          var url = that.HOTEL_URL_DAOQI + "/if/movie_list.php?page=" + that.searchpage + "&pagesize=" +
+            that.searchlimit + "&keyword=" + that.keyword
+          console.log(url)
+          that.$http.get(url).then(function (res) {
+
+            var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='movie_list'] entry")
+            var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_list']").find("[name='base']").html()
+
+            var list = []
+            JQ(styles).each(function (i, e) {
+              var el = {}
+              el.id = JQ(e).find("[name='movie_id']").html()//影片id
+              el.lib_id = JQ(e).find("[name='lib_id']").html()//影片lib_id
+              el.pic = host + JQ(e).find("[name='img_list']").html()//海报
+              el.name = JQ(e).find("[name='name']").html()//影片名称
+              el.playAmount = 0//播放次数
+              el.cName = JQ(e).find("[name='tname_list']").html()//分类名
+              el.length = JQ(e).find("[name='publish']").html()//时长年份
+              el.price = 0//价格
+              el.act = JQ(e).find("[name='actor']").html()//演员
+              el.director = JQ(e).find("[name='director']").html()//导演
+              list.push(el)
+            })
 
             if (that.searchpage == 1) {
-              that.searchlist = res.page.list
+              that.searchlist = list
               that.resetsearchtop()
             } else {
-              for (var i = 0; i < res.page.list.length; i++) {
-                that.searchlist.push(res.page.list[i])
+              for (var i = 0; i < list.length; i++) {
+                that.searchlist.push(list[i])
               }
-              setTimeout(() => {
-                that.$refs.scroller1.donePullup()
-                that.$refs.scroller1.reset()
-              }, 1 * 800)
+              that.$refs.scroller1.donePullup()
+              that.$refs.scroller1.reset()
 
             }
-
-            if (res.page.list.length == 0) {
+            if (that.searchpage != 1) {
+              that.searchnodata = true
+            }
+            if (list.length < that.searchlimit) {
               that.$refs.scroller1.disablePullup()
-              if (that.searchpage != 1) {
-                that.searchnodata = true
-              }
-            } else {
+            } else if (list.length == that.searchlimit) {
               that.searchnodata = false
               that.$refs.scroller1.enablePullup()
             }
-            if (res.page.list.length < that.searchlimit && that.searchpage == 1) {
-              that.$refs.scroller1.disablePullup()
-            }
-            setTimeout(() => {
-              that.$vux.loading.hide()
-            }, 1 * 200)
 
+            that.$vux.loading.hide()
           }, function (res) {
-            setTimeout(() => {
-              that.$vux.loading.hide()
-            }, 1 * 200)
-            that.$vux.toast.text(res.msg, 'center')
+            that.resetsearchtop()
+            that.$vux.loading.hide()
           })
+
+
         } else {
           //输入空
           if (that.searchpage == 1) {
             that.resetsearchtop()
           }
         }
+
+
       }, resetsearchtop() {//回到到顶部
         setTimeout(() => {
           that.$refs.scroller1.reset({
@@ -367,9 +456,19 @@
           })
           that.$refs.scroller1.donePulldown()
         }, 1 * 800)
-      }, histroyshow() {//历史记录
+      }
+      ,
+      histroyshow() {//历史记录
+        console.log(that.$refs.histroy)
         that.showhistroy = !that.showhistroy
-      }, buy(list) {// 购买&播放
+        // if (that.showhistroy) {
+        //   that.$refs.menu.class = 'histroy_btn_p'
+        // } else {
+        //   that.$refs.menu.class = 'histroy_btn_n'
+        // }
+      }
+      ,
+      buy(list) {// 购买&播放
         if (!that.clickbuy) {
           that.clickbuy = true
           that.current.video = list
@@ -377,19 +476,22 @@
           if (list.paid) {// 播放
             that.Play(list.id);
           } else {// 购买
-            that.$router.push("/video/buy?id=" + list.id)
+            that.$router.push("/video/buy?id=" + list.lib_id)
 
           }
           setTimeout(() => {
             that.clickbuy = false
           }, 2000)
         }
-      }, detail(list) {//详情
+      }
+      ,
+      detail(list) {//详情
+        // console.log(list.lib_id)
         if (!that.clickbuy) {//未点击购买
-          console.log("详情", list)
+          // console.log("详情", list)
           that.current.video = list
-          that.current.vid = list.id
-          that.$router.push("/detail?id=" + list.id, function () {
+          that.current.vid = list.lib_id
+          that.$router.push("/detail?id=" + list.lib_id, function () {
           })
         }
       }

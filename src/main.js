@@ -14,6 +14,7 @@ import discounts from './components/video/discounts'
 import room from './components/room/index'
 import shop from './components/shop/index'
 import mine from './components/mine/index'
+import phone from './components/mine/phone'
 import detail from './components/video/detail'
 import buy from './components/video/buy'
 import pay from './components/video/pay'
@@ -29,9 +30,17 @@ import recharge from './components/mine/wallet/recharge'
 import order from './components/mine/order'
 import welcome from './components/welcome'
 import recharge_msg from './components/mine/wallet/msg'
+import ctrl from './components/video/ctrl'
+import daoqictrl from './components/video/daoqictrl'
+import hotel from './components/video/hotel'
+import qqmap from './components/video/qqmap'
+import gaodemap from './components/video/gaodemap'
+
 
 import {WechatPlugin, LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux'
 import {ConfirmPlugin} from 'vux'
+
+var that = this
 
 Vue.use(ConfirmPlugin)
 Vue.use(VueRouter)
@@ -40,6 +49,39 @@ Vue.use(WechatPlugin)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(AlertPlugin)
+
+
+//cc00166beabccb5ea6cc80df6f1ebd4b
+
+import VueAMap from 'vue-amap';
+
+Vue.use(VueAMap);
+VueAMap.initAMapApiLoader({
+  key: 'cc00166beabccb5ea6cc80df6f1ebd4b',
+  plugin: ['AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType'],
+  uiVersion: '1.0.11' // 版本号
+});
+
+// let createMap = () => {
+//   const promise = new Promise(function (resolve, reject) {
+//     let script = document.createElement('script')
+//     script.type = 'text/javascript'
+//     script.src = 'http://webapi.amap.com/maps?v=1.4.3&key=cc00166beabccb5ea6cc80df6f1ebd4b'   // 高德地图
+//     document.body.appendChild(script)
+//     if (script.nodeName === 'SCRIPT') {
+//       resolve()
+//     } else {
+//       reject(new Error('Could not script image at ' + script.src))
+//     }
+//   })
+//   return promise
+// }
+// createMap().then(function () {
+//   console.log('读取高德地图成功')
+//
+// }).catch(function (error) {
+//   console.log('发生错误！', error)
+// })
 
 const routes = [{
   path: '/',
@@ -73,29 +115,42 @@ const routes = [{
     {path: 'integral', component: integral, meta: {allowBack: true, title: '积分'}},
     {path: 'recharge', component: recharge, meta: {allowBack: true, title: '充值'}}
   ], meta: {allowBack: true, title: '我的钱包'}
-}, {
+}, {path: '/mine/phone', component: phone, meta: {allowBack: true, title: '验证'}}, {
   path: '/mine/about/index', component: aboutindex, meta: {allowBack: true, title: '关于我们'}
 }, {
   path: '/mine/about/advice', component: advice, meta: {allowBack: true, title: '意见反馈'}
 }, {
-  path: '/mine/about/agree', component: agree, meta: {allowBack: true, title: '服务条款'}
+  path: '/mine/about/agree', component: agree, meta: {allowBack: true, title: '功能建设中'}
 }, {
   path: '/mine/about/about', component: about, meta: {allowBack: true, title: '关于我们'}
 }, {
   path: '/wel', component: welcome, meta: {allowBack: true, title: '加载中...'}
 }, {
-  path: '/act', component: act, meta: {allowBack: true, title: '加载中...'}
+  path: '/act', component: act, meta: {allowBack: true, title: '优惠'}
 }, {
   path: '/recharge/msg', component: recharge_msg
 }, {
   path: '/video/pay', component: pay, meta: {allowBack: true, title: '支付'}
-}]
+}, {
+  path: '/video/ctrl', component: ctrl, meta: {allowBack: true, title: '播放控制'}
+}, {
+  path: '/video/daoqictrl', component: daoqictrl, meta: {allowBack: true, title: '播放控制'}
+}, {
+  path: '/video/hotel', component: hotel, meta: {allowBack: true, title: '附近酒店'}
+}, {
+  path: '/video/qqmap', component: qqmap, meta: {allowBack: true, title: '地图'}
+}, {
+  path: '/video/gaodemap', component: gaodemap, meta: {allowBack: true, title: '高德地图'}
+}
+
+]
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-  // APPID: 'wxc24d07d05cfea4d3',
-  // APPID: 'wxb636c0b09a3fd9d1',
-  APPID: 'wx4c232a8e7d2158ab',
+  // APPID: 'wxc24d07d05cfea4d3',//lv
+  // APPID: 'wxb636c0b09a3fd9d1',//zhu
+  // APPID: 'wx4c232a8e7d2158ab',//公司
+  APPID: 'wx23186818f05e0eeb',//广州
   user: {}
 }
 Vue.prototype.his = {
@@ -104,24 +159,33 @@ Vue.prototype.his = {
   time: 0
 }
 Vue.prototype.common = {
-  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",
-  SERVER_URL: "https://shengvideo.com/hotel_vod/",
+
+  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",//lv
+  // SERVER_URL: "http://192.168.2.8:8080/hotel_vod/",//zhu
+  // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
+  SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  // SERVER_URL: "http://192.168.44.121:8080/hotel_vod/",//调试
   TOKEN: {},
   lastPage: '',
-  wxinit: false
+  wxinit: false,
+  dqurl: "",
+  playvideo: {},
 }
 Vue.prototype.current = {
   video: {},
+  vid: 0,
 }
 Vue.prototype.api_post = function (url, success, fail) {
+
   if (new Date() > this.common.TOKEN.expireTime) {
     window.location.reload()
   }
   if (url.indexOf("?") == -1) {
     url += "?now_time=" + new Date().getTime()
   }
-  var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.unionId
+  var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.openId
     + "&token=" + this.common.TOKEN.token + "&tokenType=1"
+  // console.log(local_url)
   this.$http.post(local_url)
     .then(function (res) {
       if (res.data.code == 0) {
@@ -130,11 +194,11 @@ Vue.prototype.api_post = function (url, success, fail) {
         if (fail != null) {
           fail(res.data)
         } else {
-          this.$vux.toast.text(res.data.msg, 'center')
+          that.$vux.toast.text(res.data.msg, 'center')
         }
       }
     }, function (res) {
-      this.$vux.toast.text('连接失败，请检查网络', 'center')
+      that.$vux.toast.text('连接失败，请检查网络', 'center')
     })
 
 }
@@ -145,7 +209,7 @@ Vue.prototype.getUrlKey = function (name) {
 }
 
 Vue.prototype.QRcode = function () {
-  var that = this
+  var tt = this
   this.$wechat.scanQRCode({
     needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
     scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
@@ -153,51 +217,49 @@ Vue.prototype.QRcode = function () {
       var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
       console.log("result", result)
       try {
-        var obj = JSON.parse(result);
-        if (obj.mac == null) {
-          that.$vux.toast.text('错误二维码', 'center')
-          return
-        }
-        if (new Date().getTime() - obj.time > 2 * 60 * 60 * 1000) {
-          that.$vux.toast.text('二维码已失效', 'center')
-          return
-        }
-        that.api_post("api/vod/bind?mac=" + obj.mac, function (res) {
-          that.$vux.alert.show({
-            title: '认证成功',
-            content: '播放设备已认证,您可以继续之前的操作',
-            onShow() {
-            },
-            onHide() {
-            }
-          })
-        })
 
+        tt.ws = this.getQueryString("ws")
+        tt.sn = this.getQueryString("sn")
+        tt.HOTEL_URL_DAOQI = "http://" + this.getQueryString("hs")
+        tt.hotelid = this.getQueryString("hotelid")
+        tt.roomid = this.getQueryString("roomid")
+        tt.bindroom()
       } catch (e) {
-        that.$vux.toast.text('错误二维码', 'center')
+        tt.$vux.toast.text('错误二维码', 'center')
       }
 
     }
   });
 }
 
-Vue.prototype.Play = function (sid) {
-  var that = this
-  var url = "api/vod/play?sid=" + sid;
+// openid  会员openid
+// sid    资源id
+// type   资源类型 默认点播
+// dimensions   2d/3d       1.2d,2.3d  默认2d
+// localhost:8080/hotel_vod/api/vod/play?openid=123&sid=123456
+//   返回：data  上次播放位置
+// 错误代码: 100 未绑定, 110 未支付
+Vue.prototype.Play = function (sid, dimensions, list) {
+  var tt = this
+  var url = "api/vod/play?sid=" + sid + "&dimensions=" + dimensions;
   this.api_post(url, function (res) {
-    that.$vux.toast.text('播放成功！', 'center')
+    tt.$vux.toast.text('播放成功！', 'center')
+    tt.$router.push("/video/daoqictrl?restype=1&seekto=" + res.lastPoint)
   }, function (res) {
     if (res.code == 100) {
-      that.$vux.confirm.show({
+      tt.$vux.confirm.show({
         confirmText: "扫描二维码",
         title: "未认证设备",
         content: "播放影片时需扫描你所在酒店播放设备显示的二维码",
         onCancel() {
         },
         onConfirm() {
-          that.QRcode()
+          tt.QRcode()
         }
       })
+
+    } else {
+      tt.$vux.toast.text(res.msg + ":" + tt.roomid, 'center')
     }
   })
 }
@@ -208,21 +270,91 @@ const router = new VueRouter({
 })
 
 
+Vue.prototype.ws = this.getQueryString("ws")
+Vue.prototype.sn = this.getQueryString("sn")
+Vue.prototype.HOTEL_URL_DAOQI = "http://" + this.getQueryString("hs")
+Vue.prototype.hotelid = this.getQueryString("hotelid")
+Vue.prototype.roomid = this.getQueryString("roomid")
+
+
+export function getQueryString(name) {
+  let reg = `(^|&)${name}=([^&]*)(&|$)`
+  let r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    var value = unescape(r[2]);
+    return value
+  } else {
+    return "";
+  }
+}
+
+Vue.prototype.bindroom = function () {
+  var tt = this
+
+
+  if (this.roomid == "") {
+    tt.$vux.confirm.show({
+      confirmText: "扫描二维码",
+      title: "未绑定播放设备",
+      content: "播放影片时需扫描你所在酒店播放设备显示的二维码",
+      onCancel() {
+      },
+      onConfirm() {
+        that.QRcode()
+      }
+    })
+    return
+  } else {
+    this.api_post("api/vod/bind?mac=" + this.roomid, function (res) {
+      tt.$vux.toast.text('绑定设备成功', 'center')
+      setTimeout(function (res) {
+        tt.ws = ""
+        tt.sn = ""
+        tt.hotelid = ""
+        tt.roomid = ""
+      }, 3 * 60 * 60 * 1000)
+      // }, 5 * 1000)
+    }, function (res) {
+      // console.log("+++++++++++++++++++++++++++++",res)
+      tt.$vux.confirm.show({
+        confirmText: "重新认证",
+        title: res.msg,
+        content: "是否重新认证：房间号" + tt.roomid,
+        onCancel() {
+        },
+        onConfirm() {
+          tt.bindroom()
+        }
+      })
+
+    })
+  }
+
+}
+
+
+// export function QrString(url, name) {
+//   let reg = `(^|&)${name}=([^&]*)(&|$)`
+//   let r = url.search.substr(1).match(reg);
+//   if (r != null) {
+//     var value = unescape(r[2]);
+//     return value
+//   } else {
+//     return "";
+//   }
+// }
+
 router.beforeEach((to, from, next) => {
-  // console.log("to", to.path)
-  // console.log("from", from.path)
-
   window.document.title = to.meta.title;
-
-
-  if (router.app.wxinfo.user.unionId == null && to.path != "/wel") {
+  if (router.app.wxinfo.user.openId == null && to.path != "/wel") {
     console.log("替换:", to.path)
     router.app.common.lastPage = to.fullPath;
     router.app.common.lastUrl = window.location.href;
     next({path: "/wel"})
-
+    // alert("111111111111111")
   } else {
-    if (to.path == "/wel" && router.app.wxinfo.user.unionId != null) {
+    // alert("2222222222222222")
+    if (to.path == "/wel" && router.app.wxinfo.user.openId != null) {
       next({path: "/"})
       return
     }
@@ -250,6 +382,8 @@ router.beforeEach((to, from, next) => {
     router.app.his.from = from.path
     router.app.his.to = to.path
     router.app.his.time = new Date().getTime()
+
+    // this.checkPlatform()
   }
 
   // store.dispatch('updateAppSetting', {
@@ -267,3 +401,21 @@ new Vue({
   render: h => h(App)
 }).$mount('#app-box')
 
+
+// function checkPlatform(){
+//   if(/android/i.test(navigator.userAgent)){
+//     document.write("This is Android'browser.");//这是Android平台下浏览器
+//   }
+//   if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)){
+//     document.write("This is iOS'browser.");//这是iOS平台下浏览器
+//   }
+//   if(/Linux/i.test(navigator.userAgent)){
+//     document.write("This is Linux'browser.");//这是Linux平台下浏览器
+//   }
+//   if(/Linux/i.test(navigator.platform)){
+//     document.write("This is Linux operating system.");//这是Linux操作系统平台
+//   }
+//   if(/MicroMessenger/i.test(navigator.userAgent)){
+//     document.write("This is MicroMessenger'browser.");//这是微信平台下浏览器
+//   }
+// }

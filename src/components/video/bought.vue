@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <scroller :pulldown-config="downconfig"
@@ -19,7 +18,7 @@
                   <div>{{item.name}}</div>
                 </flexbox-item>
                 <flexbox-item>
-                  <div  class="star">购买时间：{{item.buyTime}}</div>
+                  <div class="star">购买时间：{{item.buyTime}}</div>
 
                 </flexbox-item>
                 <flexbox-item>
@@ -79,9 +78,9 @@
         that.api_post(url, function (res) {
           console.log(res)
           var list = res.vodBuyRecords
-          for (var i = 0; i < list.length; i++) {
-
-          }
+          // for (var i = 0; i < list.length; i++) {
+          //
+          // }
           that.vodlist = list
 
           that.resetvideotop()
@@ -90,7 +89,7 @@
         setTimeout(() => {
 
           that.$refs.scroller.donePulldown()
-          this.$refs.scroller.reset({
+          that.$refs.scroller.reset({
             top: 0
           })
         }, 1000)
@@ -102,8 +101,10 @@
         // this.$router.push("detail?id=" + list.id, function () {
         // })
         that.play(list);
-      },play(list){
-        that.Play(list.id);
+      }, play(list) {
+        var id =list.id % 10000000000
+        // that.Play(id);
+        this.$router.push({path: '/detail', query: {id: id}})
       }
 
 

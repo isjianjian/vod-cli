@@ -4,8 +4,9 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const vuxLoader = require('vux-loader')
+// var webpack = require("webpack")
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -70,6 +71,15 @@ let webpackConfig = {
 
 
 module.exports = vuxLoader.merge(webpackConfig, {
-  plugins: ['vux-ui', 'progress-bar', 'duplicate-style']
+  plugins: ['vux-ui', 'progress-bar', 'duplicate-style',
+
+    // new webpack.optimize.CommonsChunkPlugin('common.js'),
+    // new webpack.ProvidePlugin({
+    //   jQuery: "jquery",
+    //   $: "jquery"
+    // })
+  ]
+
 })
+
 

@@ -166,7 +166,7 @@ localhost:8080/hotel_vod/api/vod/playRecord?openid=123&tokenUserId=1&tokenType=1
 openid   会员openid
 
 
-localhost:8080/hotel_vod/api/vod/buySource?openid=123&tokenUserId=1&tokenType=1
+localhost:8080/hotel_vod/api/vod/buySource?openid=123&tokenType=1
 
 返回：List<VodBuyRecord> vodBuyRecords    购买记录
 
@@ -262,3 +262,26 @@ status 订单状态 1.未支付 2.已支付  (可选 默认全部)
 limit    每页数量
 page     页码
 http://192.168.2.2:8080/hotel_vod/api/bill?openid=oMH3q0Nw7Squr91CqjFi8ITCRgOQ&status=2
+-------------------------------------------------------------------
+增加推送记录
+openid 会员id
+tsid 推送者id
+sid    资源id
+http://192.168.2.2:8080/hotel_vod/api/tuisong/add
+-------------------------------------------------------------------
+socket密令转发
+openid 会员id
+ml 密令
+http://192.168.2.2:8080/hotel_vod/api/ml
+-------------------------------------------------------------------
+绑定手机号
+openid 会员id
+telPhone 手机号
+sendCode  验证码
+http://192.168.2.2:8080/hotel_vod/api/phone/bind
+-------------------------------------------------------------------
+附近的酒店
+openid 会员id
+lon 经度
+lat  纬度
+http://192.168.2.2:8080/hotel_vod/api/hotel/nearby

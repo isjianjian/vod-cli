@@ -81,19 +81,13 @@
         this.keyword = res
       }
       , ok() {
-
+        var that=this
         var keyword = ""
         if (this.keyword.trim() != "") {//关键字搜索
           keyword = "&keyword=" + this.keyword
-
-          this.$http.post(this.common.SERVER_URL + "api/vod?openid=" + this.wxinfo.user.unionId + "&page=" + this.page + "&limit=" + this.limit + keyword)
-            .then(function (res) {
-              if (res.data.code == 0) {
-                this.vodlist = res.data.page.list
-              } else {
-
-              }
-            })
+          this.api_post( "api/vod?page=" + this.page + "&limit=" + this.limit + keyword,function (res) {
+            that.vodlist = res.page.list
+          })
         } else {
           //输入空
         }

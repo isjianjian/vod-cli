@@ -49,8 +49,18 @@
   background-repeat: no-repeat;
   background-position: center;
 }
-
 .histroy_btn:active {
+  border-left: 1px solid #efeff4;
+  width: 20px;
+  height: 20px;
+  padding: 8px;
+  background: url("../../assets/images/menu_p.png");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.histroy_btn_p {
   border-left: 1px solid #efeff4;
   width: 20px;
   height: 20px;
@@ -92,6 +102,10 @@
 
 .name {
   display: flex;
+  max-width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .name div {
