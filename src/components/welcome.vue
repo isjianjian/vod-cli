@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!--<load-more :show-loading="false" tip="别着急!!! 先看看广告" background-color="#fbf9fe"></load-more>-->
+    <load-more :show-loading="false" tip="正在启动" background-color="#fbf9fe"></load-more>
   </div>
 </template>
 
 <script>
   import LoadMore from "vux/src/components/load-more/index";
-
+  // import  logo from "src/assets/images/logo.jpg";
   export default {
     components: {LoadMore},
     name: "welcome"
