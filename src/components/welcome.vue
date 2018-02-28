@@ -30,8 +30,8 @@
             this.wxinfo.user = res.data.data;
             this.common.TOKEN = res.data.token;
             this.common.TOKEN.expireTime = new Date(new Date().getTime() + (this.common.TOKEN.expire * 1000) - 60 * 1000);
-            // var roomid = that.roomid;
-            var roomid = localStorage.getItem("roomid");
+             var roomid = that.roomid;
+            //var roomid = localStorage.getItem("roomid");
             if (roomid == null) {
 
               this.api_post("api/bind/vi", function (res) {

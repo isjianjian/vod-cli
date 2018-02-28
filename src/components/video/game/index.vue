@@ -5,8 +5,8 @@
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="relist"
                 @on-pullup-loading="addlist"
-                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-30" lock-x :scrollbar-x=false
-                :scrollbar-y=false>
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-40" lock-x :scrollbar-x=false
+                :scrollbar-y=false  style="padding-bottom: 20px;">
        <div>
          <div v-if="gamelist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
@@ -14,29 +14,18 @@
               </span>
          </div>
          <flexbox :gutter="0" wrap="wrap">
-           <flexbox-item :span="1/2"  v-for="(list,index) in gamelist" style="text-align: center;" >
-             <img class="gameicon" src="http://img1.imgtn.bdimg.com/it/u=594559231,2167829292&fm=27&gp=0.jpg" style=""></img>
+           <flexbox-item :span="1/2"  v-for="(list,index) in gamelist" style="text-align: center;" @click.native="toplay(list)">
+             <img class="gameicon" :src="list.img_list"   ></img>
              <div style="vertical-align: bottom;">
              {{list.name}}
              </div>
            </flexbox-item>
          </flexbox>
-
-         <!--<grid :cols="2" style="border: 0;">-->
-           <!--<grid-item v-for="(list,index) in gamelist"   style="text-align: center;" @click.native="toplay(list)" >-->
-             <!--<img src="https://www.baidu.com/img/baidu_jgylogo3.gif"></img>-->
-             <!--<div style="vertical-align: bottom;">-->
-               <!--{{list.name}}-->
-             <!--</div>-->
-
-           <!--</grid-item>-->
-         <!--</grid>-->
-         <!--<cell  :title="(index+1)+'.'+list.name" @click.native="toplay(list)"  is-link>-->
-         <!--</cell>-->
-
        </div>
-        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+        <divider v-if="nodata">我是有底线的</divider>
+        <!--<load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>-->
       </scroller>
+
     </view-box>
   </div>
 </template>
@@ -53,8 +42,10 @@
   import LoadMore from "vux/src/components/load-more/index";
   import Flexbox from "vux/src/components/flexbox/flexbox";
   import FlexboxItem from "vux/src/components/flexbox/flexbox-item";
+  import Divider from "vux/src/components/divider/index";
   export default {
     components: {
+      Divider,
       FlexboxItem,
       Flexbox,
       GridItem,
@@ -237,11 +228,11 @@
   }
 
   .gameicon {
-    width: 88%;
-    height: 100px;
+    width: 94%;
+    height: 116px;
     border-radius: 4px;
   }
   .gameicon:active {
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
 </style>

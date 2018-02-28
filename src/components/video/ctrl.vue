@@ -201,6 +201,10 @@
         // alert(cmd)
 
         socket.send(cmd)
+
+        if (cmd == "cmd=movie_stop" || cmd == "cmd=ktv_stop" || cmd == "cmd=game_stop") {
+          window.history.back()
+        }
       },
 
 //   cmd=movie_resume	继续播放（暂停）

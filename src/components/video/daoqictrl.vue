@@ -114,8 +114,6 @@
     , mounted() {
 
 
-
-
       var that = this;
       var ws = that.$router.currentRoute.query.ws;
       // that.restype = this.common.playtype
@@ -205,6 +203,7 @@
         // alert(cmd)
 
         socket.send(cmd)
+
       },
 
 //   cmd=movie_resume	继续播放（暂停）
