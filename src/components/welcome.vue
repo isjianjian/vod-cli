@@ -30,35 +30,24 @@
             this.wxinfo.user = res.data.data;
             this.common.TOKEN = res.data.token;
             this.common.TOKEN.expireTime = new Date(new Date().getTime() + (this.common.TOKEN.expire * 1000) - 60 * 1000);
-             var roomid = that.roomid;
+            var roomid = that.roomid;
             //var roomid = localStorage.getItem("roomid");
-            if (roomid == null) {
-
-              this.api_post("api/bind/vi", function (res) {
-                that.common.hotel = res.data;
-                // that.$vux.toast.text('连接成功！', 'center')
-                // console.log("---------------------------1", that.common)
-                that.$router.replace(that.common.lastPage)
-              }, function (res) {
-                that.$vux.toast.text(res.msg, 'center');
-                that.$router.replace(that.common.lastPage)
-              })
-
-              // var r = localStorage.getItem("roomid");
-              // var time = localStorage.getItem("time");
-              // if (r != null) {
-              //   if (time != null && new Date().getTime() - 3 * 60 * 60 * 1000 < time) {
-              //     roomid = r;
-              //     that.ws = localStorage.getItem("ws");
-              //     that.sn = localStorage.getItem("sn");
-              //     that.HOTEL_URL_DAOQI = "http://" + localStorage.getItem("hs");
-              //     that.hotelid = localStorage.getItem("hotelid");
-              //
-              //   }
-              // }
-            } else {
-              localStorage.setItem("time", new Date().getTime())
-            }
+            // if (roomid == null ) {
+            //   var r = localStorage.getItem("roomid");
+            //   var time = localStorage.getItem("time");
+            //   if (r != null) {
+            //     if (time != null && new Date().getTime() - 3 * 60 * 60 * 1000 < time) {
+            //       roomid = r;
+            //       that.ws = localStorage.getItem("ws");
+            //       that.sn = localStorage.getItem("sn");
+            //       that.HOTEL_URL_DAOQI = "http://" + localStorage.getItem("hs");
+            //       that.hotelid = localStorage.getItem("hotelid");
+            //
+            //     }
+            //   }
+            // } else {
+            //   localStorage.setItem("time", new Date().getTime())
+            // }
 
             if (roomid != null) {
               this.api_post("api/vod/bind?mac=" + roomid, function (res) {
@@ -72,8 +61,13 @@
               })
 
             } else {
-              that.$vux.toast.text("未绑定客户端", 'center');
-              that.$router.replace(that.common.lastPage)
+              this.api_post("api/bind/vi", function (res) {
+                that.common.hotel = res.data;
+                that.$router.replace(that.common.lastPage)
+              }, function (res) {
+                that.$vux.toast.text("未绑定客户端", 'center');
+                that.$router.replace(that.common.lastPage)
+              })
             }
           })
       } else {
