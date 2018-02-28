@@ -1,10 +1,19 @@
 <template>
+  <div>
 
+
+  </div>
 </template>
 
 <script>
+
     export default {
-        name: "null"
+
+      name: "index",data(){
+        return{
+
+        }
+      }
     }
 </script>
 

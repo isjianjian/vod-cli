@@ -67,44 +67,44 @@
     },
     name: "buy",
     mounted() {
-      var that = this
-      var sid = this.$router.currentRoute.query.id
-      var pid = this.$router.currentRoute.query.pid
+      var that = this;
+      var sid = this.$router.currentRoute.query.id;
+      var pid = this.$router.currentRoute.query.pid;
 
-      var vurl = that.HOTEL_URL_DAOQI + "/if/movie_detail.php?id=" + pid;
+      var vurl = "http://" + localStorage.getItem("hs") + "/if/movie_detail.php?id=" + pid;
       // console.log("111111111111111111", url)
       that.$http.get(vurl).then(function (res) {
           // console.log("111111111111111111",res)
 
           var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_detail']");
-          var listtmp = []
+          var listtmp = [];
           JQ(styles).each(function (i, e) {
             // console.log("e", e)
-            var el = {}
-            el.id = JQ(e).find("[name='id']").html()
-            el.lib_id = JQ(e).find("[name='lib_id']").html()
-            el.pic = JQ(e).find("[name='org_poster']").html()
-            el.name = JQ(e).find("[name='name']").html()
-            el.price = JQ(e).find("[name='price']").html()
+            var el = {};
+            el.id = JQ(e).find("[name='id']").html();
+            el.lib_id = JQ(e).find("[name='lib_id']").html();
+            el.pic = JQ(e).find("[name='org_poster']").html();
+            el.name = JQ(e).find("[name='name']").html();
+            el.price = JQ(e).find("[name='price']").html() / 100;
 
             listtmp.push(el)
-          })
-          that.movie = listtmp[0]
+          });
+          that.movie = listtmp[0];
 
-        var url = 'api/vod/preorder?sid=' + sid
-        // console.log(url);
-        that.api_post(url, function (res) {
-            // console.log(res)
-            that.preorder = res.data
-            that.total = that.movie.price
+          var url = 'api/vod/preorder?sid=' + sid;
+          console.log("sssssssssssssssss", url);
+          that.api_post(url, function (res) {
+            console.log("sssssssssssssssss", res);
+            that.preorder = res.data;
+            that.total = that.movie.price;
             if (that.preorder.discounts) {
-              that.total = preorder.discounts_amount
+              that.total = preorder.discounts_amount;
               that.discounts = that.movie.price - that.total
             }
 
           }, function (res) {
             if (res.code == 202) {
-              that.$vux.toast.show("未绑定手机号")
+              that.$vux.toast.show("未绑定手机号");
 
               setTimeout(function () {
                 that.$router.push("/mine/phone")
@@ -118,8 +118,6 @@
 
         }
       )
-
-
 
 
     },
@@ -143,14 +141,14 @@
           style: 'primary',
           text: "去支付",
           onButtonClick: (name) => {
-            var data = this.oldOrder
+            var data = this.oldOrder;
             var query = {
               id: data.id,
               body: data.body,
               total: data.total,
               timeExpire: data.timeExpire,
               cmid: data.comdId
-            }
+            };
             this.$router.replace({path: '/video/pay', query: query})
           }
         }],
@@ -160,10 +158,10 @@
       }
     },
     beforeRouteLeave(to, from, next) {
-      var router = this.$router
+      var router = this.$router;
       if (router.app.his.from == to.path &&
         router.app.his.to == from.path && new Date().getTime() - router.app.his.time < 200) {
-        console.log("拒绝返回", from.path)
+        console.log("拒绝返回", from.path);
         next(false)
       } else {
         next()
@@ -172,17 +170,17 @@
     ,
     methods: {
       order: function () {
-        var that = this
-        console.log('提交订单')
-        var url = 'api/vod/order?sid=' + this.movie.lib_id
+        var that = this;
+        console.log('提交订单');
+        var url = 'api/vod/order?sid=' + this.movie.lib_id;
         if (this.use_credit) {
           url += '&credits=' + this.preorder.can_use_credits
         } else {
           url += '&credits=' + 0
         }
         this.api_post(url, function (res) {
-            console.log(res)
-            var data = res.data
+            console.log(res);
+            var data = res.data;
             var query = {
               id: data.id,
               body: data.body,
@@ -190,7 +188,7 @@
               timeExpire: data.timeExpire,
               cmid: data.comdId,
               lib_id: that.movie.lib_id
-            }
+            };
             that.$router.replace({path: '/video/pay', query: query})
 
           },
@@ -209,7 +207,7 @@
 
             }
             if (res.code == 202) {
-              var data = that.oldOrder = res.data
+              var data = that.oldOrder = res.data;
               that.$vux.confirm.show({
                 confirmText: "查看详情",
                 title: "请勿重复下单",
@@ -217,12 +215,12 @@
                 onCancel() {
                 },
                 onConfirm() {
-                  var list = []
-                  list.push({label: '内容', value: data.body})
-                  list.push({label: '流水号', value: data.id})
-                  list.push({label: '下单时间', value: data.timeStart})
-                  list.push({label: '失效时间', value: data.timeExpire})
-                  that.oldOrderItem = list
+                  var list = [];
+                  list.push({label: '内容', value: data.body});
+                  list.push({label: '流水号', value: data.id});
+                  list.push({label: '下单时间', value: data.timeStart});
+                  list.push({label: '失效时间', value: data.timeExpire});
+                  that.oldOrderItem = list;
                   that.pay_done = true
                 }
               })
@@ -233,9 +231,12 @@
           }
         )
       }, dis(newVal, oldVal) {
-        if (this.preorder.credits < this.preorder.can_use_credits) {
-          console.log(newVal, oldVal)
-          this.$vux.toast.text("积分不足", 'center')
+        // alert("可用积分"+ this.preorder.can_use_credits)
+        // alert("可抵积分"+ this.preorder.credits)
+        // if (this.preorder.credits < this.preorder.can_use_credits) {
+        if (this.preorder.credits > this.preorder.can_use_credits) {
+          console.log(newVal, oldVal);
+          this.$vux.toast.text("积分不足", 'center');
           return
           // this.use_credit = false
         }
@@ -244,15 +245,15 @@
       use_credits: function (res) {
 
         if (res) {
-          this.total -= this.preorder.can_use_credits / this.preorder.credits_ratio
+          this.total -= this.preorder.can_use_credits / this.preorder.credits_ratio;
           this.discounts += this.preorder.can_use_credits / this.preorder.credits_ratio
         } else {
-          this.total += this.preorder.can_use_credits / this.preorder.credits_ratio
+          this.total += this.preorder.can_use_credits / this.preorder.credits_ratio;
           this.discounts -= this.preorder.can_use_credits / this.preorder.credits_ratio
         }
       },
       toCancel: function (res) {
-        var that = this
+        var that = this;
         this.$vux.confirm.show({
           title: '取消订单?',
           content: '',
@@ -265,14 +266,14 @@
       cancleorder(billid) {
         this.$vux.loading.show({
           text: 'Loading'
-        })
+        });
         var that = this;
         var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.openId
-          + "&token=" + this.common.TOKEN.token + "&tokenType=1"
+          + "&token=" + this.common.TOKEN.token + "&tokenType=1";
         this.$http.post(url).then(function (res) {
-          console.log(res.data.code)
+          console.log(res.data.code);
           if (res.data.code == '0') {
-            that.pay_done = false
+            that.pay_done = false;
             this.$vux.toast.text("取消成功", 'center')
           } else {
             this.$vux.toast.text(res.data.msg, 'center')

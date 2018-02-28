@@ -163,15 +163,15 @@
     },
     methods: {
       walletInfo: function () {
-        var that=this
+        var that=this;
         this.api_post("api/member/credits/residue", function (res) {
-          console.log("credits", res)
+          console.log("credits", res);
           that.integral = res.credits
-        })
+        });
 
 
         this.api_post("api/member/balance/residue", function (res) {
-          console.log("credits", res)
+          console.log("credits", res);
           that.balance = res.balance
         })
 

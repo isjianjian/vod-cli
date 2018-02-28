@@ -54,7 +54,7 @@
 <script>
   import {Scroller, FlexboxItem, Flexbox} from 'vux'
 
-  var that
+  var that;
 
   export default {
     components: {
@@ -80,20 +80,20 @@
       }
     }
     , mounted() {
-      that = this
+      that = this;
       that.reloaddata()
     }, methods: {
       reloaddata() {
-        var url = "api/vod/queryVod"
-        console.log(url)
+        var url = "api/vod/queryVod";
+        console.log(url);
         that.api_post(url, function (res) {
-          console.log(res)
+          console.log(res);
           that.list = res.watch
         })
       }, resetvideotop() {//回到到顶部
         setTimeout(() => {
 
-          that.$refs.scroller.donePulldown()
+          that.$refs.scroller.donePulldown();
           that.$refs.scroller.reset({
             top: 0
           })

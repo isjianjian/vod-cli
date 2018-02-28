@@ -81,10 +81,10 @@
         this.keyword = res
       }
       , ok() {
-        var that=this
-        var keyword = ""
+        var that=this;
+        var keyword = "";
         if (this.keyword.trim() != "") {//关键字搜索
-          keyword = "&keyword=" + this.keyword
+          keyword = "&keyword=" + this.keyword;
           this.api_post( "api/vod?page=" + this.page + "&limit=" + this.limit + keyword,function (res) {
             that.vodlist = res.page.list
           })
@@ -93,9 +93,9 @@
         }
 
       }, detail(list) {
-        console.log("详情", list)
-        this.current.video = list
-        this.current.vid = list.id
+        console.log("详情", list);
+        this.current.video = list;
+        this.current.vid = list.id;
         this.$router.replace("detail?id=" + list.cid, function () {
         })
       }, onScrollBottom() {

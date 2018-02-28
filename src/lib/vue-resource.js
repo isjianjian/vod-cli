@@ -4,7 +4,7 @@
 
 
 
-<!DOCTYPE html>
+<;!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -20,19 +20,19 @@
 
   <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/frameworks-c9193575f18b28be82c0a963e144ff6fa7a809dd8ae003a1d1e5979bed3f7f00.css" integrity="sha256-yRk1dfGLKL6CwKlj4UT/b6eoCd2K4AOh0eWXm+0/fwA=" media="all" rel="stylesheet" />
   <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github-487552ad1774d1f44d81fb46d54dfe4cacc508d82aed67126ac700747ee181c1.css" integrity="sha256-SHVSrRd00fRNgftG1U3+TKzFCNgq7WcSascAdH7hgcE=" media="all" rel="stylesheet" />
-  
-  
-  
-  
+
+
+
+
 
   <meta name="viewport" content="width=device-width">
-  
+
   <title>vue-tutorials/vue-resource.js at master · keepfool/vue-tutorials</title>
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
   <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
   <meta property="fb:app_id" content="1401488693436528">
 
-    
+
     <meta content="https://avatars1.githubusercontent.com/u/14109832?s=400&amp;v=4" property="og:image" /><meta content="GitHub" property="og:site_name" /><meta content="object" property="og:type" /><meta content="keepfool/vue-tutorials" property="og:title" /><meta content="https://github.com/keepfool/vue-tutorials" property="og:url" /><meta content="vue-tutorials - Let you insight into the Vue.js" property="og:description" />
 
   <link rel="assets" href="https://assets-cdn.github.com/">
@@ -40,7 +40,7 @@
   <meta name="pjax-timeout" content="1000">
   <link rel="sudo-modal" href="/sessions/sudo_modal">
   <meta name="request-id" content="1814:11B5B:5658E4:82E8A6:5A28F582" data-pjax-transient>
-  
+
 
   <meta name="selected-link" value="repo_source" data-pjax-transient>
 
@@ -58,7 +58,7 @@
   <meta class="js-ga-set" name="dimension1" content="Logged In">
 
 
-  
+
 
       <meta name="hostname" content="github.com">
   <meta name="user-login" content="pigadmin">
@@ -71,7 +71,7 @@
   <meta name="html-safe-nonce" content="7b0e6dd47a955800e309d5391a6bf98c588d565a">
 
   <meta http-equiv="x-pjax-version" content="b191cc3bbeecf57d0eb34c0ca3d872cb">
-  
+
 
       <link href="https://github.com/keepfool/vue-tutorials/commits/master.atom" rel="alternate" title="Recent Commits to vue-tutorials:master" type="application/atom+xml">
 
@@ -99,20 +99,20 @@
   </head>
 
   <body class="logged-in env-production page-blob">
-    
+
 
   <div class="position-relative js-header-wrapper ">
     <a href="#start-of-content" tabindex="1" class="bg-black text-white p-3 show-on-focus js-skip-to-content">Skip to content</a>
     <div id="js-pjax-loader-bar" class="pjax-loader-bar"><div class="progress"></div></div>
 
-    
-    
-    
-      
 
 
 
-        
+
+
+
+
+
 <header class="Header  f5" role="banner">
   <div class="d-flex px-3 flex-justify-between container-lg">
     <div class="d-flex flex-justify-between">
@@ -167,11 +167,11 @@
       </div>
 
       <div class="d-flex">
-        
+
 <ul class="user-nav d-flex flex-items-center list-style-none" id="user-links">
   <li class="dropdown js-menu-container">
     <span class="d-inline-block  px-2">
-      
+
     <a href="/notifications" aria-label="You have no unread notifications" class="notification-indicator tooltipped tooltipped-s  js-socket-channel js-notification-indicator" data-channel="notification-changed:8655006" data-ga-click="Header, go to notifications, icon:read" data-hotkey="g n">
         <span class="mail-status "></span>
         <svg aria-hidden="true" class="octicon octicon-bell" height="16" version="1.1" viewBox="0 0 14 16" width="14"><path fill-rule="evenodd" d="M14 12v1H0v-1l.73-.58c.77-.77.81-2.55 1.19-4.42C2.69 3.23 6 2 6 2c0-.55.45-1 1-1s1 .45 1 1c0 0 3.39 1.23 4.16 5 .38 1.88.42 3.66 1.19 4.42l.66.58H14zm-7 4c1.11 0 2-.89 2-2H5c0 1.11.89 2 2 2z"/></svg>
@@ -189,7 +189,7 @@
       </summary>
 
       <ul class="dropdown-menu dropdown-menu-sw">
-        
+
 <a class="dropdown-item" href="/new" data-ga-click="Header, create new repository">
   New repository
 </a>
@@ -266,7 +266,7 @@
 </ul>
 
 
-        <!-- '"` --><!-- </textarea></xmp> --></option></form><form accept-charset="UTF-8" action="/logout" class="sr-only right-0" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="cORg/j6dgckRJWsvvS6RghdaLQ+7ixeCxQWMICXlVB+pA1VSTGQ0Z6n9HNtXkZIbseys8Sj8QS8Hh+WwgbYxRQ==" /></div>
+        <!-- '"` --><!-- </textarea></xmp> --></option></form>;<form accept-charset="UTF-8" action="/logout" class="sr-only right-0" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="cORg/j6dgckRJWsvvS6RghdaLQ+7ixeCxQWMICXlVB+pA1VSTGQ0Z6n9HNtXkZIbseys8Sj8QS8Hh+WwgbYxRQ==" /></div>
           <button type="submit" class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout">
             Sign out
           </button>
@@ -276,21 +276,21 @@
 </header>
 
 
-      
+
 
   </div>
 
-  <div id="start-of-content" class="show-on-focus"></div>
+  <div id="start-of-content" class="show-on-focus"></div>;
 
     <div id="js-flash-container">
-</div>
+</div>;
 
 
 
   <div role="main">
         <div itemscope itemtype="http://schema.org/SoftwareSourceCode">
     <div id="js-repo-pjax-container" data-pjax-container>
-      
+
 
 
 
@@ -379,7 +379,7 @@
   </li>
 
   <li>
-    
+
   <div class="js-toggler-container js-social-container starring-container ">
     <!-- '"` --><!-- </textarea></xmp> --></option></form><form accept-charset="UTF-8" action="/keepfool/vue-tutorials/unstar" class="starred js-social-form" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="kOlCWWFIXzyYnwU1rzNj6ULGKQkStS9g8S4Vp5oldX3Wm7X1CqEY8reKD1G0CBfAgEf473d902IENaNiFDSLSA==" /></div>
       <input type="hidden" name="context" value="repository"></input>
@@ -412,7 +412,7 @@
         </a>
 </form>  </div>
 
-  </li>
+  </li>;
 
   <li>
           <a href="#fork-destination-box" class="btn btn-sm btn-with-count"
@@ -437,7 +437,7 @@
        aria-label="933 users forked this repository">
       933
     </a>
-  </li>
+  </li>;
 </ul>
 
       <h1 class="public ">
@@ -446,10 +446,10 @@
 --><span class="path-divider">/</span><!--
 --><strong itemprop="name"><a href="/keepfool/vue-tutorials" data-pjax="#js-repo-pjax-container">vue-tutorials</a></strong>
 
-</h1>
+</h1>;
 
     </div>
-    
+
 <nav class="reponav js-repo-nav js-sidenav-container-pjax container"
      itemscope
      itemtype="http://schema.org/BreadcrumbList"
@@ -494,7 +494,7 @@
     Insights
 </a>
 
-</nav>
+</nav>;
 
 
   </div>
@@ -502,16 +502,16 @@
 <div class="container new-discussion-timeline experiment-repo-nav">
   <div class="repository-content">
 
-    
+
   <a href="/keepfool/vue-tutorials/blob/7594f7ad74c3edb84476983afe7fdbc709dbe8a1/03.Ajax/vue-resource/js/vue-resource.js" class="d-none js-permalink-shortcut" data-hotkey="y">Permalink</a>
 
   <!-- blob contrib key: blob_contributors:v21:f7c06b313a787278d2cff9935ae807f9 -->
 
   <div class="file-navigation js-zeroclipboard-container">
-    
+
 <div class="select-menu branch-select-menu js-menu-container js-select-menu float-left">
   <button class=" btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
-    
+
     type="button" aria-label="Switch branches or tags" aria-expanded="false" aria-haspopup="true">
       <i>Branch:</i>
       <span class="js-select-button css-truncate-target">master</span>
@@ -589,7 +589,7 @@
   </div>
 
 
-  
+
   <div class="commit-tease">
       <span class="float-right">
         <a class="commit-tease-sha" href="/keepfool/vue-tutorials/commit/ce92761380279fdfdaea56ba51ab5ef896d3efc1" data-pjax>
@@ -608,7 +608,7 @@
         <strong>1</strong>
          contributor
       </button>
-      
+
     </div>
 
     <div id="blob_contributors_box" style="display:none">
@@ -650,16 +650,16 @@
             aria-label="Fork this project and delete the file" data-disable-with>
             <svg aria-hidden="true" class="octicon octicon-trashcan" height="16" version="1.1" viewBox="0 0 12 16" width="12"><path fill-rule="evenodd" d="M11 2H9c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1H2c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1v9c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V5c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 12H3V5h1v8h1V5h1v8h1V5h1v8h1V5h1v9zm1-10H2V3h9v1z"/></svg>
           </button>
-</form>  </div>
+</form>  </div>;
 
   <div class="file-info">
       1318 lines (987 sloc)
       <span class="file-info-divider"></span>
     32.1 KB
-  </div>
+  </div>;
 </div>
 
-    
+
 
   <div itemprop="text" class="blob-wrapper data type-javascript">
       <table class="highlight tab-size js-file-line-container" data-tab-size="8">
@@ -6282,11 +6282,11 @@
     </div>
   </div>
 
-  </div>
+  </div>;
 
   </div>
 
-  <button type="button" data-facebox="#jump-to-line" data-facebox-class="linejump" data-hotkey="l" class="d-none">Jump to Line</button>
+  <button type="button" data-facebox="#jump-to-line" data-facebox-class="linejump" data-hotkey="l" class="d-none">Jump to Line</button>;
   <div id="jump-to-line" style="display:none">
     <!-- '"` --><!-- </textarea></xmp> --></option></form><form accept-charset="UTF-8" action="" class="js-jump-to-line-form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
       <input class="form-control linejump-input js-jump-to-line-field" type="text" placeholder="Jump to line&hellip;" aria-label="Jump to line" autofocus>
@@ -6294,7 +6294,7 @@
 </form>  </div>
 
   </div>
-  <div class="modal-backdrop js-touch-events"></div>
+  <div class="modal-backdrop js-touch-events"></div>;
 </div>
 
     </div>
@@ -6302,7 +6302,7 @@
 
   </div>
 
-      
+
 <div class="footer container-lg px-3" role="contentinfo">
   <div class="position-relative d-flex flex-justify-between py-6 mt-6 f6 text-gray border-top border-gray-light ">
     <ul class="list-style-none d-flex flex-wrap ">
@@ -6327,7 +6327,7 @@
 
     </ul>
   </div>
-</div>
+</div>;
 
 
 
@@ -6337,22 +6337,22 @@
       <svg aria-hidden="true" class="octicon octicon-x" height="16" version="1.1" viewBox="0 0 12 16" width="12"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"/></svg>
     </button>
     You can't perform that action at this time.
-  </div>
+  </div>;
 
 
-    
-    <script crossorigin="anonymous" integrity="sha256-R7c3eUp64zkx0aUKgHD8RyBMQTxCRYqXgUMLHeA4450=" src="https://assets-cdn.github.com/assets/frameworks-47b737794a7ae33931d1a50a8070fc47204c413c42458a9781430b1de038e39d.js"></script>
-    
-    <script async="async" crossorigin="anonymous" integrity="sha256-GKcNazbuENV0jJZ+REwrGeJ9/a0NgJ7tbGoRr6MH39E=" src="https://assets-cdn.github.com/assets/github-18a70d6b36ee10d5748c967e444c2b19e27dfdad0d809eed6c6a11afa307dfd1.js"></script>
-    
-    
-    
-    
+
+    <script crossorigin="anonymous" integrity="sha256-R7c3eUp64zkx0aUKgHD8RyBMQTxCRYqXgUMLHeA4450=" src="https://assets-cdn.github.com/assets/frameworks-47b737794a7ae33931d1a50a8070fc47204c413c42458a9781430b1de038e39d.js"></script>;
+
+    <script async="async" crossorigin="anonymous" integrity="sha256-GKcNazbuENV0jJZ+REwrGeJ9/a0NgJ7tbGoRr6MH39E=" src="https://assets-cdn.github.com/assets/github-18a70d6b36ee10d5748c967e444c2b19e27dfdad0d809eed6c6a11afa307dfd1.js"></script>;
+
+
+
+
   <div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner d-none">
     <svg aria-hidden="true" class="octicon octicon-alert" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M8.865 1.52c-.18-.31-.51-.5-.87-.5s-.69.19-.87.5L.275 13.5c-.18.31-.18.69 0 1 .19.31.52.5.87.5h13.7c.36 0 .69-.19.86-.5.17-.31.18-.69.01-1L8.865 1.52zM8.995 13h-2v-2h2v2zm0-3h-2V6h2v4z"/></svg>
     <span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
     <span class="signed-out-tab-flash">You signed out in another tab or window. <a href="">Reload</a> to refresh your session.</span>
-  </div>
+  </div>;
   <div class="facebox" id="facebox" style="display:none;">
   <div class="facebox-popup">
     <div class="facebox-content" role="dialog" aria-labelledby="facebox-header" aria-describedby="facebox-description">
@@ -6361,7 +6361,7 @@
       <svg aria-hidden="true" class="octicon octicon-x" height="16" version="1.1" viewBox="0 0 12 16" width="12"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"/></svg>
     </button>
   </div>
-</div>
+</div>;
 
 
   </body>

@@ -10,7 +10,7 @@
 <script>
   import {TMap} from '../../TMap'
 
-  var that
+  var that;
   export default {
 
     name: "map",
@@ -30,9 +30,9 @@
     mounted() {
       // console.log("..............................................",qq)
 
-      that = this
+      that = this;
       var par = that.$router.currentRoute.query;
-      that.wh = "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;"
+      that.wh = "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;";
 
       that.clon = par.clon;
       that.clat = par.clat;

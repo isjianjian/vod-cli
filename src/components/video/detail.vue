@@ -1,11 +1,12 @@
 <template>
   <view-box v-bind:style="windowHeight">
-    <div style="background: rgba(0,0,0,0.5);">
+    <!--<div style="background: rgba(0,0,0,0.5);">-->
+    <div>
       <div>
         <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
-        <img class="top-bg2"/>
-        <img class="top-bg3"/>
-        <img class="top-bg4"/>
+        <!--<img class="top-bg2"/>-->
+        <!--<img class="top-bg3"/>-->
+        <!--<img class="top-bg4"/>-->
 
       </div>
       <div class="top">
@@ -33,7 +34,7 @@
       <div v-bind:class="btn_style==0?'buy':btn_style==1?'buy':'play'" v-on:click="buy(list)">
         {{btn_style==0?'购买':btn_style==1?'购买':'播放'}}
       </div>
-      <div @click="ctrl">
+      <div @click="ctrl" :hidden="true">
         <img v-if="paid" class="pause" src="../../assets/images/cl_pause.png"/>
       </div>
       <div v-if="!show_share && paid" @click="show_share = true" class="flow">
@@ -64,7 +65,7 @@
 <script>
   import Actionsheet from "vux/src/components/actionsheet/index";
 
-  var that
+  var that;
   import ViewBox from "vux/src/components/view-box/index";
   import {XDialog, TransferDomDirective as TransferDom} from 'vux'
   import JQ from 'jquery';
@@ -97,7 +98,7 @@
       }
     },
     mounted(res) {
-      that = this
+      that = this;
       that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
       var vid = 0;
       // console.log("获取影片详情", that.$router.currentRoute.query)
@@ -107,17 +108,18 @@
       } else {
         vid = that.current.vid
       }
-      that.ispay(vid)
+      // console.log("******************",vid)
+      that.ispay(vid);
       that.getlib_id(vid);//获取影片
 
 
       that.api_post("api/account", function (res) {
         // console.log("---------------", res)
         that.account = res.data
-      })
+      });
 
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + vid
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + vid;
       // console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题
@@ -125,7 +127,7 @@
         link: link, // 分享链接
         imgUrl: 'https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1040759678,2647214604&fm=58', // 分享图标
         success: function () {
-          that.show_share = false
+          that.show_share = false;
           that.$vux.toast.text('分享成功！', 'center')
         },
         cancel: function () {
@@ -139,7 +141,7 @@
         var url = "api/vod/vi?sid=" + vid;
         that.api_post(url, function (res) {
           // console.log(res)
-          that.paid = res.data
+          that.paid = res.data;
           if (!that.paid) {
             that.btn_style = 1;
           } else {
@@ -148,10 +150,11 @@
         })
       },
       getlib_id(id) {
-        var url = that.HOTEL_URL_DAOQI + "/if/movie_path.php?uid=" + id + "" +
-          "&type=134&sn=" + that.sn + "&cloud=&pid=&idx=1&output=1";
 
-        // console.log("111111111111111111", url)
+        var url = "http://" + localStorage.getItem("hs") + "/if/movie_path.php?uid=" + id + "" +
+          "&type=134&sn=" + localStorage.getItem("sn") + "&cloud=&pid=&idx=1&output=1";
+
+        console.log("111111111111111111", url);
         that.$http.get(url).then(function (res) {
             // console.log("111111111111111111",res)
 
@@ -160,41 +163,41 @@
             JQ(styles).each(function (i, e) {
               // console.log("e", e)
               that.id = JQ(e).find("[name='pid']").html()
-            })
+            });
 
             that.getdetail();
           }
         )
       },
       getdetail() {
-        var url = that.HOTEL_URL_DAOQI + "/if/movie_detail.php?id=" + that.id;
+        var url = "http://" + localStorage.getItem("hs") + "/if/movie_detail.php?id=" + that.id;
         // console.log("111111111111111111", url)
         that.$http.get(url).then(function (res) {
             // console.log("111111111111111111",res)
 
             var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_detail']");
-            var listtmp = []
+            var listtmp = [];
             JQ(styles).each(function (i, e) {
               // console.log("e", e)
-              var el = {}
+              var el = {};
 
-              el.id = JQ(e).find("[name='id']").html()
-              el.lib_id = JQ(e).find("[name='lib_id']").html()
-              el.pic = JQ(e).find("[name='org_poster']").html()
-              el.name = JQ(e).find("[name='name']").html()
-              el.year = JQ(e).find("[name='year']").html()
-              el.cName = JQ(e).find("[name='name']").html()
-              el.length = JQ(e).find("[name='alias']").html()
-              el.director = JQ(e).find("[name='director']").html()
-              el.act = JQ(e).find("[name='actor']").html()
-              el.language = JQ(e).find("[name='dimension']").html()
-              el.dimension = JQ(e).find("[name='dimension']").html()
-              el.playAmount = '0'
-              el.price = JQ(e).find("[name='price']").html()
-              el.descript = JQ(e).find("[name='intro']").html()
+              el.id = JQ(e).find("[name='id']").html();
+              el.lib_id = JQ(e).find("[name='lib_id']").html();
+              el.pic = JQ(e).find("[name='org_poster']").html();
+              el.name = JQ(e).find("[name='name']").html();
+              el.year = JQ(e).find("[name='year']").html();
+              el.cName = JQ(e).find("[name='name']").html();
+              el.length = JQ(e).find("[name='alias']").html();
+              el.director = JQ(e).find("[name='director']").html();
+              el.act = JQ(e).find("[name='actor']").html();
+              el.language = JQ(e).find("[name='dimension']").html();
+              el.dimension = JQ(e).find("[name='dimension']").html();
+              el.playAmount = '0';
+              el.price = JQ(e).find("[name='price']").html() / 100;
+              el.descript = JQ(e).find("[name='intro']").html();
 
               listtmp.push(el)
-            })
+            });
             that.list = listtmp[0]
             // console.log("--------------", that.list)
           }
@@ -203,8 +206,8 @@
       buy(list) {
         if (that.paid) {
           // 播放
-          if (that.list.dimension == "2D") {
-            that.Play(that.list.lib_id, 1);
+          if (list.dimension == "2D") {
+            that.Play(that.list.lib_id, 1, list, 1);
           } else {
             that.show1 = true
           }
@@ -213,7 +216,7 @@
           that.$router.push({path: '/video/buy', query: {id: list.lib_id, pid: list.id}})
         }
       }, ctrl() {
-        that.$router.push("/video/daoqictrl?restype=1")
+        this.$router.push("/video/ctrl")
       }, menud(res) {
         var dimensions = "2d";
         if (res == "d2") {
@@ -223,9 +226,7 @@
         } else if (res == "蓝光") {
           dimensions = "3"
         }
-        this.common.playvideo = this.list
-
-        that.Play(that.list.lib_id, dimensions, this.list);
+        that.Play(that.list.lib_id, dimensions, this.list, 1);
       }
     }
   }
@@ -403,7 +404,7 @@
 
   .flow {
     position: fixed;
-    left: 20px;
+    right: 20px;
     bottom: 70px;
     width: 40px;
     height: 40px;

@@ -158,21 +158,21 @@
       if (i == null) {
         i = 0
       }
-      this.tab_index = this.activeIndex = i
+      this.tab_index = this.activeIndex = i;
       this.reload()
     },
     methods: {
       cat: function (res) {
         var that = this;
-        that.activeIndex = res
+        that.activeIndex = res;
         this.reload()
       },
       reload: function () {
-        this.page = 1
+        this.page = 1;
         this.loadData()
       },
       add: function () {
-        this.page += 1
+        this.page += 1;
         this.loadData()
       }
       ,
@@ -180,9 +180,9 @@
 
         this.$vux.loading.show({
           text: 'Loading'
-        })
-        var that = this
-        var url = "api/bill?limit=8&page=" + this.page
+        });
+        var that = this;
+        var url = "api/bill?limit=8&page=" + this.page;
         if (this.activeIndex != 0) {
           url += "&status=" + this.activeIndex
         }
@@ -192,52 +192,52 @@
               var item = res.page.list[i];
               item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime()
             }
-            that.list = res.page.list
+            that.list = res.page.list;
 
             that.$refs.scroller.reset({
               top: 0
-            })
+            });
             that.$refs.scroller.donePulldown()
           } else {
             for (var i = 0; i < res.page.list.length; i++) {
-              var item = res.page.list[i]
-              item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime()
+              var item = res.page.list[i];
+              item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime();
               that.list.push(item)
             }
-            that.$refs.scroller.donePullup()
+            that.$refs.scroller.donePullup();
             that.$refs.scroller.reset()
           }
           if (res.page.list.length == 0) {
-            that.$refs.scroller.disablePullup()
+            that.$refs.scroller.disablePullup();
             if (that.page != 1) {
               that.nodata = true
             }
           } else {
-            that.nodata = false
+            that.nodata = false;
             that.$refs.scroller.enablePullup()
           }
           if (res.page.list.length < 8 && that.page == 1) {
             that.$refs.scroller.disablePullup()
           }
-          that.nowDate = new Date()
+          that.nowDate = new Date();
           that.$vux.loading.hide()
         }, function (res) {
-          that.$vux.loading.hide()
+          that.$vux.loading.hide();
           that.$vux.toast.text(res.msg, 'center')
         })
       },
       toPay: function (res) {
-        var bill = JSON.parse(res.target.dataset.bill)
+        var bill = JSON.parse(res.target.dataset.bill);
         console.log(res, bill);
         this.$router.push("/video/pay?id=" + bill.billid + "&body=" + bill.body + "&total=" + bill.total + "&timeExpire=" + bill.timeExpire)
       },
       toMovie: function (res) {
-        var cmid = res.target.attributes.cmid.value % 10000000000
+        var cmid = res.target.attributes.cmid.value % 10000000000;
         this.$router.push({path: '/detail', query: {id: cmid}})
       },
       toCancel: function (res) {
-        var that = this
-        var billid = res.target.attributes.billid.value
+        var that = this;
+        var billid = res.target.attributes.billid.value;
         this.$vux.confirm.show({
           title: '取消订单?',
           content: '',
@@ -248,9 +248,9 @@
 
       },
       toDelete: function (res) {
-        console.log(res)
-        var that = this
-        var billid = res.target.attributes.billid.value
+        console.log(res);
+        var that = this;
+        var billid = res.target.attributes.billid.value;
         this.$vux.confirm.show({
           title: '删除订单?',
           content: '',
@@ -263,22 +263,22 @@
       cancleorder(billid) {
         this.$vux.loading.show({
           text: 'Loading'
-        })
+        });
         var that = this;
-        var url = "api/mp/canorder?billid=" + billid
+        var url = "api/mp/canorder?billid=" + billid;
         this.api_post(url, function (res) {
-          console.log(res.code)
-          that.$vux.toast.text("已取消", 'center')
-          that.delByBillid(billid)
+          console.log(res.code);
+          that.$vux.toast.text("已取消", 'center');
+          that.delByBillid(billid);
           that.$vux.loading.hide()
         }, function (res) {
-          that.$vux.toast.text(res.msg, 'center')
+          that.$vux.toast.text(res.msg, 'center');
           that.$vux.loading.hide()
         })
 
       },
       delByBillid: function (billid) {
-        var bills = this.list
+        var bills = this.list;
         for (var i = 0; i < bills.length; i++) {
           if (bills[i].billid == billid) {
             bills.splice(i, 1);

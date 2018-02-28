@@ -42,7 +42,7 @@
 <script>
   import {Scroller, FlexboxItem, Flexbox} from 'vux'
 
-  var that
+  var that;
 
   export default {
     components: {
@@ -68,27 +68,27 @@
 
       }
     }, mounted() {
-      that = this
+      that = this;
       that.reloaddata()
 
     }, methods: {
       reloaddata() {
-        var url = "api/vod/buySource"
-        console.log(url)
+        var url = "api/vod/buySource";
+        console.log(url);
         that.api_post(url, function (res) {
-          console.log(res)
-          var list = res.vodBuyRecords
+          console.log(res);
+          var list = res.vodBuyRecords;
           // for (var i = 0; i < list.length; i++) {
           //
           // }
-          that.vodlist = list
+          that.vodlist = list;
 
           that.resetvideotop()
         })
       }, resetvideotop() {//回到到顶部
         setTimeout(() => {
 
-          that.$refs.scroller.donePulldown()
+          that.$refs.scroller.donePulldown();
           that.$refs.scroller.reset({
             top: 0
           })
@@ -102,7 +102,7 @@
         // })
         that.play(list);
       }, play(list) {
-        var id =list.id % 10000000000
+        var id =list.id % 10000000000;
         // that.Play(id);
         this.$router.push({path: '/detail', query: {id: id}})
       }

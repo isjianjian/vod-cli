@@ -49,7 +49,7 @@
     },
     mounted(){
       var that = this;
-      this.reloadData()
+      this.reloadData();
       this.api_post("api/member/credits/residue",function (res) {
         that.integral =  res.credits
       })
@@ -57,8 +57,8 @@
     methods:{
       reloadData:function () {
         var that = this;
-        var url = "api/memberCredits"
-        console.log("this.type ",this.type )
+        var url = "api/memberCredits";
+        console.log("this.type ",this.type );
         if (this.type != 0){
           url += "?costtype=" + this.type
         }
@@ -68,22 +68,22 @@
       },
       integral_jia_m:function () {
         if (this.type == 2){
-          this.jia_img = integral_jia
+          this.jia_img = integral_jia;
           this.type = 0
         }else {
-          this.jia_img = integral_jia_s
-          this.jian_img = integral_jian
+          this.jia_img = integral_jia_s;
+          this.jian_img = integral_jian;
           this.type = 2
         }
         this.reloadData()
       },
       integral_jian_m:function () {
         if (this.type == 1){
-          this.jian_img = integral_jian
+          this.jian_img = integral_jian;
           this.type = 0
         }else {
-          this.jian_img = integral_jian_s
-          this.jia_img= integral_jia
+          this.jian_img = integral_jian_s;
+          this.jia_img= integral_jia;
           this.type = 1
         }
         this.reloadData()

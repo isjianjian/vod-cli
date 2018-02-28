@@ -13,7 +13,7 @@
   import XTextarea from "vux/src/components/x-textarea/index";
   import Group from "vux/src/components/group/index";
 
-  var that
+  var that;
   export default {
     components: {
       Group,
@@ -37,10 +37,10 @@
 
         if (that.content != '') {
 
-          var url = "api/memberFeedback?feedback=" + that.content
-          console.log("意见反馈", url)
+          var url = "api/memberFeedback?feedback=" + that.content;
+          console.log("意见反馈", url);
           that.api_post(url, function (res) {
-            console.log("意见反馈", res)
+            console.log("意见反馈", res);
             that.$vux.toast.text("提交成功！", 'center')
           })
         } else {

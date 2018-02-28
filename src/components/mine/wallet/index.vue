@@ -37,7 +37,7 @@
       },
       methods:{
         cat:function (res) {
-          this.tab_index = res
+          this.tab_index = res;
           if(res == 0){
             this.$router.replace("/mine/wallet/balance")
           }

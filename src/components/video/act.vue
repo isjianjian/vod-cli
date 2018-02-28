@@ -61,20 +61,22 @@
     mounted() {
 
 
-      var that = this
+      var that = this;
       this.sid = this.$router.currentRoute.query.sid;
       this.tsid = this.$router.currentRoute.query.openid;
-      var url = "api/tuisong/add?sid=" + this.sid + "&tsid=" + this.tsid
+      var url = "api/tuisong/add?sid=" + this.sid + "&tsid=" + this.tsid;
+      alert(this.tsid)
       this.api_post(url, function (res) {
-        console.log(res)
-        that.account = res.data
+        alert(res.code)
+        console.log(res);
+        that.account = res.data;
         that.state = 1;
-      }, function (res) {
+      }, function (res) {  alert(res.code)
         that.state = res.code
-      })
+      });
       this.api_post("api/vod/" + this.sid, function (res) {
         that.movie = res.data
-      })
+      });
 
       that.hotellist();
     },

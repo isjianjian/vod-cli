@@ -100,7 +100,7 @@
     mounted() {
       var that = this;
       this.api_post("api/recharge/info", function (data) {
-        console.log("recharge_info", data)
+        console.log("recharge_info", data);
         that.grids = data.data
       })
     },
@@ -109,17 +109,17 @@
         if (!this.valid_amont().valid) {
           return
         }
-        console.log("选择支付")
+        console.log("选择支付");
         this.show_pay = true
       },
       pay_1: function () {
-        this.show_pay = false
-        var that = this
+        this.show_pay = false;
+        var that = this;
         var url = this.common.SERVER_URL + "api/mp/recharge/order?amount=" + this.amount + "&mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
-          + "&token=" + this.common.TOKEN.token + "&tokenType=1"
+          + "&token=" + this.common.TOKEN.token + "&tokenType=1";
         this.$http.post(url)
           .then(function (res) {
-            console.log("微信支付", res)
+            console.log("微信支付", res);
             WeixinJSBridge.invoke(
               'getBrandWCPayRequest', {
                 "appId": res.data.data.appId,     //公众号名称，由商户传入
@@ -152,11 +152,11 @@
         return {valid: true}
       },
       toBalance() {
-        this.pay_done = false
+        this.pay_done = false;
         this.$router.replace("/mine/wallet/balance")
       },
       toRecharge() {
-        this.pay_done = false
+        this.pay_done = false;
         this.$router.replace("/mine/wallet/recharge")
       }
     }

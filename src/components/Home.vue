@@ -13,7 +13,7 @@
   export default {
     name: "home",
     data() {
-      console.log("窗口高度", document.documentElement.clientHeight)
+      // console.log("窗口高度", document.documentElement.clientHeight)
       return {
         root_style: document.documentElement.clientHeight - 53
       }
@@ -27,11 +27,21 @@
       if (!this.common.wxinit) {
         this.initWechat()
       }
+    this.checkonline()
     },
     methods: {
+      checkonline:function(){
+        setInterval(function (res) {
+          this.api_post("api/bind/vi", function (res) {
+          }, function (res) {
+            window.location.href="/"
+          })
+        },5*60*1000)
+
+      },
       initWechat: function () {
-        var url = window.location.href
-        var s_url = encodeURIComponent(url)
+        var url = window.location.href;
+        var s_url = encodeURIComponent(url);
         // this.$vux.toast.show({
         //   text:"授权地址:" + s_url,
         //   position:'center',
@@ -40,7 +50,7 @@
 
         this.$http.post(this.common.SERVER_URL + "mp/jsapi_signature?url=" + url)
           .then(function (res) {
-            var config = res.data.data
+            var config = res.data.data;
             // console.log(config)
             this.$wechat.config({
               debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。

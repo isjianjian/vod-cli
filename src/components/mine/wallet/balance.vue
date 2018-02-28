@@ -48,9 +48,9 @@
           }
         },
       mounted(){
-        this.$emit('ref-tab')
+        this.$emit('ref-tab');
         var that = this;
-        this.reloadData()
+        this.reloadData();
         this.api_post("api/member/balance/residue",function (res) {
           that.balance =  res.balance
         })
@@ -58,8 +58,8 @@
       methods:{
         reloadData:function () {
           var that = this;
-          var url = "api/memberBalance"
-          console.log("this.type ",this.type )
+          var url = "api/memberBalance";
+          console.log("this.type ",this.type );
           if (this.type != 0){
             url += "?type=" + this.type
           }
@@ -69,22 +69,22 @@
         },
         balance_jia_m:function () {
           if (this.type == 2){
-            this.jia_img = balance_jia
+            this.jia_img = balance_jia;
             this.type = 0
           }else {
-            this.jia_img = balance_jia_s
-            this.jian_img = balance_jian
+            this.jia_img = balance_jia_s;
+            this.jian_img = balance_jian;
             this.type = 2
           }
           this.reloadData()
         },
         balance_jian_m:function () {
           if (this.type == 1){
-            this.jian_img = balance_jian
+            this.jian_img = balance_jian;
             this.type = 0
           }else {
-            this.jian_img = balance_jian_s
-            this.jia_img= balance_jia
+            this.jian_img = balance_jian_s;
+            this.jia_img= balance_jia;
             this.type = 1
           }
           this.reloadData()

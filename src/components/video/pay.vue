@@ -76,11 +76,11 @@
     },
     name: "pay",
     mounted() {
-      this.billid = this.$router.currentRoute.query.id
-      this.body = this.$router.currentRoute.query.body
-      this.total = this.$router.currentRoute.query.total
-      this.timeExpire = this.$router.currentRoute.query.timeExpire
-      this.cmid = this.$router.currentRoute.query.cmid
+      this.billid = this.$router.currentRoute.query.id;
+      this.body = this.$router.currentRoute.query.body;
+      this.total = this.$router.currentRoute.query.total;
+      this.timeExpire = this.$router.currentRoute.query.timeExpire;
+      this.cmid = this.$router.currentRoute.query.cmid;
 
 
       if (this.total == 0) {
@@ -121,13 +121,13 @@
         }
       },
       wxPay: function () {
-        var that = this
+        var that = this;
         var url = this.common.SERVER_URL + "api/vod/mppay?mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
           + "&token=" + this.common.TOKEN.token + "&tokenType=1"
-          + "&billid=" + this.billid
+          + "&billid=" + this.billid;
         this.$http.post(url)
           .then(function (res) {
-            console.log("微信支付", res)
+            console.log("微信支付", res);
             if (res.data.code != 0) {
 
             }
@@ -149,10 +149,10 @@
           })
       },
       wlPay: function () {
-        var url = 'api/vod/walletpay?billid=' + this.billid
-        var that = this
+        var url = 'api/vod/walletpay?billid=' + this.billid;
+        var that = this;
         this.api_post(url, function (res) {
-          console.log(res)
+          console.log(res);
           that.success()
         },function (res) {
           that.$vux.toast.text(res.msg, 'center')

@@ -33,7 +33,7 @@
   import Search from "../video/search";
   import Cell from "vux/src/components/cell/index";
 
-  var that
+  var that;
   export default {
 
     components: {
@@ -72,24 +72,24 @@
       },
       memberSendCode() {//获取验证码
 
-        console.log(that.$refs.getcode)
+        console.log(that.$refs.getcode);
         if (this.sendCodetimeout == 60) {
           var url = 'api/memberSendCode?telPhone=' + that.telPhone;
 
           if (that.telPhone != '' && that.telPhone.length == 11) {
 
             this.api_post(url, function (res) {
-              that.Codetimeout()
-              that.TruesendCode = res.sendCode
-              that.sendCode = res.sendCode
+              that.Codetimeout();
+              that.TruesendCode = res.sendCode;
+              that.sendCode = res.sendCode;
 
-              that.typeinput = true
+              that.typeinput = true;
 
               that.$refs.codeinput.currentValue = res.sendCode
 
 
             }, function () {
-              that.$vux.toast.text("获取验证码失败", 'center')
+              that.$vux.toast.text("获取验证码失败", 'center');
               that.resettime();
             })
 
@@ -99,8 +99,8 @@
       }
       , resettime() {
 
-        clearInterval(that.interval)//停止定时器
-        that.typeinput = false
+        clearInterval(that.interval);//停止定时器
+        that.typeinput = false;
         that.sendCodetips = '发送验证码',
           that.sendCodetimeout = 60,
           console.log("停止定时器", that.sendCodetimeout);
@@ -129,7 +129,7 @@
       }
       , check(res) {//核对验证码
 
-        clearInterval(that.interval)//停止定时器
+        clearInterval(that.interval);//停止定时器
 
         if (that.telPhone != '' && that.telPhone.length == 11) {
 
@@ -140,10 +140,10 @@
             //注意 测试时用的data.TruesendCode为后台获取真实验证码。实际以data.sendCode传给后台
             //"&pushOpenId=1122&pushType=1&productId=2"推送者ID 推送类型 （1推送影片  2 推送酒店）影片id或者酒店id
 
-            var url = "api/phone/bind?telPhone=" + that.telPhone + "&sendCode=" + that.sendCode
+            var url = "api/phone/bind?telPhone=" + that.telPhone + "&sendCode=" + that.sendCode;
             this.api_post(url, function (res) {
 
-                that.$vux.toast.text("綁定成功", 'center')
+                that.$vux.toast.text("綁定成功", 'center');
                 that.$router.back();
 
             },function (res) {

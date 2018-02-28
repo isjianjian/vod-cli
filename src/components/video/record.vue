@@ -36,7 +36,7 @@
 <script>
   import {Scroller, FlexboxItem, Flexbox} from 'vux'
 
-  var that
+  var that;
 
   export default {
     components: {
@@ -62,35 +62,35 @@
 
       }
     }, mounted() {
-      that = this
+      that = this;
       that.reloaddata()
 
     }, methods: {
       reloaddata() {
-        var url = "api/vod/playRecord"
-        console.log(url)
+        var url = "api/vod/playRecord";
+        console.log(url);
         that.api_post(url, function (res) {
-          console.log(res)
-          var list = res.vodPlayRecordEntities
+          console.log(res);
+          var list = res.vodPlayRecordEntities;
           for (var i = 0; i < list.length; i++) {
-            list[i].m = parseInt(list[i].lastLength / 1000 / 60)
+            list[i].m = parseInt(list[i].lastLength / 1000 / 60);
             list[i].s = parseInt(list[i].lastLength / 1000) % 60
           }
-          that.vodlist = list
+          that.vodlist = list;
 
           that.resetvideotop()
         })
       }, resetvideotop() {//回到到顶部
         setTimeout(() => {
 
-          that.$refs.scroller.donePulldown()
+          that.$refs.scroller.donePulldown();
           this.$refs.scroller.reset({
             top: 0
           })
         }, 1000)
 
       }, detail(list) {//详情
-        console.log("详情", list)
+        console.log("详情", list);
         this.$router.push("detail?id=" + list.sid, function () {
         })
       }
