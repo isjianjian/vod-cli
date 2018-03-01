@@ -109,8 +109,15 @@
         vid = that.current.vid
       }
       // console.log("******************",vid)
-      that.ispay(vid);
-      that.getlib_id(vid);//获取影片
+      if(that.common.hotel != null){
+        that.ispay(vid);
+        that.getlib_id(vid);//获取影片
+      }else{
+        console.log("detail error",res)
+        that.api_post("api/vod/" + id, function (res) {
+          that.list = res.data
+        });
+      }
 
 
       that.api_post("api/account", function (res) {
@@ -119,7 +126,8 @@
       });
 
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + vid;
+      var type = that.common.hotel.type;
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" +   this.toHighId(vid,type,1);
       // console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题
@@ -131,7 +139,7 @@
           that.$vux.toast.text('分享成功！', 'center')
         },
         cancel: function () {
-          // 用户取消分享后执行的回调函数
+          that.$vux.toast.text('已取消分享！', 'center')
         }
       });
 
@@ -156,8 +164,6 @@
 
         console.log("111111111111111111", url);
         that.$http.get(url).then(function (res) {
-            // console.log("111111111111111111",res)
-
             var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='program_info']");
 
             JQ(styles).each(function (i, e) {
@@ -166,6 +172,8 @@
             });
 
             that.getdetail();
+          },function(res){
+
           }
         )
       },

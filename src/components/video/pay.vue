@@ -43,7 +43,10 @@
           <br>
           <br>
           <span style="display: inline-block;padding-right: 20px;padding-left: 20px;">
-            <x-button @click.native="play" type="primary">播放影片</x-button>
+            <x-button v-if="type == 2" @click.native="live" type="primary">去看直播</x-button>
+            <x-button v-if="type == 3"  @click.native="ktv" type="primary">去KTV</x-button>
+            <x-button v-if="type == 4"  @click.native="music" type="primary">去听音乐</x-button>
+            <x-button v-if="type == 5"  @click.native="game" type="primary">去玩游戏</x-button>
           </span>
 
         </p>
@@ -81,7 +84,7 @@
       this.total = this.$router.currentRoute.query.total;
       this.timeExpire = this.$router.currentRoute.query.timeExpire;
       this.cmid = this.$router.currentRoute.query.cmid;
-
+      this.type = this.getSType(this.cmid);
 
       if (this.total == 0) {
         this.radio001 = [{
@@ -93,6 +96,7 @@
     },
     data() {
       return {
+        type:2,
         billid: 0,
         body: "",
         total: '',
@@ -161,9 +165,21 @@
       success: function () {
         this.show_success = true
       },
-      play: function () {
+      live: function () {
         // this.$router.replace("/detail?id=" + this.cmid);
-        this.$router.replace("/detail?id=" + this.cmid % 10000000000);
+        this.$router.replace("/live");
+      },
+      ktv: function () {
+        // this.$router.replace("/detail?id=" + this.cmid);
+        this.$router.replace("/music");
+      },
+      music: function () {
+        // this.$router.replace("/detail?id=" + this.cmid);
+        this.$router.replace("/kmusic");
+      },
+      game: function () {
+        // this.$router.replace("/detail?id=" + this.cmid);
+        this.$router.replace("/game");
       }
     }
   }

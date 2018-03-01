@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--<load-more :show-loading="false" tip="别着急!!! 先看看广告" background-color="#fbf9fe"></load-more>-->
+    <load-more :show-loading="false" tip="正在启动" background-color="#fbf9fe"></load-more>
   </div>
 </template>
 
@@ -31,6 +31,20 @@
             this.common.TOKEN = res.data.token;
             this.common.TOKEN.expireTime = new Date(new Date().getTime() + (this.common.TOKEN.expire * 1000) - 60 * 1000);
             var roomid = that.roomid;
+            if (roomid != null) {
+              this.api_post("api/vod/bind?mac=" + roomid, function (res) {
+                that.common.hotel = res.data;
+                // that.$vux.toast.text('连接成功！', 'center')
+                // console.log("---------------------------1", that.common)
+                that.$router.replace(that.common.lastPage)
+              }, function (res) {
+                that.$vux.toast.text(res.msg, 'center');
+                that.$router.replace(that.common.lastPage)
+              })
+
+            } else {
+              this.api_post("api/bind/vi", function (res) {
+            var roomid = that.roomid;
             //var roomid = localStorage.getItem("roomid");
             // if (roomid == null ) {
             //   var r = localStorage.getItem("roomid");
@@ -52,10 +66,11 @@
             if (roomid != null) {
               this.api_post("api/vod/bind?mac=" + roomid, function (res) {
                 that.common.hotel = res.data;
-                // that.$vux.toast.text('连接成功！', 'center')
-                // console.log("---------------------------1", that.common)
                 that.$router.replace(that.common.lastPage)
               }, function (res) {
+                that.$vux.toast.text("未绑定客户端", 'center');
+                that.$router.replace(that.common.lastPage)
+              })
                 that.$vux.toast.text(res.msg, 'center');
                 that.$router.replace(that.common.lastPage)
               })
