@@ -193,9 +193,6 @@ Vue.prototype.current = {
 };
 Vue.prototype.api_post = function (url, success, fail) {
 
-  if (new Date() > this.common.TOKEN.expireTime) {
-    window.location.reload()
-  }
   if (url.indexOf("?") == -1) {
     url += "?now_time=" + new Date().getTime()
   }
@@ -210,6 +207,9 @@ Vue.prototype.api_post = function (url, success, fail) {
         if (fail != null) {
           fail(res.data)
         } else {
+          if(res.msg = "token失效，请重新登录"){
+            window.location.reload()
+          }
           this.$vux.toast.text(res.data.msg, 'center')
         }
       }

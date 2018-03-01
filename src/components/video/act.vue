@@ -8,10 +8,15 @@
       padding-top: 10px;padding-bottom: 10px;">
       你已拥有优惠,不能重复获取哦
     </div>
-    <div v-if="state != 402 && state != 1 " style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
+    <div v-if="state == 400 || state == 500" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
       padding-top: 10px;padding-bottom: 10px;">
       该优惠已失效
     </div>
+    <div v-if="state == 401" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
+      padding-top: 10px;padding-bottom: 10px;">
+      非新用户不能领取，进入主页查看其他活动
+    </div>
+
     <div style="margin-top: 80px;" class="weui-cells weui-cells_after-title">
       <div class="weui-cell">
         <div class="weui-cell__hd">
@@ -73,7 +78,7 @@
       }, function (res) {  alert(res.code)
         that.state = res.code
       });
-      this.api_post("api/vod/" + this.sid, function (res) {
+      this.api_post("api/vod/" + sid, function (res) {
         that.movie = res.data
       });
 

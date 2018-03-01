@@ -31,12 +31,16 @@
     },
     methods: {
       checkonline:function(){
-        setInterval(function (res) {
-          this.api_post("api/bind/vi", function (res) {
-          }, function (res) {
+        var that = this;
+        that.api_post("api/bind/vi", function (res) {
+          setTimeout(function (res) {
+            that.checkonline()
+          },5*60*1000)
+        }, function (res) {
+          if (that.common.hotel != null){
             window.location.href="/"
-          })
-        },5*60*1000)
+          }
+        })
 
       },
       initWechat: function () {
