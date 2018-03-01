@@ -12,13 +12,11 @@
     name: "welcome"
     ,
     mounted() {
-      setTimeout(function () {
-        localStorage.clear()
-      }, 3 * 60 * 60 * 1000);
+
 
       var code = this.getUrlKey("code");
       var that = this;
-      // console.log("code",code)
+
       if (code != null) {
         var url = '/?#' + this.$router.currentRoute.path;
         var state = {'page_id': 1, 'user_id': 5};
@@ -44,43 +42,10 @@
 
             } else {
               this.api_post("api/bind/vi", function (res) {
-            var roomid = that.roomid;
-            //var roomid = localStorage.getItem("roomid");
-            // if (roomid == null ) {
-            //   var r = localStorage.getItem("roomid");
-            //   var time = localStorage.getItem("time");
-            //   if (r != null) {
-            //     if (time != null && new Date().getTime() - 3 * 60 * 60 * 1000 < time) {
-            //       roomid = r;
-            //       that.ws = localStorage.getItem("ws");
-            //       that.sn = localStorage.getItem("sn");
-            //       that.HOTEL_URL_DAOQI = "http://" + localStorage.getItem("hs");
-            //       that.hotelid = localStorage.getItem("hotelid");
-            //
-            //     }
-            //   }
-            // } else {
-            //   localStorage.setItem("time", new Date().getTime())
-            // }
-
-            if (roomid != null) {
-              this.api_post("api/vod/bind?mac=" + roomid, function (res) {
                 that.common.hotel = res.data;
                 that.$router.replace(that.common.lastPage)
               }, function (res) {
-                that.$vux.toast.text("未绑定客户端", 'center');
-                that.$router.replace(that.common.lastPage)
-              })
                 that.$vux.toast.text(res.msg, 'center');
-                that.$router.replace(that.common.lastPage)
-              })
-
-            } else {
-              this.api_post("api/bind/vi", function (res) {
-                that.common.hotel = res.data;
-                that.$router.replace(that.common.lastPage)
-              }, function (res) {
-                that.$vux.toast.text("未绑定客户端", 'center');
                 that.$router.replace(that.common.lastPage)
               })
             }

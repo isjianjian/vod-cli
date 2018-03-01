@@ -26,7 +26,7 @@
     },
     mounted() {
       // console.log(md5)
-
+      var that =this
       // console.log(this.wxinfo.user)
       var time=Math.round(new Date().getTime()/1000);
 
@@ -42,6 +42,7 @@
         {key: "city", val: user.city},
         {key: "country", val: user.country},
         {key: "headimgurl", val: user.headImgUrl},
+        {key: "yxtoken", val:  that.common.TOKEN},
       ];
       eidtionTypeList.sort(function (a, b) {
         return a.key > b.key;
@@ -66,7 +67,7 @@
 
       this.url =this.url + "come_from=1"+"&t=" + time + "&openid=" + user.openId + "&nickname=" + encodeURIComponent(user.nickname)
         + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country)+
-        "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token;
+        "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token+"&yxtoken="+this.common.TOKEN;
 
 
       alert(this.url)
