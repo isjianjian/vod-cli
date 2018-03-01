@@ -64,11 +64,12 @@
       // console.log(token.toString().toUpperCase());
 
 
-      this.url =this.url + "come_from=1"+"&t=" + time + "&openid=" + user.openId + "&nickname=" + user.nickname
+      this.url =this.url + "come_from=1"+"&t=" + time + "&openid=" + user.openId + "&nickname=" + encodeURIComponent(user.nickname)
         + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country)+
         "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token;
 
 
+      alert(this.url)
       console.log(this.url)
 
     }, methods: {}
