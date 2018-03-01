@@ -3,27 +3,39 @@
     <view-box>
       <!--<search ref="search" placeholder="输入歌曲名称">-->
       <!--</search>-->
-      <group title="K歌列表"/>
-      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                @on-pulldown-loading="relist"
-                @on-pullup-loading="addlist"
-                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-30" lock-x :scrollbar-x=false
-                :scrollbar-y=false
-        >
-       <div>
-         <div v-if="kmusiclist.length == 0" class='loading'>
-              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
-                暂无数据
-              </span>
-         </div>
 
-         <cell v-for="(list,index) in kmusiclist" :title="(index+1)+'.'+ list.name" @click.native="toplay(list)"
-               is-link>
-           {{list.singer_list}}
-         </cell>
-       </div>
-        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-      </scroller>
+      <flexbox>
+
+        <!--@on-change="setkeyword"-->
+        <!--@on-submit="research" @on-focus="searchshow" @on-cancel="searchhide"-->
+        <search   placeholder="输入歌曲名称" >
+        </search>
+
+        <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
+             v-on:click="histroyshow"/>
+      </flexbox>
+
+      <!--<group title="K歌列表"/>-->
+      <!--<scroller :pullup-config="upconfig" :pulldown-config="downconfig"-->
+                <!--@on-pulldown-loading="relist"-->
+                <!--@on-pullup-loading="addlist"-->
+                <!--:use-pulldown="true" :use-pullup="true" ref="scroller" height="-30" lock-x :scrollbar-x=false-->
+                <!--:scrollbar-y=false-->
+        <!--&gt;-->
+       <!--<div>-->
+         <!--<div v-if="kmusiclist.length == 0" class='loading'>-->
+              <!--<span style='color:#B6B6B6;display: block;padding-top: 120px;'>-->
+                <!--暂无数据-->
+              <!--</span>-->
+         <!--</div>-->
+
+         <!--<cell v-for="(list,index) in kmusiclist" :title="(index+1)+'.'+ list.name" @click.native="toplay(list)"-->
+               <!--is-link>-->
+           <!--{{list.singer_list}}-->
+         <!--</cell>-->
+       <!--</div>-->
+        <!--<load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>-->
+      <!--</scroller>-->
     </view-box>
   </div>
 </template>

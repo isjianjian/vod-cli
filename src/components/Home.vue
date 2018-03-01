@@ -31,8 +31,9 @@
     },
     methods: {
       checkonline:function(){
+        var that=this
         setInterval(function (res) {
-          this.api_post("api/bind/vi", function (res) {
+          that.api_post("api/bind/vi", function (res) {
           }, function (res) {
             window.location.href="/"
           })

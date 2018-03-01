@@ -39,7 +39,7 @@ import main from './components/video/main'
 import music from './components/video/music/index'
 import kmusic from './components/video/kmusic/index'
 import game from './components/video/game/index'
-
+import md5 from 'js-md5'
 
 
 import {WechatPlugin, LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux'
@@ -54,7 +54,7 @@ Vue.use(WechatPlugin);
 Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin);
 Vue.use(AlertPlugin);
-
+// Vue.use(md5);
 
 //cc00166beabccb5ea6cc80df6f1ebd4b
 

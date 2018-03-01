@@ -23,9 +23,7 @@
          </flexbox>
        </div>
         <divider v-if="nodata">我是有底线的</divider>
-        <!--<load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>-->
       </scroller>
-
     </view-box>
   </div>
 </template>
@@ -119,7 +117,6 @@
         // mute 静音(int, 1静音 0有声)
         // melody 原伴唱(0原唱 1伴唱)
         // screenstatus 屏幕状态
-
       };
       socket.onclose = function (msg) {
         that.$vux.toast.text("与服务器失去连接，请检查网络。", 'center')

@@ -536,12 +536,6 @@
           })
         }
       }
-    }, updated() {
-      console.log("--ss--", this.$refs.box.scrollTop())
-    }, beforeDestroy() {
-      console.log("window.pageYOffset", window.pageYOffset);
-      console.log("document.documentElement.scrollTop", document.documentElement.scrollTop);
-      console.log("document.body.scrollTop", document.body.scrollTop)
     }
   }
 </script>
