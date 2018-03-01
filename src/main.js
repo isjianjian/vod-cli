@@ -17,6 +17,7 @@ import mine from './components/mine/index'
 import phone from './components/mine/phone'
 import detail from './components/video/detail'
 import buy from './components/video/buy'
+import otherbuy from './components/video/otherbuy'
 import pay from './components/video/pay'
 import act from './components/video/act'
 import wallet from './components/mine/wallet/index'
@@ -117,6 +118,8 @@ const routes = [{
   }, {
     path: '/video/buy', component: buy, meta: {allowBack: true, title: '购买'}
   }, {
+    path: '/video/otherbuy', component: otherbuy, meta: {allowBack: true, title: '包时'}
+  },{
     path: '/mine/order', component: order, meta: {allowBack: true, title: '我的订单'}
   }, {
     path: '/mine/wallet',
@@ -230,14 +233,23 @@ Vue.prototype.toHighId = function (id,type,sType) {
 }
 
 Vue.prototype.formHighId = function (hid) {
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return hid;
+  }
   return parseInt(hid) % this.common.ID_HIGH_ORDER;
 }
 
 Vue.prototype.getSType = function(hid){
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return 1;
+  }
   return  parseInt(hid/(this.common.ID_HIGH_ORDER*10));
 }
 
 Vue.prototype.getType = function(hid){
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return 1;
+  }
   return parseInt(hid/this.common.ID_HIGH_ORDER) % 10;
 }
 

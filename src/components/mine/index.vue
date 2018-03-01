@@ -66,6 +66,10 @@
         <cell title="发票" is-link link="/mine/about/agree">
           <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
         </cell>
+        <cell title="测试" is-link link="/video/otherbuy?hour=1&type=2">
+          <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
+        </cell>
+
       </group>
     </view-box>
   </div>
