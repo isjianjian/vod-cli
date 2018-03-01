@@ -20,6 +20,7 @@
         <div class="weui-cell__bd">
           <div class="weui-flex bd_title">
             <div class="weui-flex__item left">
+                {{movie.descript}}
             </div>
             <div class="weui-flex__item right">
               <img src="../../assets/images/friend.gif" style="width: 120px;"/>
@@ -31,13 +32,13 @@
     <div v-for="">
       <cell></cell>
     </div>
+    <div class="hotel" style="background-color: #3f9de7"
+         v-on:click="hotel">
+      <span>附近的酒店</span>
+    </div>
     <div v-if="state == 1" class="buy" v-on:click="buy">
       <span><span style="font-weight: 600;font-size: 21px;">{{account.giftseemoney}}</span>元观看</span>
       <img src="../../assets/images/watch.png" style="width: 20px;margin-left:5px;position: relative;top:4px;"/>
-    </div>
-    <div v-if="state == 402 || state == 401 || state == 400" class="hotel" style="background-color: #3f9de7"
-         v-on:click="hotel">
-      <span>附近的酒店</span>
     </div>
     <div v-if="state == 402 || state == 401 || state == 400" class="buy" style="background-color: #3f9de7"
          v-on:click="detail">
@@ -62,12 +63,10 @@
 
 
       var that = this;
-      this.sid = this.$router.currentRoute.query.sid;
-      this.tsid = this.$router.currentRoute.query.openid;
-      var url = "api/tuisong/add?sid=" + this.sid + "&tsid=" + this.tsid;
-      alert(this.tsid)
+      var sid = this.$router.currentRoute.query.sid;
+      var tsid = this.$router.currentRoute.query.openid;
+      var url = "api/tuisong/add?sid=" + sid + "&tsid=" + tsid;
       this.api_post(url, function (res) {
-        alert(res.code)
         console.log(res);
         that.account = res.data;
         that.state = 1;

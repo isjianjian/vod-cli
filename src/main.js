@@ -157,10 +157,10 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-  // APPID: 'wxc24d07d05cfea4d3',//lv
+   APPID: 'wxc24d07d05cfea4d3',//lv
   // APPID: 'wxb636c0b09a3fd9d1',//zhu
   // APPID: 'wx4c232a8e7d2158ab',//公司
-  APPID: 'wx23186818f05e0eeb',//广州
+  //APPID: 'wx23186818f05e0eeb',//广州
   user: {},
 };
 Vue.prototype.his = {
@@ -169,11 +169,11 @@ Vue.prototype.his = {
   time: 0
 };
 Vue.prototype.common = {
-
-  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",//lv
+  ID_HIGH_ORDER : 10000000000,
+   SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
   // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
   // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
-  SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  //SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
   TOKEN: {},
   lastPage: '',
@@ -223,6 +223,25 @@ Vue.prototype.api_post = function (url, success, fail) {
 Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 };
+
+Vue.prototype.toHighId = function (id,type,sType) {
+
+  return (sType * 10 * this.common.ID_HIGH_ORDER) + ( parseInt(type) * this.common.ID_HIGH_ORDER) + parseInt(id);
+}
+
+Vue.prototype.formHighId = function (hid) {
+  return parseInt(hid) % this.common.ID_HIGH_ORDER;
+}
+
+Vue.prototype.getSType = function(hid){
+  return  parseInt(hid/(this.common.ID_HIGH_ORDER*10));
+}
+
+Vue.prototype.getType = function(hid){
+  return parseInt(hid/this.common.ID_HIGH_ORDER) % 10;
+}
+
+
 
 Vue.prototype.QRcode = function () {
   var tt = this;

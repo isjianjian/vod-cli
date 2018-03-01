@@ -119,7 +119,8 @@
       });
 
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + vid;
+      var type = that.common.hotel.type;
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" +   this.toHighId(vid,type,1);
       // console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题

@@ -29,7 +29,7 @@
                   @on-scroll="savescrolltop"
                   :use-pulldown="true" :use-pullup="true" ref="scroller" height="-88" lock-x :scrollbar-x=false
                   :scrollbar-y=false
-                  style="position:absolute;width: 100%;top: 81px;">
+                  style="width: 100%;top: 81px;">
           <div>
             <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
@@ -97,7 +97,7 @@
                   @on-pullup-loading="addsearch"
                   :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
                   :scrollbar-y=false
-                  style="position:absolute;z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+                  style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
 
           <div>
             <div v-if="searchlist.length == 0" class='loading'>
