@@ -17,6 +17,7 @@ import mine from './components/mine/index'
 import phone from './components/mine/phone'
 import detail from './components/video/detail'
 import buy from './components/video/buy'
+import otherbuy from './components/video/otherbuy'
 import pay from './components/video/pay'
 import act from './components/video/act'
 import wallet from './components/mine/wallet/index'
@@ -117,6 +118,8 @@ const routes = [{
   }, {
     path: '/video/buy', component: buy, meta: {allowBack: true, title: '购买'}
   }, {
+    path: '/video/otherbuy', component: otherbuy, meta: {allowBack: true, title: '购买'}
+  }, {
     path: '/mine/order', component: order, meta: {allowBack: true, title: '我的订单'}
   }, {
     path: '/mine/wallet',
@@ -157,8 +160,8 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-  // APPID: 'wxc24d07d05cfea4d3',//lv
-  APPID: 'wxb636c0b09a3fd9d1',//zhu
+   APPID: 'wxc24d07d05cfea4d3',//lv
+ // APPID: 'wxb636c0b09a3fd9d1',//zhu
   // APPID: 'wx4c232a8e7d2158ab',//公司
   // APPID: 'wx23186818f05e0eeb',//广州
   user: {},
@@ -169,9 +172,9 @@ Vue.prototype.his = {
   time: 0
 };
 Vue.prototype.common = {
-
-  // SERVER_URL: "http://192.168.2.6:8080/hotel_vod/",//lv
-  SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
+  ID_HIGH_ORDER : 10000000000,
+   SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
+  // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
   // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
   // SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
@@ -223,6 +226,34 @@ Vue.prototype.api_post = function (url, success, fail) {
 Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 };
+
+Vue.prototype.toHighId = function (id,type,sType) {
+
+  return (sType * 10 * this.common.ID_HIGH_ORDER) + ( parseInt(type) * this.common.ID_HIGH_ORDER) + parseInt(id);
+}
+
+Vue.prototype.formHighId = function (hid) {
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return hid;
+  }
+  return parseInt(hid) % this.common.ID_HIGH_ORDER;
+}
+
+Vue.prototype.getSType = function(hid){
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return 1;
+  }
+  return  parseInt(hid/(this.common.ID_HIGH_ORDER*10));
+}
+
+Vue.prototype.getType = function(hid){
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+    return 1;
+  }
+  return parseInt(hid/this.common.ID_HIGH_ORDER) % 10;
+}
+
+
 
 Vue.prototype.QRcode = function () {
   var tt = this;
@@ -317,7 +348,6 @@ Vue.prototype.sn = this.getQueryString("sn");
 Vue.prototype.HOTEL_URL_DAOQI = "http://" + this.getQueryString("hs");
 Vue.prototype.hotelid = this.getQueryString("hotelid");
 Vue.prototype.roomid = this.getQueryString("roomid");
-
 
 export function getQueryString(name) {
   let reg = `(^|&)${name}=([^&]*)(&|$)`;
