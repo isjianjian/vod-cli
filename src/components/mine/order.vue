@@ -75,10 +75,10 @@
             </div>
             <div class='cell_botton weui-flex'>
               <div class='weui-flex__item'>
-                <div v-if="item.type == 1">
+                <div v-if="item.type == 1 && item.isvod">
                   <x-button :cmid='item.cmid' v-on:click.native='toMovie' type="default" mini plain>影片详情</x-button>
                 </div>
-                <div v-if="item.status == 1 && item.isExpire">
+                <div v-if="item.status == 1 && item.isExpire ">
                   <x-button :billid='item.billid' v-on:click.native='toDelete' type="default" mini plain>删除订单</x-button>
                 </div>
                 <div v-if="item.status == 1 && !item.isExpire">
@@ -191,6 +191,9 @@
             for (var i = 0; i < res.page.list.length; i++) {
               var item = res.page.list[i];
               item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime()
+
+              item.isvod = that.getSType(item.cmid) == 1
+              console.log(item.isvod)
             }
             that.list = res.page.list;
 
@@ -202,6 +205,7 @@
             for (var i = 0; i < res.page.list.length; i++) {
               var item = res.page.list[i];
               item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime();
+              item.isvod = that.getSType(item.comd_id) == 1;
               that.list.push(item)
             }
             that.$refs.scroller.donePullup();
