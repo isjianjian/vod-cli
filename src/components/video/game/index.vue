@@ -1,5 +1,46 @@
 <template>
   <div>
+    <x-header :left-options="{showBack:false}" title="slot:overwrite-title">
+      <div class="overwrite-title-demo" slot="overwrite-title">
+
+        <marquee style="margin-top: 8px;" :interval="3000">
+          <marquee-item class="align-middle" >
+            <div v-if="open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
+              您已开通游戏功能
+            </div>
+            <div v-if="!open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
+              未开通游戏功能
+            </div>
+          </marquee-item>
+          <marquee-item class="align-middle">
+            <div v-if="open" class="clock" style="color: #6e6e6e">
+              剩余时间
+              <clocker :time="timeExpire">
+                <span class="day">%_H1</span>
+                <span class="day">%_H2</span>
+                <span class="day">:</span>
+                <span class="day">%_M1</span>
+                <span class="day">%_M2</span>
+                <span class="day">:</span>
+                <span class="day">%_S1</span>
+                <span class="day">%_S2</span>
+              </clocker>
+            </div>
+            <div v-if="!open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
+              点击右方按钮开通
+            </div>
+          </marquee-item>
+        </marquee>
+      </div>
+      <div slot="right">
+        <div v-if="!open" style="padding-bottom: 10px;">
+           <x-button  :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
+        </div>
+        <div v-if="open" style="padding-bottom: 10px;">
+          <x-button  :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
+        </div>
+      </div>
+    </x-header>
     <view-box>
       <group title="游戏列表"/>
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
@@ -29,7 +70,8 @@
 </template>
 
 <script>
-  import { Grid, GridItem, GroupTitle } from 'vux'
+  import { XHeader } from 'vux'
+  import { Grid, GridItem, GroupTitle ,Clocker,Marquee, MarqueeItem,XButton} from 'vux'
 
   var socket;
   import ViewBox from "vux/src/components/view-box/index";
@@ -52,11 +94,18 @@
       Scroller,
       Group,
       Cell,
-      ViewBox
+      ViewBox,
+      XHeader,
+      Clocker,
+      Marquee,
+      MarqueeItem,
+      XButton
     },
     name: "index",
     data() {
       return {
+        open:false,
+        timeExpire:'2018-03-04 12:00:00',
         gamelist: [],
         page: 1,
         limit: 12,
@@ -123,8 +172,17 @@
       }
 
 
+      this.checkOpen();
+
     }
     , methods: {
+      checkOpen(){
+        var that = this;
+        that.api_post("api/module/countdown?type=4",function (res) {
+          that.open = true;
+          that.timeExpire = new Date(new Date().getTime() + res.count);
+        })
+      },
       getgamelist() {
         var that = this;
         var url = "http://" + localStorage.getItem("hs") + "/if/game_list.php?page=" + that.page + "&pagesize=" + that.limit;
@@ -216,6 +274,12 @@
   }
 </script>
 
+
+<style>
+  .vux-header .vux-header-right{
+    top:10px!important;
+  }
+</style>
 <style scoped>
   .loading {
     height: 80px;
@@ -231,5 +295,22 @@
   }
   .gameicon:active {
     transform: scale(1.1);
+  }
+
+  .clock {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .vux-x-icon {
+    fill: #1AAD19;
+  }
+
+  .clock span {
+
+    color: #6E6E6E;
+    text-align: center;
+    display: inline-block;
+
   }
 </style>
