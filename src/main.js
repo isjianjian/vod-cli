@@ -160,10 +160,10 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-   APPID: 'wxc24d07d05cfea4d3',//lv
- // APPID: 'wxb636c0b09a3fd9d1',//zhu
-  // APPID: 'wx4c232a8e7d2158ab',//公司
-  // APPID: 'wx23186818f05e0eeb',//广州
+   // APPID: 'wxc24d07d05cfea4d3',//lv
+ APPID: 'wxb636c0b09a3fd9d1',//zhu
+ //  APPID: 'wx4c232a8e7d2158ab',//公司
+ //  APPID: 'wx23186818f05e0eeb',//广州
   user: {},
 };
 Vue.prototype.his = {
@@ -173,8 +173,8 @@ Vue.prototype.his = {
 };
 Vue.prototype.common = {
   ID_HIGH_ORDER : 10000000000,
-   SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
-  // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
+   // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
+  SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
   // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
   // SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试

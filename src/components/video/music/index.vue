@@ -20,8 +20,8 @@
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
-                  @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-90" lock-x :scrollbar-x=false
+                  @on-scroll="savetop"
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-37" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 37px;">
           <div>
@@ -61,13 +61,10 @@
         </scroller>
 
 
-
-
         <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="research"
                   @on-pullup-loading="addsearch"
-                  @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-37" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
 
@@ -206,31 +203,33 @@
       socket = window.dqsocket
       that = this;
 
+      console.log(that.common.savevodlistmusic)
 
       if (that.common.currentlistmusic != null) {
 
         that.vodlist = that.common.currentlistmusic;
-
-        that.$refs.scroller.reset({
-          top: that.common.savevodlistmusic
-        })
+        that.page= Math.ceil(that.vodlist.length/that.limit)
+        setTimeout(function () {
+          that.$refs.scroller.reset({
+            top: that.common.savevodlistmusic
+          })
+          if (that.vodlist.length < that.limit) {
+            that.$refs.scroller.disablePullup()
+          }
+        }, 1)
 
       } else {
         that.revideo()
       }
 
+
     }, methods: {
-      savevodlist(res) {
+      savetop(res) {
         var that = this;
-        that.common.savevodlistmusic = res.top
-      },
-      savevodcat(res) {
-        // var that = this;
-        // that.common.savevodcat = res.left
-      },
-      savevodlist(res) {
-        // var that = this;
-        // that.common.savevodlist = res.top
+        console.log(res.top)
+        if (res.top != 0) {
+          that.common.savevodlistmusic = res.top
+        }
       }, revideo() {
         that.page = 1;
         that.getvideo()
@@ -271,6 +270,10 @@
 
 
           if (that.page == 1) {
+            //
+            // for (var i = 0; i < 120; i++) {
+            //   that.vodlist.push(list[0])
+            // }
             that.vodlist = list;
 
             that.$refs.scroller.reset({
@@ -336,7 +339,7 @@
 
 
           var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.searchpage + "&pagesize=" +
-          that.searchlimit + "&keyword=" + that.keyword;
+            that.searchlimit + "&keyword=" + that.keyword;
           console.log(url);
           that.$http.get(url).then(function (res) {
 

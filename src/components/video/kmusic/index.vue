@@ -20,7 +20,7 @@
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
-                  @on-scroll="savevodlist"
+                  @on-scroll="savetop"
                   :use-pulldown="true" :use-pullup="true" ref="scroller" height="-90" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 37px;">
@@ -64,7 +64,7 @@
         <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
           <cell title="已点歌曲" is-link link="/nowplay">
             <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../../assets/images/ispay_icon.png">
+                 src="../../../assets/images/histroy_icon.png">
           </cell>
         </div>
 
@@ -214,20 +214,30 @@
       if (that.common.currentlistktv != null) {
 
         that.vodlist = that.common.currentlistktv;
+        that.page= Math.ceil(that.vodlist.length/that.limit)
+        setTimeout(function () {
+          that.$refs.scroller.reset({
+            top: that.common.savevodlistktv
+          })
+          if (that.vodlist.length < that.limit) {
+            that.$refs.scroller.disablePullup()
+          }
+        }, 1)
 
-        that.$refs.scroller.reset({
-          top: that.common.savevodlistktv
-        })
 
       } else {
+
         that.revideo()
       }
 
 
     }, methods: {
-      savevodlist(res) {
+      savetop(res) {
+
         var that = this;
-        that.common.savevodlistktv = res.top
+        if (res.top != 0) {
+          that.common.savevodlistktv = res.top
+        }
       },
       histroyshow() {//显示已点歌曲
 

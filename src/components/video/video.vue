@@ -284,13 +284,18 @@
             if (that.common.currentlist != null) {
 
               that.vodlist = that.common.currentlist;
+              that.page= Math.ceil(that.vodlist.length/that.limit)
               that.savevodcatpos = that.common.savevodcatpos
-              that.cid = "&tid=" + that.catlist[that.savevodcatpos].id;
-
+              if(that.savevodcatpos!=null){
+                that.cid = "&tid=" + that.catlist[that.savevodcatpos].id;
+              }
               that.$refs.scroller.reset({
                 top: that.common.savevodlist
               })
-
+              if (that.vodlist.length < that.limit) {
+                that.$refs.scroller.disablePullup()
+              }
+              that.$refs.scroller.donePulldown()
             } else {
               that.recat(that.catlist[0])
             }
