@@ -4,12 +4,9 @@
       <div class="overwrite-title-demo" slot="overwrite-title">
 
         <marquee style="margin-top: 8px;" :interval="3000">
-          <marquee-item class="align-middle" >
-            <div v-if="open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
+          <marquee-item class="align-middle" v-if="open"  >
+            <div style="text-align: center; font-size: 14px;color:#6E6E6E;">
               您已开通游戏功能
-            </div>
-            <div v-if="!open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
-              未开通游戏功能
             </div>
           </marquee-item>
           <marquee-item class="align-middle">
@@ -27,7 +24,7 @@
               </clocker>
             </div>
             <div v-if="!open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
-              点击右方按钮开通
+              未开通游戏功能
             </div>
           </marquee-item>
         </marquee>
@@ -199,9 +196,12 @@
     , methods: {
       checkOpen(){
         var that = this;
-        that.api_post("api/module/countdown?type=4",function (res) {
+        that.api_post("api/module/countdown?type=5",function (res) {
           that.open = true;
-          that.timeExpire = new Date(new Date().getTime() + res.count);
+          that.timeExpire =  new Date().getTime() + res.data.count;
+          console.log('timeExpire',that.timeExpire)
+        },function () {
+          that.open = false;
         })
       },
       savetop(res) {
