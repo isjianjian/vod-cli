@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--style="background-color: #fff;"-->
-    <div v-if="common.hotel!=null" >
+    <div v-if="common.hotel!=null">
       <view-box ref="box">
 
         <flexbox class="top">
@@ -12,12 +12,14 @@
           <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
                v-on:click="histroyshow"/>
         </flexbox>
-        <!--分类-->
+        <!--分类  :selected="index === common.savevodcatpos"-->
         <scroller v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
-                  style="position:absolute;width: 100%;top: 37px;">
+                  ref="scrollercat" style="position:absolute;width: 100%;top: 37px;" @on-scroll="savevodcat">
+
           <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
                v-bind:style="'width:'+cat_width +'px'">
-            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item)" v-bind:selected="video==0">
+            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)"
+                      :selected="index==savevodcatpos">
               {{item.name}}
             </tab-item>
           </tab>
@@ -26,7 +28,7 @@
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
-                  @on-scroll="savescrolltop"
+                  @on-scroll="savevodlist"
                   :use-pulldown="true" :use-pullup="true" ref="scroller" height="-88" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 81px;">
@@ -66,9 +68,11 @@
                       主演:{{item.act}}
                     </div>
                   </div>
+
                   <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
                     {{item.paid?'播放':'购买'}}
                   </div>
+
                 </div>
               </div>
             </div>
@@ -149,11 +153,7 @@
 
       </view-box>
     </div>
-    <div v-if="common.hotel==null">
-      <group title="未绑定设备，请扫描酒店屏幕二维码">
-        <x-button type="warn" @click.native="checkroom">点击扫描</x-button>
-      </group>
-    </div>
+
   </div>
 </template>
 
@@ -189,8 +189,6 @@
       JQ,
     }, data() {
       return {
-        nodata: false,
-        searchnodata: false,
         downconfig: {
           content: '下拉刷新',
           height: 60,
@@ -210,6 +208,10 @@
           loadingContent: '正在加载...',
           clsPrefix: 'xs-plugin-pullup-'
         },
+
+        nodata: false,
+        searchnodata: false,
+
         catlist: {},//电影分类
         vodlist: [],//电影列表
         searchlist: [],//电影搜索
@@ -232,8 +234,7 @@
 
         histroy_n: '',
         histroy_p: '',
-
-
+        savevodcatpos: 0,
       }
     }, destroyed() {
       var that = this;
@@ -243,29 +244,18 @@
 
       that = this;
 
-
       that.getcat()
-      // console.log("电影分类", that.common.SERVER_URL + "api/vod/classify?openid=" + that.wxinfo.user.openId)
-      // var url = "api/vod/classify"
-      // console.log(url)
-      // that.api_post(url, function (res) {
-      //   // console.log(res)
-      //   that.catlist = res.page.list
-      //   // console.log("电影分类", that.catlist)
-      //   that.cat_width = that.catlist.length * 50 > window.innerWidth ? that.catlist.length * 50 : window.innerWidth
-      //   that.recat(that.catlist[0])
-      // })
+
 
     }, methods: {
-      savescrolltop(res) {
+      savevodcat(res) {
         var that = this;
-        that.common.videoscrolltop = res.top
+        that.common.savevodcat = res.left
       },
-      checkroom() {
-        // console.log("---------------------------2", that.common.hotel)
-        that.QRcode()
-      },
-      getcat() {
+      savevodlist(res) {
+        var that = this;
+        that.common.savevodlist = res.top
+      },getcat() {
 
         // var url = "http://cms.kfg365.com/if/movie_home.php";
         var url = "http://" + localStorage.getItem("hs") + "/if/movie_home.php";
@@ -290,20 +280,25 @@
             that.catlist = list;
             that.cat_width = that.catlist.length * 65 > window.innerWidth ? that.catlist.length * 65 : window.innerWidth;
 
-            if (that.common.currentlist != null) {
-              that.vodlist = that.common.currentlist;
 
+            if (that.common.currentlist != null) {
+
+              that.vodlist = that.common.currentlist;
+              that.page= Math.ceil(that.vodlist.length/that.limit)
+              that.savevodcatpos = that.common.savevodcatpos
+              if(that.savevodcatpos!=null){
+                that.cid = "&tid=" + that.catlist[that.savevodcatpos].id;
+              }
               that.$refs.scroller.reset({
-                top: that.common.videoscrolltop
+                top: that.common.savevodlist
               })
+              if (that.vodlist.length < that.limit) {
+                that.$refs.scroller.disablePullup()
+              }
+              that.$refs.scroller.donePulldown()
             } else {
               that.recat(that.catlist[0])
             }
-
-
-            // console.log("list", that.catlist)
-
-          }, function (res) {
 
           }
         )
@@ -311,37 +306,24 @@
       },
 
 
-      recat(list) {//重置分类
-        console.log("重置分类",list)
-        this.common.videoscrolltop = 0;
-        if (list.id != "") {
+      recat(list, index) {//重置分类
+        console.log("重置分类", list)
+        that.common.savevodcatpos = index
+        this.common.savevodlist = 0;
+
+        if (list.id != "" && list.id != "search") {
           that.cid = "&tid=" + list.id;
-          that.revideo(list)
         } else {
           that.cid = "";
         }
+        that.revideo(list)
       }, revideo(list) {//点击分类初始化列表
         that.page = 1;
         that.getvideo()
-      }, resetvideotop() {//回到到顶部
-        // console.log("*****", that.$refs.scroller)
-
-
-        setTimeout(() => {
-          that.$refs.scroller.reset({
-            top: 0
-          });
-          that.$refs.scroller.donePulldown()
-        }, 1 * 500)
-
-
-      }, getvideo() {
-
+      } , getvideo() {
         that.$vux.loading.show({
           text: 'Loading'
         });
-        // var url = "api/vod?page=" + that.page + "&limit=" + that.limit + that.cid;
-        // var url = "http://cms.kfg365.com/if/movie_list.php";
 
         var url = "http://" + localStorage.getItem("hs") + "/if/movie_list.php?page=" + that.page + "&pagesize=" + that.limit + that.cid;
         console.log(url);
@@ -369,7 +351,12 @@
 
           if (that.page == 1) {
             that.vodlist = list;
-            that.resetvideotop()
+
+            that.$refs.scroller.reset({
+              top: 0
+            });
+            that.$refs.scroller.donePulldown()
+
           } else {
             for (var i = 0; i < list.length; i++) {
               that.vodlist.push(list[i])
@@ -377,24 +364,23 @@
             that.$refs.scroller.donePullup();
             that.$refs.scroller.reset()
           }
-          console.log("************", that.vodlist);
-
-          if (that.page != 1) {
-            that.nodata = true
-          }
-          if (list.length < that.limit) {
-            that.$refs.scroller.disablePullup()
-          } else if (list.length == that.limit) {
+          if (list.length == 0) {
+            that.$refs.scroller.disablePullup();
+            if (that.page != 1) {
+              that.nodata = true
+            }
+          } else {
             that.nodata = false;
             that.$refs.scroller.enablePullup()
           }
-
+          if (list.length < that.limit && that.page == 1) {
+            that.$refs.scroller.disablePullup()
+          }
 
           that.$vux.loading.hide()
-        }, function (res) {
-          that.$vux.loading.hide();
-          that.resetvideotop()
+
         })
+
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
         that.getvideo()
@@ -409,8 +395,7 @@
       }, setkeyword(res) {//输入关键词
         that.keyword = res;
         that.research2()
-      }
-      , research() {//搜索下拉刷新
+      }  , research() {//搜索下拉刷新
         this.$refs.search.setBlur();
         that.searchpage = 1;
         that.getsearch()
@@ -456,49 +441,46 @@
 
             if (that.searchpage == 1) {
               that.searchlist = list;
-              that.resetsearchtop()
+              that.$refs.scroller1.reset({
+                top: 0
+              });
+              that.$refs.scroller1.donePulldown()
             } else {
               for (var i = 0; i < list.length; i++) {
                 that.searchlist.push(list[i])
               }
               that.$refs.scroller1.donePullup();
               that.$refs.scroller1.reset()
+            }
 
-            }
-            if (that.searchpage != 1) {
-              that.searchnodata = true
-            }
-            if (list.length < that.searchlimit) {
-              that.$refs.scroller1.disablePullup()
-            } else if (list.length == that.searchlimit) {
+            if (list.length == 0) {
+              that.$refs.scroller1.disablePullup();
+              if (that.page != 1) {
+                that.searchnodata = true
+              }
+            } else {
               that.searchnodata = false;
               that.$refs.scroller1.enablePullup()
             }
+            if (list.length < that.searchlimit && that.page == 1) {
+              that.$refs.scroller1.disablePullup()
+            }
 
             that.$vux.loading.hide()
-          }, function (res) {
-            that.resetsearchtop();
-            that.$vux.loading.hide()
-          })
-
+          } )
 
         } else {
           //输入空
           if (that.searchpage == 1) {
-            that.resetsearchtop()
+            that.$refs.scroller1.reset({
+              top: 0
+            });
+            that.$refs.scroller1.donePulldown()
           }
         }
 
 
-      }, resetsearchtop() {//回到到顶部
-        setTimeout(() => {
-          that.$refs.scroller1.reset({
-            top: 0
-          });
-          that.$refs.scroller1.donePulldown()
-        }, 1 * 800)
-      }
-      ,
+      } ,
       histroyshow() {//历史记录
         console.log(that.$refs.histroy);
         that.showhistroy = !that.showhistroy
@@ -536,12 +518,6 @@
           })
         }
       }
-    }, updated() {
-      console.log("--ss--", this.$refs.box.scrollTop())
-    }, beforeDestroy() {
-      console.log("window.pageYOffset", window.pageYOffset);
-      console.log("document.documentElement.scrollTop", document.documentElement.scrollTop);
-      console.log("document.body.scrollTop", document.body.scrollTop)
     }
   }
 </script>

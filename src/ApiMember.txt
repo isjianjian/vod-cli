@@ -186,8 +186,10 @@ localhost:8080/hotel_vod/api/vod/queryVod?openid=123&tokenUserId=1&tokenType=1
 
 openid  会员openid
 sid    资源id
+type   资源类型 默认点播
+dimensions   2d/3d       1.2d,2.3d  默认2d
 localhost:8080/hotel_vod/api/vod/play?openid=123&sid=123456
-
+返回：data  上次播放位置
 错误代码: 100 未绑定, 110 未支付
 -------------------------------------------------------------------
 
@@ -196,7 +198,7 @@ localhost:8080/hotel_vod/api/vod/play?openid=123&sid=123456
 openid  会员openid
 mac    mac地址
 localhost:8080/hotel_vod/api/vod/bind?openid=123&mac=123
-
+返回酒店信息
 -------------------------------------------------------------------
 
 终端解绑（退出小程序时解绑房间。）
@@ -231,8 +233,9 @@ localhost:8080/hotel_vod/api/vod/preorder?openid=123&sid=6
 -------------------------------------------------------------------
 下单  (影片购买下单)
 openid     会员openid
-sid   资源id
+sid   资源id /小时
 credits 积分使用个数  不使用则为0
+sType   资源类型  2(直播)，3(ktv)，4(音乐)，5(游戏)
 localhost:8080/hotel_vod/api/vod/order?openid=123&sid=6&credits=20
 -------------------------------------------------------------------
 取消订单  (canorder)
@@ -285,3 +288,30 @@ openid 会员id
 lon 经度
 lat  纬度
 http://192.168.2.2:8080/hotel_vod/api/hotel/nearby
+-------------------------------------------------------------------
+验证是否购买
+openid 会员id
+sid 影片id
+http://192.168.2.2:8080/hotel_vod/api/vod/vi
+-------------------------------------------------------------------
+获取模块倒计时
+返回错误代码101 为未开通状态
+openid 会员id
+type   模块类型  2(直播)，3(ktv)，4(音乐)，5(游戏)
+http://192.168.2.2:8080/hotel_vod/api/module/countdown
+-------------------------------------------------------------------
+包时预下单
+openid 会员id
+sType   资源类型  2(直播)，3(ktv)，4(音乐)，5(游戏)
+hour    时长  小时
+http://localhost:8080/hotel_vod/api/other/preorde
+-------------------------------------------------------------------
+费用配置
+
+http://localhost:8080/hotel_vod/api/account
+-------------------------------------------------------------------
+openid 会员id
+
+http://localhost:8080/hotel_vod/api/bind/vi
+-------------------------------------------------------------------
+

@@ -92,7 +92,7 @@
           case 3://演唱会
             break;
           case 4://HIFI音乐
-            // url = "/music";
+            url = "/music";
             break;
           case 5://K歌
             url = "/kmusic";

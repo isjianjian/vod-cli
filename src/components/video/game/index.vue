@@ -46,23 +46,25 @@
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="relist"
                 @on-pullup-loading="addlist"
+                @on-scroll="savetop"
                 :use-pulldown="true" :use-pullup="true" ref="scroller" height="-40" lock-x :scrollbar-x=false
-                :scrollbar-y=false  style="padding-bottom: 20px;">
-       <div>
-         <div v-if="gamelist.length == 0" class='loading'>
+                :scrollbar-y=false style="padding-bottom: 20px;">
+        <div>
+          <div v-if="gamelist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-         </div>
-         <flexbox :gutter="0" wrap="wrap">
-           <flexbox-item :span="1/2"  v-for="(list,index) in gamelist" style="text-align: center;" @click.native="toplay(list)">
-             <img class="gameicon" :src="list.img_list"   ></img>
-             <div style="vertical-align: bottom;">
-             {{list.name}}
-             </div>
-           </flexbox-item>
-         </flexbox>
-       </div>
+          </div>
+          <flexbox :gutter="0" wrap="wrap">
+            <flexbox-item :span="1/2" v-for="(list,index) in gamelist" style="text-align: center;"
+                          @click.native="toplay(list)">
+              <img class="gameicon" :src="list.img_list"></img>
+              <div style="vertical-align: bottom;">
+                {{list.name}}
+              </div>
+            </flexbox-item>
+          </flexbox>
+        </div>
         <divider v-if="nodata">我是有底线的</divider>
       </scroller>
     </view-box>
@@ -83,6 +85,7 @@
   import Flexbox from "vux/src/components/flexbox/flexbox";
   import FlexboxItem from "vux/src/components/flexbox/flexbox-item";
   import Divider from "vux/src/components/divider/index";
+
   export default {
     components: {
       Divider,
@@ -132,12 +135,30 @@
         options: {},
       }
     }
-    // , destroyed() {
-    //   socket.disconnect()
-    // }
+    , destroyed() {
+      var that = this;
+      that.common.currentlistgame = that.gamelist
+    }
     , mounted() {
       var that = this;
-      that.getgamelist();
+      if (that.common.currentlistgame != null) {
+
+        that.gamelist = that.common.currentlistgame;
+        that.page= Math.ceil(that.gamelist.length/that.limit)
+        console.log( that.page)
+        setTimeout(function () {
+          that.$refs.scroller.reset({
+            top: that.common.savevodlistgame
+          })
+          if (that.gamelist.length < that.limit) {
+            that.$refs.scroller.disablePullup()
+          }
+        }, 1)
+
+      } else {
+        that.getgamelist();
+      }
+
 
       if (localStorage.getItem("ws") != "") {
         that.options = {host: localStorage.getItem("ws")}
@@ -183,6 +204,13 @@
           that.timeExpire = new Date(new Date().getTime() + res.count);
         })
       },
+      savetop(res) {
+
+        var that = this;
+        if (res.top != 0) {
+          that.common.savevodlistgame = res.top
+        }
+      },
       getgamelist() {
         var that = this;
         var url = "http://" + localStorage.getItem("hs") + "/if/game_list.php?page=" + that.page + "&pagesize=" + that.limit;
@@ -197,8 +225,8 @@
             el.id = JQ(e).find("[name='id']").html();
             el.name = JQ(e).find("[name='name']").html();
             el.exe_path = JQ(e).find("[name='exe_path']").html();
-            el.img_list = host+JQ(e).find("[name='img_list']").html();
-            el.img_detail = host+JQ(e).find("[name='img_detail']").html();
+            el.img_list = host + JQ(e).find("[name='img_list']").html();
+            el.img_detail = host + JQ(e).find("[name='img_detail']").html();
             el.joystick = JQ(e).find("[name='joystick']").html();
             el.flag_3d = JQ(e).find("[name='flag_3d']").html();
             el.flag_vr = JQ(e).find("[name='flag_vr']").html();
@@ -256,7 +284,7 @@
         // console.log(list)
         // cmd=game_run 		立即运行（参数：gamename=游戏目录名称&gameid=游戏编号&type=2D运行维度&vol=默认音量）;
         this.common.playvideo = list;
-        localStorage.setItem("playtype",5);
+        localStorage.setItem("playtype", 5);
         localStorage.setItem("playname", list.name);
 
         var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
@@ -266,7 +294,7 @@
         // var cmd = "cmd=poweroff"
         // alert(cmd)
         socket.send(cmd);
-        this.common.playtype=5;
+        this.common.playtype = 5;
         this.$router.push("/video/ctrl")
       },
 
@@ -293,6 +321,7 @@
     height: 116px;
     border-radius: 4px;
   }
+
   .gameicon:active {
     transform: scale(1.1);
   }

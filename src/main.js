@@ -160,10 +160,10 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-   APPID: 'wxc24d07d05cfea4d3',//lv
- // APPID: 'wxb636c0b09a3fd9d1',//zhu
-  // APPID: 'wx4c232a8e7d2158ab',//公司
-  // APPID: 'wx23186818f05e0eeb',//广州
+   // APPID: 'wxc24d07d05cfea4d3',//lv
+ APPID: 'wxb636c0b09a3fd9d1',//zhu
+ //  APPID: 'wx4c232a8e7d2158ab',//公司
+ //  APPID: 'wx23186818f05e0eeb',//广州
   user: {},
 };
 Vue.prototype.his = {
@@ -173,8 +173,8 @@ Vue.prototype.his = {
 };
 Vue.prototype.common = {
   ID_HIGH_ORDER : 10000000000,
-   SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
-  // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
+   // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
+  SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
   // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
   // SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
@@ -185,8 +185,18 @@ Vue.prototype.common = {
   dqurl: "",
   playvideo: {},
   playtype: 0,
-  videoscrolltop: 0,
+  savevodcatpos:0,
+  savevodcat:0,
+  savevodlistpos:0,
+  savevodlist: 0,
+  savevodlistmusic: 0,
+  savevodlistktv: 0,
+  savevodlistgame: 0,
+
   currentlist: null,
+  currentlistmusic: null,
+  currentlistktv: null,
+  currentlistgame: null,
   isband: false,
 };
 
@@ -445,6 +455,34 @@ router.beforeEach((to, from, next) => {
 FastClick.attach(document.body);
 
 Vue.config.productionTip = false;
+
+
+
+
+Vue.prototype.dqsocketcon = function () {
+  // console.log("sssssssssssss")
+  var tt = this
+  var ws = ""
+
+  if (tt.ws != null) {
+    ws = "ws://" + tt.ws
+  } else if (localStorage.getItem("ws") != null) {
+    ws = "ws://" + localStorage.getItem("ws")
+  } else {
+    return;
+  }
+  window.dqsocket = new WebSocket(ws, 'dumb-increment-protocol');
+  window.dqsocket.onopen = function (msg) {
+    console.log("连接客户端" + ws + "成功")
+    // tt.$vux.toast.text("连接客户端" + ws + "成功", 'center')
+  }
+  // tt.dqsocket.onmessage=function (msg) {
+  //   // console.log(msg)
+  // }
+  window.dqsocket.onclose = function (msg) {
+    tt.$vux.toast.text("与服务器失去连接，请检查网络。", 'center')
+  }
+};
 
 
 /* eslint-disable no-new */

@@ -1,78 +1,88 @@
 <template>
+
   <div v-if="common.hotel!=null" style="height:100%;background: #fff;">
     <view-box ref="viewBox">
-      <div v-if="restype== 0" class='loading'>
+      <div>
+
+
+        <div v-if="restype==1">
+          <divider v-if="restype!= 0"> {{restype==5?"正在玩"+name:"正在播放"+name}}</divider>
+          <divider> 电影</divider>
+          <flexbox :gutter="0" wrap="wrap" style="margin-top: 10px;">
+            <div class="page-ctrl-btns ctrl-btn-info sendcmd" v-on:click="sendcmd('cmd=movie_info')"></div>
+            <div class="page-ctrl-btns ctrl-btn-track sendcmd" v-on:click="sendcmd('cmd=movie_track')"></div>
+            <div class="page-ctrl-btns ctrl-btn-subtitle sendcmd" v-on:click="sendcmd('cmd=movie_subtitle')"></div>
+            <div class="page-ctrl-btns ctrl-btn-stop sendcmd" v-on:click="sendcmd('cmd=movie_stop')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=movie_vol&value=1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
+                 v-on:click="sendcmd('cmd=movie_vol&value=-1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-mute sendcmd" v-on:click="sendcmd('cmd=movie_mute')"></div>
+            <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=movie_resume')"></div>
+          </flexbox>
+        </div>
+        <div v-if="restype==3">
+          <divider> K歌</divider>
+          <flexbox :gutter="0" wrap="wrap">
+            <div class="page-ctrl-btns ctrl-btn-mic-add sendcmd" v-on:click="sendcmd('cmd=ktv_mic_add')"></div>
+            <div class="page-ctrl-btns ctrl-btn-mic-reduct sendcmd" v-on:click="sendcmd('cmd=ktv_mic_reduce')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=ktv_vol&value=1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
+                 v-on:click="sendcmd('cmd=ktv_vol&value=-1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-mute sendcmd" v-on:click="sendcmd('cmd=ktv_mute')"></div>
+            <div class="page-ctrl-btns ctrl-btn-replay sendcmd" v-on:click="sendcmd('cmd=ktv_replay')"></div>
+            <div class="page-ctrl-btns ctrl-btn-next sendcmd" v-on:click="sendcmd('cmd=ktv_next')"></div>
+            <div class="page-ctrl-btns ctrl-btn-original sendcmd" v-on:click="sendcmd('cmd=ktv_original')"></div>
+            <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=ktv_resume')"></div>
+            <!--<div class="page-ctrl-btns btn-ktv-additional ctrl-btn-light" v-on:click="sendcmd('cmd=ktv_mic_add')"></div>-->
+            <div class="page-ctrl-btns ctrl-btn-stop sendcmd" v-on:click="sendcmd('cmd=ktv_stop')"></div>
+          </flexbox>
+        </div>
+        <div v-if="restype==4">
+
+          <divider> HIFI音乐</divider>
+          <flexbox :gutter="0" wrap="wrap">
+            <div class="page-ctrl-btns ctrl-btn-random sendcmd" v-on:click="sendcmd('cmd=music_random')"></div>
+            <div class="page-ctrl-btns ctrl-btn-loop sendcmd" v-on:click="sendcmd('cmd=cmd=music_all_repeat')"></div>
+            <div class="page-ctrl-btns ctrl-btn-stop sendcmd" v-on:click="sendcmd('cmd=music_stop')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=music_vol&value=1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
+                 v-on:click="sendcmd('cmd=music_vol&value=-1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-next-music sendcmd" v-on:click="sendcmd('cmd=music_next')"></div>
+            <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=music_resume')"></div>
+          </flexbox>
+        </div>
+
+        <div v-if="restype==5">
+          <divider v-if="restype!= 0"> {{restype==5?"正在玩"+name:"正在播放"+name}}</divider>
+          <divider> 游戏</divider>
+          <flexbox :gutter="0" wrap="wrap">
+            <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=game_vol&value=1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
+                 v-on:click="sendcmd('cmd=game_vol&value=-1000')"></div>
+            <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=game_resume')"></div>
+            <div class="page-ctrl-btns ctrl-btn-exit sendcmd" v-on:click="sendcmd('cmd=game_stop')"></div>
+          </flexbox>
+        </div>
+
+
+        <div v-if="restype==1||restype==3||restype==4">
+          <flexbox :gutter="0" wrap="wrap">
+            <flexbox-item>
+              <cell :inline-desc="sec_to_time(curpos)+'|'+sec_to_time(duration)" primary="content"/>
+
+
+              <range v-model="data" :range-bar-height="4" @on-change="changedata"></range>
+            </flexbox-item>
+          </flexbox>
+        </div>
+
+
+        <div v-if="restype== 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 先去播放吧
               </span>
-      </div>
-      <divider v-if="restype!= 0"> {{restype==5?"正在玩"+name:"正在播放"+name}}</divider>
+        </div>
 
-
-      <div v-if="restype==1">
-        <divider> 电影</divider>
-        <flexbox :gutter="0" wrap="wrap" style="margin-top: 10px;">
-          <div class="page-ctrl-btns ctrl-btn-info sendcmd" v-on:click="sendcmd('cmd=movie_info')"></div>
-          <div class="page-ctrl-btns ctrl-btn-track sendcmd" v-on:click="sendcmd('cmd=movie_track')"></div>
-          <div class="page-ctrl-btns ctrl-btn-subtitle sendcmd" v-on:click="sendcmd('cmd=movie_subtitle')"></div>
-          <div class="page-ctrl-btns ctrl-btn-stop sendcmd" v-on:click="sendcmd('cmd=movie_stop')"></div>
-          <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=movie_vol&value=1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
-               v-on:click="sendcmd('cmd=movie_vol&value=-1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-mute sendcmd" v-on:click="sendcmd('cmd=movie_mute')"></div>
-          <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=movie_resume')"></div>
-        </flexbox>
-      </div>
-      <div v-if="restype==3">
-        <divider> K歌</divider>
-        <flexbox :gutter="0" wrap="wrap">
-          <div class="page-ctrl-btns ctrl-btn-mic-add sendcmd" v-on:click="sendcmd('cmd=ktv_mic_add')"></div>
-          <div class="page-ctrl-btns ctrl-btn-mic-reduct sendcmd" v-on:click="sendcmd('cmd=ktv_mic_reduce')"></div>
-          <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=ktv_vol&value=1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd" v-on:click="sendcmd('cmd=ktv_vol&value=-1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-mute sendcmd" v-on:click="sendcmd('cmd=ktv_mute')"></div>
-          <div class="page-ctrl-btns ctrl-btn-replay sendcmd" v-on:click="sendcmd('cmd=ktv_replay')"></div>
-          <div class="page-ctrl-btns ctrl-btn-next sendcmd" v-on:click="sendcmd('cmd=ktv_next')"></div>
-          <div class="page-ctrl-btns ctrl-btn-original sendcmd" v-on:click="sendcmd('cmd=ktv_original')"></div>
-          <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=ktv_resume')"></div>
-          <!--<div class="page-ctrl-btns btn-ktv-additional ctrl-btn-light" v-on:click="sendcmd('cmd=ktv_mic_add')"></div>-->
-          <div class="page-ctrl-btns ctrl-btn-stop sendcmd" v-on:click="sendcmd('cmd=ktv_stop')"></div>
-        </flexbox>
-      </div>
-      <div v-if="restype==5">
-        <divider> 游戏</divider>
-        <flexbox :gutter="0" wrap="wrap">
-          <div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" v-on:click="sendcmd('cmd=game_vol&value=1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd"
-               v-on:click="sendcmd('cmd=game_vol&value=-1000')"></div>
-          <div class="page-ctrl-btns ctrl-btn-pause sendcmd" v-on:click="sendcmd('cmd=game_resume')"></div>
-          <div class="page-ctrl-btns ctrl-btn-exit sendcmd" v-on:click="sendcmd('cmd=game_stop')"></div>
-        </flexbox>
-      </div>
-      <!--<flexbox :gutter="0" wrap="wrap">-->
-      <!--<div class="page-ctrl-btns ctrl-btn-list" role="button" data-toggle="modal" data-target=".bs-pop-list"></div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-random sendcmd" data-idx=0></div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-loop sendcmd" data-idx=1></div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-stop sendcmd" data-idx=2></div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-vol-add sendcmd" data-idx=3 data-value=1000>-->
-      <!--<div class="raiseup"><span style="display: none;">80</span></div>-->
-      <!--</div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-vol-reduct sendcmd" data-idx=3 data-value=-1000>-->
-      <!--<div class="raiseup"><span style="display: none;">80</span></div>-->
-      <!--</div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-next-music sendcmd" data-idx=4></div>-->
-      <!--<div class="page-ctrl-btns ctrl-btn-pause sendcmd" data-idx=5></div>-->
-      <!--</flexbox>-->
-
-      <div v-if="restype==1||restype==3">
-        <flexbox :gutter="0" wrap="wrap">
-          <flexbox-item>
-            <cell :inline-desc="sec_to_time(curpos)+'|'+sec_to_time(duration)" primary="content"/>
-
-
-            <range v-model="data" :range-bar-height="4" @on-change="changedata"></range>
-          </flexbox-item>
-        </flexbox>
       </div>
 
     </view-box>
@@ -202,8 +212,11 @@
 
         socket.send(cmd)
 
-        if (cmd == "cmd=movie_stop" || cmd == "cmd=ktv_stop" || cmd == "cmd=game_stop") {
+
+        if (cmd == "cmd=movie_stop" || cmd == "cmd=ktv_stop" || cmd == "cmd=game_stop" || cmd == "cmd=music_stop") {
           window.history.back()
+          localStorage.setItem("playtype", 0)
+          that.restype = localStorage.getItem("playtype")
         }
       },
 

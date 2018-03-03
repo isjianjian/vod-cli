@@ -234,7 +234,7 @@
         // alert("可用积分"+ this.preorder.can_use_credits)
         // alert("可抵积分"+ this.preorder.credits)
         // if (this.preorder.credits < this.preorder.can_use_credits) {
-        if (this.preorder.credits > this.preorder.can_use_credits) {
+        if (this.preorder.credits < this.preorder.can_use_credits) {
           console.log(newVal, oldVal);
           this.$vux.toast.text("积分不足", 'center');
           return
