@@ -70,7 +70,7 @@
         "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token+"&yxtoken="+this.common.TOKEN;
 
 
-      alert(this.url)
+      // alert(this.url)
       console.log(this.url)
 
     }, methods: {}

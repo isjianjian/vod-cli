@@ -68,6 +68,8 @@
         window.location.href = url
       }
 
+
+
     },
     methods: {}
   }

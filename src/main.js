@@ -182,8 +182,18 @@ Vue.prototype.common = {
   dqurl: "",
   playvideo: {},
   playtype: 0,
-  videoscrolltop: 0,
+  savevodcatpos:0,
+  savevodcat:0,
+  savevodlistpos:0,
+  savevodlist: 0,
+  savevodlistmusic: 0,
+  savevodlistktv: 0,
+  savevodlistgame: 0,
+
   currentlist: null,
+  currentlistmusic: null,
+  currentlistktv: null,
+  currentlistgame: null,
   isband: false,
 };
 
@@ -415,6 +425,34 @@ router.beforeEach((to, from, next) => {
 FastClick.attach(document.body);
 
 Vue.config.productionTip = false;
+
+
+
+
+Vue.prototype.dqsocketcon = function () {
+  // console.log("sssssssssssss")
+  var tt = this
+  var ws = ""
+
+  if (tt.ws != null) {
+    ws = "ws://" + tt.ws
+  } else if (localStorage.getItem("ws") != null) {
+    ws = "ws://" + localStorage.getItem("ws")
+  } else {
+    return;
+  }
+  window.dqsocket = new WebSocket(ws, 'dumb-increment-protocol');
+  window.dqsocket.onopen = function (msg) {
+    console.log("连接客户端" + ws + "成功")
+    // tt.$vux.toast.text("连接客户端" + ws + "成功", 'center')
+  }
+  // tt.dqsocket.onmessage=function (msg) {
+  //   // console.log(msg)
+  // }
+  window.dqsocket.onclose = function (msg) {
+    tt.$vux.toast.text("与服务器失去连接，请检查网络。", 'center')
+  }
+};
 
 
 /* eslint-disable no-new */

@@ -27,18 +27,19 @@
       if (!this.common.wxinit) {
         this.initWechat()
       }
-    this.checkonline()
+      this.checkonline()
+      this.dqsocketcon()
     },
     methods: {
-      checkonline:function(){
+      checkonline: function () {
         var that = this;
         that.api_post("api/bind/vi", function (res) {
           setTimeout(function (res) {
             that.checkonline()
-          },5*60*1000)
+          }, 5 * 60 * 1000)
         }, function (res) {
-          if (that.common.hotel != null){
-            window.location.href="/"
+          if (that.common.hotel != null) {
+            window.location.href = "/"
           }
         })
 

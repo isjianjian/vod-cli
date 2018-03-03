@@ -5,6 +5,7 @@
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="relist"
                 @on-pullup-loading="addlist"
+                @on-scroll="savevodlist"
                 :use-pulldown="true" :use-pullup="true" ref="scroller" height="-40" lock-x :scrollbar-x=false
                 :scrollbar-y=false  style="padding-bottom: 20px;">
        <div>
@@ -83,12 +84,25 @@
         options: {},
       }
     }
-    // , destroyed() {
-    //   socket.disconnect()
-    // }
+    , destroyed() {
+      var that = this;
+      that.common.currentlistgame= that.gamelist
+    }
     , mounted() {
       var that = this;
-      that.getgamelist();
+      if (that.common.currentlistgame != null) {
+
+        that.gamelist = that.common.currentlistgame;
+
+        that.$refs.scroller.reset({
+          top: that.common.savevodlistgame
+        })
+
+      } else {
+        that.getgamelist();
+      }
+
+
 
       if (localStorage.getItem("ws") != "") {
         that.options = {host: localStorage.getItem("ws")}
@@ -125,6 +139,10 @@
 
     }
     , methods: {
+      savevodlist(res) {
+        var that = this;
+        that.common.savevodlistgame = res.top
+      },
       getgamelist() {
         var that = this;
         var url = "http://" + localStorage.getItem("hs") + "/if/game_list.php?page=" + that.page + "&pagesize=" + that.limit;
