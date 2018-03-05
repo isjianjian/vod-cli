@@ -14,7 +14,7 @@
           <marquee-item class="align-middle">
             <div v-if="open" class="clock" style="color: #6e6e6e">
               剩余时间
-              <clocker :time="timeExpire">
+              <clocker :time="timeExpire" :on-finish="finish">
                 <span class="day">%_H1</span>
                 <span class="day">%_H2</span>
                 <span class="day">:</span>
@@ -323,6 +323,9 @@
         }, function () {
           that.open = false;
         })
+      },
+      finish(){
+        this.checkOpen();
       },
       savetop(res) {
         var that = this;
