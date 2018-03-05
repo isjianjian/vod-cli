@@ -292,7 +292,7 @@
       } else {
         that.revideo()
       }
-
+      that.checkOpen();
 
     }, methods: {
       otherbuy() {
