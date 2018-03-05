@@ -221,6 +221,8 @@
       Radio,
     }, data() {
       return {
+        open: false,
+        timeExpire: '2018-03-04 12:00:00',
         hour: 3,
         hours: ['3', '6'],
         hoursValue: '3',
@@ -296,6 +298,7 @@
           if (that.vodlist.length < that.limit) {
             that.$refs.scroller.disablePullup()
           }
+          that.$refs.scroller.donePulldown()
         }, 1)
 
 

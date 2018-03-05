@@ -178,6 +178,7 @@
           if (that.gamelist.length < that.limit) {
             that.$refs.scroller.disablePullup()
           }
+          that.$refs.scroller.donePulldown()
         }, 1)
 
       } else {

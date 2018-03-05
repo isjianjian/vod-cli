@@ -43,7 +43,7 @@
           <br>
           <br>
           <span style="display: inline-block;padding-right: 20px;padding-left: 20px;">
-            <x-button v-if="type == 2" @click.native="play" type="primary">播放影片</x-button>
+            <x-button v-if="type == 1" @click.native="play" type="primary">播放影片</x-button>
             <x-button v-if="type == 2" @click.native="live" type="primary">去看直播</x-button>
             <x-button v-if="type == 3"  @click.native="ktv" type="primary">去KTV</x-button>
             <x-button v-if="type == 4"  @click.native="music" type="primary">去听音乐</x-button>
