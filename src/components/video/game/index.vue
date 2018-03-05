@@ -39,7 +39,7 @@
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
         <div v-if="open" style="padding-bottom: 10px;">
-          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>续费</x-button>
         </div>
       </div>
     </x-header>
@@ -361,6 +361,9 @@
 
 
 <style>
+  .vux-header .vux-header-left {
+    top: 10px !important;
+  }
   .vux-header .vux-header-right {
     top: 10px !important;
   }

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div>{{url}}</div>
     <iframe style="width: 99%;height:99%;" :src="url"></iframe>
   </div>
 </template>
