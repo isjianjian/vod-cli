@@ -1,7 +1,52 @@
 <template>
   <div>
     <!--style="background-color: #fff;"-->
+
+    <x-header :left-options="{showBack:false}" title="slot:overwrite-title">
+      <div class="overwrite-title-demo" slot="overwrite-title">
+
+        <marquee style="margin-top: 8px;" :interval="3000">
+          <marquee-item class="align-middle" v-if="open">
+            <div style="text-align: center; font-size: 14px;color:#6E6E6E;">
+              您已开通K歌功能
+            </div>
+          </marquee-item>
+          <marquee-item class="align-middle">
+            <div v-if="open" class="clock" style="color: #6e6e6e">
+              剩余时间
+              <clocker :time="timeExpire">
+                <span class="day">%_H1</span>
+                <span class="day">%_H2</span>
+                <span class="day">:</span>
+                <span class="day">%_M1</span>
+                <span class="day">%_M2</span>
+                <span class="day">:</span>
+                <span class="day">%_S1</span>
+                <span class="day">%_S2</span>
+              </clocker>
+            </div>
+            <div v-if="!open" style="text-align: center; font-size: 14px;color:#6E6E6E;">
+              未开通K歌功能
+            </div>
+          </marquee-item>
+        </marquee>
+      </div>
+      <div slot="left">
+        <div v-if="open" style="padding-bottom: 10px;">
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="ctrl" mini>遥控</x-button>
+        </div>
+      </div>
+      <div slot="right">
+        <div v-if="!open" style="padding-bottom: 10px;">
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
+        </div>
+        <div v-if="open" style="padding-bottom: 10px;">
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
+        </div>
+      </div>
+    </x-header>
     <div v-if="common.hotel!=null">
+
       <view-box ref="box">
 
         <flexbox class="top">
@@ -62,7 +107,7 @@
 
 
         <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-          <cell title="已点歌曲" is-link link="/nowplay">
+          <cell title="已点歌曲" is-link link="/kmusic/nowplay">
             <img slot="icon" width="20" style="display:block;margin-right:5px;"
                  src="../../../assets/images/histroy_icon.png">
           </cell>
@@ -113,7 +158,21 @@
           <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
         </scroller>
 
+        <div v-transfer-dom>
 
+          <popup v-model="show" height="270px" is-transparent>
+            <div
+              style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+              <group :title="'请选择开通续费时长(单位：小时)'">
+                <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+                       @on-change="changehours"></radio>
+                <div style="padding:20px 15px;">
+                  <x-button type="primary" @click.native="otherbuy">确定</x-button>
+                </div>
+              </group>
+            </div>
+          </popup>
+        </div>
       </view-box>
     </div>
 
@@ -121,11 +180,13 @@
 </template>
 
 <script>
+  import {XHeader, Popup, Radio} from 'vux'
+  import {Grid, GridItem, GroupTitle, Clocker, Marquee, MarqueeItem, XButton} from 'vux'
+
   import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox, Selector} from 'vux'
   import Search from "vux/src/components/search/index";
   import Cell from "vux/src/components/cell/index";
   import Group from "vux/src/components/group/index";
-  import XButton from "vux/src/components/x-button/index";
   import Toast from "vux/src/components/toast/index";
   import ViewBox from "vux/src/components/view-box/index";
   import LoadMore from "vux/src/components/load-more/index";
@@ -140,7 +201,6 @@
       LoadMore,
       ViewBox,
       Toast,
-      XButton,
       Group,
       Cell,
       Search,
@@ -152,8 +212,19 @@
       Tab,
       JQ,
       Selector,
+      XHeader,
+      Clocker,
+      Marquee,
+      MarqueeItem,
+      XButton,
+      Popup,
+      Radio,
     }, data() {
       return {
+        hour: 3,
+        hours: ['3', '6'],
+        hoursValue: '3',
+        show: false,
         defaultValue: 'qb',
         list: [{key: 'qb', value: '全部'}, {key: 'py', value: '拼音'}],
         downconfig: {
@@ -214,7 +285,7 @@
       if (that.common.currentlistktv != null) {
 
         that.vodlist = that.common.currentlistktv;
-        that.page= Math.ceil(that.vodlist.length/that.limit)
+        that.page = Math.ceil(that.vodlist.length / that.limit)
         setTimeout(function () {
           that.$refs.scroller.reset({
             top: that.common.savevodlistktv
@@ -232,6 +303,35 @@
 
 
     }, methods: {
+      otherbuy() {
+        try {
+          var h = this.hour
+          if (parseInt(h) > 0 && parseInt(h) < 24) {
+            this.$router.push("/video/otherbuy?type=3&hour=" + this.hour)
+          } else {
+            this.$vux.toast.text("请输入有效时间", 'center')
+          }
+        } catch (e) {
+          this.$vux.toast.text("请输入有效时间", 'center')
+        }
+      },
+      changehours(res) {
+        this.hour = res
+      },
+      open_model() {
+        var that = this;
+        that.show = true;
+      },
+      checkOpen() {
+        var that = this;
+        that.api_post("api/module/countdown?type=3", function (res) {
+          that.open = true;
+          that.timeExpire = new Date().getTime() + res.data.count;
+          console.log('timeExpire', that.timeExpire)
+        }, function () {
+          that.open = false;
+        })
+      },
       savetop(res) {
 
         var that = this;
@@ -444,32 +544,38 @@
         }
       }, toplay(list) {
         // console.log(list)
-        // cmd=music_play 		立即播放（参数：pid=节目编号&type=134节目类型&idx=播放索引）;
-        // cmd=music_playadd 	插播（参数：pid=节目编号&type=134节目类型&idx=播放索引）;
-        this.common.playvideo = list
-        localStorage.setItem("playtype", 4)
-        localStorage.setItem("playname", list.name)
-        that.$vux.confirm.show({
-          title: "温馨提示",
-          content: "",
-          confirmText: "插播",
-          cancelText: "立即播放",
-          onCancel() {
-            var cm = "cmd=music_play&pid=" + list.id + "&type=134";
-            that.sendcmd(cm)
-          },
-          onConfirm() {
-            var cm = "cmd=music_playadd&pid=" + list.id + "&type=134";
-            that.sendcmd(cm)
+        // 立即播放（参数：song_id=节目编号&type=164节目类型&cloud=是否云播放&first=Y/N是否插播&player=）;
+        if (that.open) {
+          this.common.playvideo = list
+          localStorage.setItem("playtype", 3)
+          localStorage.setItem("playname", list.name)
 
-          }
-        })
+          that.$vux.confirm.show({
+            title: "温馨提示",
+            content: "",
+            confirmText: "播放",
+            cancelText: "添加",
+            onCancel() {
+              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=Y&player=";
+              that.sendcmd(cm)
+            },
+            onConfirm() {
+              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=N&player=";
+              that.sendcmd(cm)
+
+            }
+          })
+        } else {
+          that.$vux.toast.text("请先开通", "center")
+        }
 
 
       }, sendcmd(cmd) {
         // alert(cmd)
         window.dqsocket.send(cmd)
-        this.common.playtype = 4
+
+      }, ctrl() {
+        // this.common.playtype = 3
         this.$router.push("/video/ctrl")
       }
     }
@@ -696,6 +802,22 @@
     text-align: center;
   }
 
+  .clock {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .vux-x-icon {
+    fill: #1AAD19;
+  }
+
+  .clock span {
+
+    color: #6E6E6E;
+    text-align: center;
+    display: inline-block;
+
+  }
 </style>
 
 

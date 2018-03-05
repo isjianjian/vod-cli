@@ -209,7 +209,7 @@
       sendcmd(cmd) {
         // var cmd = "cmd=poweroff"
         // alert(cmd)
-        var that=this
+        var that = this;
 
         socket.send(cmd)
 
@@ -218,7 +218,8 @@
           window.history.back()
           localStorage.setItem("playtype", 0)
           that.restype = localStorage.getItem("playtype")
-          router.go(0)
+          location.reload();
+          // router.go(0)
         }
       },
 

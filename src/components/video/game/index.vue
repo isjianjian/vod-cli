@@ -4,7 +4,7 @@
       <div class="overwrite-title-demo" slot="overwrite-title">
 
         <marquee style="margin-top: 8px;" :interval="3000">
-          <marquee-item class="align-middle" v-if="open"  >
+          <marquee-item class="align-middle" v-if="open">
             <div style="text-align: center; font-size: 14px;color:#6E6E6E;">
               您已开通游戏功能
             </div>
@@ -29,12 +29,17 @@
           </marquee-item>
         </marquee>
       </div>
+      <div slot="left">
+        <div v-if="open" style="padding-bottom: 10px;">
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="ctrl" mini>遥控</x-button>
+        </div>
+      </div>
       <div slot="right">
         <div v-if="!open" style="padding-bottom: 10px;">
-           <x-button  :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
         <div v-if="open" style="padding-bottom: 10px;">
-          <x-button  :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
         </div>
       </div>
     </x-header>
@@ -65,12 +70,28 @@
         <divider v-if="nodata">我是有底线的</divider>
       </scroller>
     </view-box>
+
+    <div v-transfer-dom>
+
+      <popup v-model="show" height="270px" is-transparent>
+        <div style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+          <group :title="'请选择开通续费时长(单位：小时)'">
+            <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+                   @on-change="changehours"></radio>
+            <div style="padding:20px 15px;">
+              <x-button type="primary" @click.native="otherbuy">确定</x-button>
+            </div>
+          </group>
+        </div>
+      </popup>
+    </div>
   </div>
+
 </template>
 
 <script>
-  import { XHeader } from 'vux'
-  import { Grid, GridItem, GroupTitle ,Clocker,Marquee, MarqueeItem,XButton} from 'vux'
+  import {XHeader, Popup, Radio} from 'vux'
+  import {Grid, GridItem, GroupTitle, Clocker, Marquee, MarqueeItem, XButton} from 'vux'
 
   var socket;
   import ViewBox from "vux/src/components/view-box/index";
@@ -99,13 +120,19 @@
       Clocker,
       Marquee,
       MarqueeItem,
-      XButton
+      XButton,
+      Popup,
+      Radio,
     },
     name: "index",
     data() {
       return {
-        open:false,
-        timeExpire:'2018-03-04 12:00:00',
+        hour: 3,
+        hours: ['3', '6'],
+        hoursValue: '3',
+        show: false,
+        open: false,
+        timeExpire: '2018-03-04 12:00:00',
         gamelist: [],
         page: 1,
         limit: 12,
@@ -130,6 +157,7 @@
           clsPrefix: 'xs-plugin-pullup-'
         },
         options: {},
+
       }
     }
     , destroyed() {
@@ -141,8 +169,8 @@
       if (that.common.currentlistgame != null) {
 
         that.gamelist = that.common.currentlistgame;
-        that.page= Math.ceil(that.gamelist.length/that.limit)
-        console.log( that.page)
+        that.page = Math.ceil(that.gamelist.length / that.limit)
+        console.log(that.page)
         setTimeout(function () {
           that.$refs.scroller.reset({
             top: that.common.savevodlistgame
@@ -194,13 +222,32 @@
 
     }
     , methods: {
-      checkOpen(){
+      otherbuy() {
+        try {
+          var h= this.hour
+          if(parseInt(h)>0&&parseInt(h)<24){
+            this.$router.push("/video/otherbuy?type=5&hour="+this.hour)
+          }else{
+            this.$vux.toast.text("请输入有效时间", 'center')
+          }
+        } catch (e) {
+          this.$vux.toast.text("请输入有效时间", 'center')
+        }
+      },
+      changehours(res) {
+        this.hour = res
+      },
+      open_model() {
         var that = this;
-        that.api_post("api/module/countdown?type=5",function (res) {
+        that.show = true;
+      },
+      checkOpen() {
+        var that = this;
+        that.api_post("api/module/countdown?type=5", function (res) {
           that.open = true;
-          that.timeExpire =  new Date().getTime() + res.data.count;
-          console.log('timeExpire',that.timeExpire)
-        },function () {
+          that.timeExpire = new Date().getTime() + res.data.count;
+          console.log('timeExpire', that.timeExpire)
+        }, function () {
           that.open = false;
         })
       },
@@ -213,8 +260,8 @@
       },
       getgamelist() {
         var that = this;
-        var url = "http://" + localStorage.getItem("hs") + "/if/game_list.php?page=" + that.page + "&pagesize=" + that.limit;
-        // console.log(url)
+        var url = "http://" + localStorage.getItem("hs") + "/if/game_list.php?page=" + that.page + "&pagesize=" + that.limit + "&sn=" + localStorage.getItem("sn");
+        console.log(url);
         that.$http.get(url).then(function (res) {
           // console.log(res)
           var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='game_list'] entry");
@@ -283,20 +330,27 @@
       }, toplay(list) {
         // console.log(list)
         // cmd=game_run 		立即运行（参数：gamename=游戏目录名称&gameid=游戏编号&type=2D运行维度&vol=默认音量）;
-        this.common.playvideo = list;
-        localStorage.setItem("playtype", 5);
-        localStorage.setItem("playname", list.name);
+        if (this.open) {
+          this.common.playvideo = list;
+          localStorage.setItem("playtype", 5);
+          localStorage.setItem("playname", list.name);
 
-        var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
-        // alert(cm)
-        this.sendcmd(cm)
+          var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
+          // alert(cm)
+          this.sendcmd(cm)
+        } else {
+          this.$vux.toast.text("请先开通", "center")
+        }
       }, sendcmd(cmd) {
         // var cmd = "cmd=poweroff"
         // alert(cmd)
         socket.send(cmd);
-        this.common.playtype = 5;
+
+      }, ctrl() {
+        // this.common.playtype = 5;
         this.$router.push("/video/ctrl")
-      },
+      }
+
 
     }
   }
@@ -304,8 +358,8 @@
 
 
 <style>
-  .vux-header .vux-header-right{
-    top:10px!important;
+  .vux-header .vux-header-right {
+    top: 10px !important;
   }
 </style>
 <style scoped>

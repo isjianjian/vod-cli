@@ -209,6 +209,7 @@
       sendcmd(cmd) {
         // var cmd = "cmd=poweroff"
         // alert(cmd)
+        var that = this;
 
         socket.send(cmd)
 
