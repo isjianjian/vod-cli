@@ -41,7 +41,7 @@
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
         <div v-if="open" style="padding-bottom: 10px;">
-          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="" mini>续费</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>续费</x-button>
         </div>
       </div>
     </x-header>
@@ -221,6 +221,8 @@
       Radio,
     }, data() {
       return {
+        open: false,
+        timeExpire: '2018-03-04 12:00:00',
         hour: 3,
         hours: ['3', '6'],
         hoursValue: '3',
@@ -279,8 +281,11 @@
       that.common.currentlistktv = that.vodlist
     }
     , mounted() {
-      socket = window.dqsocket
       that = this;
+      that.checkOpen();
+
+      socket = window.dqsocket
+
 
       if (that.common.currentlistktv != null) {
 
@@ -293,6 +298,7 @@
           if (that.vodlist.length < that.limit) {
             that.$refs.scroller.disablePullup()
           }
+          that.$refs.scroller.donePulldown()
         }, 1)
 
 
@@ -301,7 +307,7 @@
         that.revideo()
       }
 
-      that.checkOpen();
+
 
 
     }, methods: {
@@ -586,7 +592,14 @@
     }
   }
 </script>
-
+<style>
+  .vux-header .vux-header-left {
+    top: 10px !important;
+  }
+  .vux-header .vux-header-right {
+    top: 10px !important;
+  }
+</style>
 <style scoped>
 
   .top {

@@ -233,7 +233,7 @@
       toPay: function (res) {
         var bill = JSON.parse(res.target.dataset.bill);
         console.log(res, bill);
-        this.$router.push("/video/pay?id=" + bill.billid + "&body=" + bill.body + "&total=" + bill.total + "&timeExpire=" + bill.timeExpire)
+        this.$router.push("/video/pay?id=" + bill.billid + "&body=" + bill.body + "&total=" + bill.total + "&timeExpire=" + bill.timeExpire+"&cmid="+bill.cmid)
       },
       toMovie: function (res) {
         var cmid = res.target.attributes.cmid.value % 10000000000;
