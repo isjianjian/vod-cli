@@ -27,6 +27,7 @@
           .then(function (res) {
             this.wxinfo.user = res.data.data;
             this.common.TOKEN = res.data.token;
+            this.wxinfo.user.level = res.data.level;
             this.common.TOKEN.expireTime = new Date(new Date().getTime() + (this.common.TOKEN.expire * 1000) - 60 * 1000);
             var roomid = that.roomid;
             if (roomid != null) {

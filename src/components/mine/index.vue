@@ -4,7 +4,7 @@
       <div class="userinfo">
         <div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>
         <div class="name"><span>{{this.wxinfo.user.nickname}}</span><img :src="sex_img"/></div>
-        <div class="leave">会员等级</div>
+        <div class="leave">{{this.wxinfo.user.level}}</div>
       </div>
       <group>
         <cell title="我的订单" link="/mine/order?i=0" is-link>
