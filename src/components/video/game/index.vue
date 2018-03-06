@@ -44,13 +44,13 @@
       </div>
     </x-header>
     <view-box>
-      <group title="游戏列表"/>
+      <!--<group title="游戏列表"/>-->
       <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                 @on-pulldown-loading="relist"
                 @on-pullup-loading="addlist"
                 @on-scroll="savetop"
-                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-40" lock-x :scrollbar-x=false
-                :scrollbar-y=false style="padding-bottom: 20px;">
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
+                :scrollbar-y=false style="padding-bottom: 20px;top: 37px;">
         <div>
           <div v-if="gamelist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
@@ -384,7 +384,7 @@
   }
 
   .gameicon:active {
-    transform: scale(1.1);
+    transform: scale(0.9);
   }
 
   .clock {

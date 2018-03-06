@@ -176,11 +176,11 @@
       },
       ktv: function () {
         // this.$router.replace("/detail?id=" + this.cmid);
-        this.$router.replace("/music");
+        this.$router.replace("/kmusic");
       },
       music: function () {
         // this.$router.replace("/detail?id=" + this.cmid);
-        this.$router.replace("/kmusic");
+        this.$router.replace("/music");
       },
       game: function () {
         // this.$router.replace("/detail?id=" + this.cmid);

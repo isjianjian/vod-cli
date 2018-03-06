@@ -45,138 +45,145 @@
         </div>
       </div>
     </x-header>
-    <div v-if="common.hotel!=null">
-
-      <view-box ref="box">
-
-        <flexbox class="top">
 
 
-          <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
-                  @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
-          </search>
+    <view-box ref="box">
+      <flexbox class="top">
+        <!--<div>-->
+        <!--<x-button style="width:100px;" v-if="!showsearch" @click.native="showcat"  mini>分类:全部</x-button >-->
+        <!--</div>-->
+        <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
+                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
+        </search>
 
-          <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
-               v-on:click="histroyshow"/>
+        <div ref="histroy" v-if="!showsearch" class="histroy_btn"
+             v-on:click="histroyshow"/>
 
+      </flexbox>
+
+
+      <scroller v-if="!showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="revideo"
+                @on-pullup-loading="addvideo"
+                @on-scroll="savetop"
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
+                :scrollbar-y=false
+                style="width: 100%;top: 37px;">
+        <div>
+          <div v-if="vodlist.length == 0" class='loading'>
+              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
+                暂无数据
+              </span>
+          </div>
+          <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
+
+            <div style='display:flex;'>
+              <div class='vodimage'>
+
+              </div>
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
+                  </div>
+
+                </div>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{item.singer_list}}
+                  </div>
+                  <div class='time'>
+                    <!--<div class='price'>{{item.singer_list}}-->
+                    <!--</div>-->
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+      </scroller>
+
+      <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <flexbox :gutter="0" wrap="wrap" style="text-align: center;">
+          <flexbox-item :span="1/3" style="padding: 10px 0;">
+            <x-button @click.native="" mini>分类</x-button>
+          </flexbox-item>
         </flexbox>
+      </div>
 
+      <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <cell title="已点歌曲" is-link link="/kmusic/nowplay">
+          <img slot="icon" width="20" style="display:block;margin-right:5px;"
+               src="../../../assets/images/histroy_icon.png">
+        </cell>
+      </div>
 
-        <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="revideo"
-                  @on-pullup-loading="addvideo"
-                  @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-90" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="width: 100%;top: 37px;">
-          <div>
-            <div v-if="vodlist.length == 0" class='loading'>
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="research"
+                @on-pullup-loading="addsearch"
+                @on-scroll="savevodlist"
+                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
+                :scrollbar-y=false
+                style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+
+        <div>
+          <div v-if="searchlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-            </div>
-            <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
+          </div>
 
-              <div style='display:flex;'>
-                <div class='vodimage'>
+          <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
 
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
+            <div style='display:flex;'>
+              <div class='vodimage'>
 
-                  </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      {{item.singer_list}}
-                    </div>
-                    <div class='time'>
-                      <!--<div class='price'>{{item.singer_list}}-->
-                      <!--</div>-->
-                    </div>
-
+              </div>
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
                   </div>
 
                 </div>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{item.singer_list}}
+                  </div>
+                  <div class='time'>
+                    <div class='price'>{{item.singer_list}}
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
             </div>
           </div>
-          <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
-
-
-        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-          <cell title="已点歌曲" is-link link="/kmusic/nowplay">
-            <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../../assets/images/histroy_icon.png">
-          </cell>
         </div>
+        <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+      </scroller>
 
-        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="research"
-                  @on-pullup-loading="addsearch"
-                  @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+      <div v-transfer-dom>
 
-          <div>
-            <div v-if="searchlist.length == 0" class='loading'>
-              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
-                暂无数据
-              </span>
-            </div>
-
-            <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
-
-              <div style='display:flex;'>
-                <div class='vodimage'>
-
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
-
-                  </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      {{item.singer_list}}
-                    </div>
-                    <div class='time'>
-                      <div class='price'>{{item.singer_list}}
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
+        <popup v-model="show" height="270px" is-transparent>
+          <div
+            style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+            <group :title="'请选择开通续费时长(单位：小时)'">
+              <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+                     @on-change="changehours"></radio>
+              <div style="padding:20px 15px;">
+                <x-button type="primary" @click.native="otherbuy">确定</x-button>
               </div>
-            </div>
+            </group>
           </div>
-          <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
-
-        <div v-transfer-dom>
-
-          <popup v-model="show" height="270px" is-transparent>
-            <div
-              style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
-              <group :title="'请选择开通续费时长(单位：小时)'">
-                <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
-                       @on-change="changehours"></radio>
-                <div style="padding:20px 15px;">
-                  <x-button type="primary" @click.native="otherbuy">确定</x-button>
-                </div>
-              </group>
-            </div>
-          </popup>
-        </div>
-      </view-box>
-    </div>
-
+        </popup>
+      </div>
+    </view-box>
   </div>
+
+
 </template>
 
 <script>
@@ -221,6 +228,7 @@
       Radio,
     }, data() {
       return {
+        iscat: false,
         open: false,
         timeExpire: '2018-03-04 12:00:00',
         hour: 3,
@@ -299,6 +307,7 @@
             that.$refs.scroller.disablePullup()
           }
           that.$refs.scroller.donePulldown()
+          that.$refs.scroller.donePullup()
         }, 1)
 
 
@@ -308,9 +317,10 @@
       }
 
 
-
-
     }, methods: {
+      showcat() {
+        this.iscat = !this.iscat
+      },
       otherbuy() {
         try {
           var h = this.hour
@@ -340,7 +350,7 @@
           that.open = false;
         })
       },
-      finish(){
+      finish() {
         this.checkOpen();
       },
       savetop(res) {
@@ -596,11 +606,15 @@
   .vux-header .vux-header-left {
     top: 10px !important;
   }
+
   .vux-header .vux-header-right {
     top: 10px !important;
   }
 </style>
 <style scoped>
+  .vux-search-fixed {
+    top: 46px !important;
+  }
 
   .top {
     height: 36px;
