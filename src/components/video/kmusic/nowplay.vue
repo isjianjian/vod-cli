@@ -32,10 +32,33 @@
                 暂无数据
               </span>
             </div>
+            <div class='film' >
+              <div  class="item" style='display:flex;'>
+                <div class='vodimage'>
 
+                </div>
+                <div class='detail'>
+                  <div class='name'>
+                    <div>{{vodlist[0].name}}
+                    </div>
+
+                  </div>
+                  <div class='star-bottom'>
+                    <div class='type'>
+                      {{vodlist[0].singer}}
+                    </div>
+                    <div class='time'>
+                      <div class='price'>正在播放...
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
                 <swipeout>
-                  <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 300,handle:'.td'}">
-                  <swipeout-item v-for="(item,index) in vodlist" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
+                  <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 100,handle:'.td'}">
+                  <swipeout-item v-for="(item,index) in vodlist" v-if="item.sequence != 0" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
                     <div slot="right-menu">
                       <swipeout-button @click.native="totop(item.id)" type="primary" :width="70">置顶</swipeout-button>
                       <swipeout-button @click.native="deletes(item.id)" type="warn" :width="70">删除</swipeout-button>
@@ -43,7 +66,7 @@
                     </div>
                     <div slot="content" class='film' >
 
-                    <div slot="content" class="item" style='display:flex;'>
+                    <div  class="item" style='display:flex;'>
                         <div class='vodimage'>
 
                         </div>
@@ -60,7 +83,7 @@
                     <div class='time'>
                       <!--<div class='price'>{{item.singer}}-->
                       <!--</div>-->
-                      <div class="td" v-if="isedit" >
+                      <div class="td" v-if="isedit && item.sequence != 0" >
                         <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
                       </div>
                     </div>
@@ -216,12 +239,16 @@
       getdata: function(evt){     //当前移动
         console.log(evt.draggedContext.element.id);
         this.editid = evt.draggedContext.element.id
-
-
       },
       datadragEnd:function(evt){
         console.log('拖动前的索引：'+evt.oldIndex);
         console.log('拖动后的索引：'+evt.newIndex);
+        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + this.editid+
+                  "&seq=" + evt.newIndex;
+        console.log(url);
+        that.$http.get(url).then(function (res) {
+            console.log("song_playlist_change res:",res)
+        });
       },
       totop:function (id) {    //置顶
         console.log(id)
@@ -283,7 +310,8 @@
               var item =  {}
               item.id = i
               item.name = '歌曲' + i;
-              item.singer_list = '歌手' + i;
+              item.singer = '歌手' + i;
+              item.sequence = i;
               list.push(item)
             }
             that.vodlist = list;
@@ -534,9 +562,10 @@
 
   .price {
     position: absolute;
-    right: 30px;
+    right: 20px;
     bottom: 15px;
     font-size: 15px;
+    color: #3f9de7;
   }
 
   .td {
