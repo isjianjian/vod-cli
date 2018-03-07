@@ -16,7 +16,6 @@
       padding-top: 10px;padding-bottom: 10px;">
       非新用户不能领取，进入主页查看其他活动
     </div>
-
     <div style="margin-top: 80px;" class="weui-cells weui-cells_after-title">
       <div class="weui-cell">
         <div class="weui-cell__hd">
@@ -34,13 +33,8 @@
         </div>
       </div>
     </div>
-    <div v-for="">
-      <cell></cell>
-    </div>
-    <div class="hotel" style="background-color: #3f9de7"
-         v-on:click="hotel">
-      <span>附近的酒店</span>
-    </div>
+
+
     <div v-if="state == 1" class="buy" v-on:click="buy">
       <span><span style="font-weight: 600;font-size: 21px;">{{account.giftseemoney}}</span>元观看</span>
       <img src="../../assets/images/watch.png" style="width: 20px;margin-left:5px;position: relative;top:4px;"/>
@@ -48,6 +42,11 @@
     <div v-if="state == 402 || state == 401 || state == 400" class="buy" style="background-color: #3f9de7"
          v-on:click="detail">
       <span>查看详情</span>
+    </div>
+
+    <div class="hotel" style="background-color: #3f9de7"
+         v-on:click="hotel">
+      <span>附近的酒店</span>
     </div>
 
   </div>

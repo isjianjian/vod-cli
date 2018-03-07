@@ -525,6 +525,10 @@
 
 <style scoped>
   @import 'video.css';
+
+  .vux-search-fixed {
+    top: 0px!important;
+  }
 </style>
 
 <style>

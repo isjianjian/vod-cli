@@ -45,138 +45,149 @@
         </div>
       </div>
     </x-header>
-    <div v-if="common.hotel!=null">
-
-      <view-box ref="box">
-
-        <flexbox class="top">
 
 
-          <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
-                  @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
-          </search>
+    <view-box ref="box">
 
-          <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
-               v-on:click="histroyshow"/>
-
+      <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray;padding: 10px 0px;">
+          <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
+            <x-button @click.native="remusiccat(list.id)" mini>{{list.name}}</x-button>
+          </flexbox-item>
         </flexbox>
+      </div>
+
+      <flexbox class="top">
+
+        <div>
+          <x-button style="width:80px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+        </div>
+
+        <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
+                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
+        </search>
+
+        <div ref="histroy" v-if="!showsearch" class="histroy_btn"
+             v-on:click="histroyshow"/>
+
+      </flexbox>
 
 
-        <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="revideo"
-                  @on-pullup-loading="addvideo"
-                  @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-90" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="width: 100%;top: 37px;">
-          <div>
-            <div v-if="vodlist.length == 0" class='loading'>
+      <scroller v-if="!showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="revideo"
+                @on-pullup-loading="addvideo"
+                @on-scroll="savetop"
+                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
+                :scrollbar-y=false
+                style="width: 100%;top: 37px;">
+        <div>
+          <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-            </div>
-            <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
+          </div>
+          <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
 
-              <div style='display:flex;'>
-                <div class='vodimage'>
+            <div style='display:flex;'>
+              <div class='vodimage'>
 
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
-
-                  </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      {{item.singer_list}}
-                    </div>
-                    <div class='time'>
-                      <!--<div class='price'>{{item.singer_list}}-->
-                      <!--</div>-->
-                    </div>
-
+              </div>
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
                   </div>
 
                 </div>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{item.singer_list}}
+                  </div>
+                  <div class='time'>
+                    <!--<div class='price'>{{item.singer_list}}-->
+                    <!--</div>-->
+                  </div>
+
+                </div>
+
               </div>
             </div>
           </div>
-          <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
-
-
-        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-          <cell title="已点歌曲" is-link link="/kmusic/nowplay">
-            <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../../assets/images/histroy_icon.png">
-          </cell>
         </div>
+        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+      </scroller>
 
-        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="research"
-                  @on-pullup-loading="addsearch"
-                  @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
 
-          <div>
-            <div v-if="searchlist.length == 0" class='loading'>
+      <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <cell title="已点歌曲" is-link link="/kmusic/nowplay">
+          <img slot="icon" width="20" style="display:block;margin-right:5px;"
+               src="../../../assets/images/histroy_icon.png">
+        </cell>
+      </div>
+
+      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                @on-pulldown-loading="research"
+                @on-pullup-loading="addsearch"
+                @on-scroll="savevodlist"
+                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
+                :scrollbar-y=false
+                style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+
+        <div>
+          <div v-if="searchlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-            </div>
+          </div>
 
-            <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
+          <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
 
-              <div style='display:flex;'>
-                <div class='vodimage'>
+            <div style='display:flex;'>
+              <div class='vodimage'>
 
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
-
-                  </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      {{item.singer_list}}
-                    </div>
-                    <div class='time'>
-                      <div class='price'>{{item.singer_list}}
-                      </div>
-                    </div>
-
+              </div>
+              <div class='detail'>
+                <div class='name'>
+                  <div>{{item.name}}
                   </div>
 
                 </div>
+                <div class='star-bottom'>
+                  <div class='type'>
+                    {{item.singer_list}}
+                  </div>
+                  <div class='time'>
+                    <div class='price'>{{item.singer_list}}
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
             </div>
           </div>
-          <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
-
-        <div v-transfer-dom>
-
-          <popup v-model="show" height="270px" is-transparent>
-            <div
-              style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
-              <group :title="'请选择开通续费时长(单位：小时)'">
-                <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
-                       @on-change="changehours"></radio>
-                <div style="padding:20px 15px;">
-                  <x-button type="primary" @click.native="otherbuy">确定</x-button>
-                </div>
-              </group>
-            </div>
-          </popup>
         </div>
-      </view-box>
-    </div>
+        <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+      </scroller>
 
+      <div v-transfer-dom>
+
+        <popup v-model="show" height="270px" is-transparent>
+          <div
+            style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+            <group :title="'请选择开通续费时长(单位：小时)'">
+              <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+                     @on-change="changehours"></radio>
+              <div style="padding:20px 15px;">
+                <x-button type="primary" @click.native="otherbuy">确定</x-button>
+              </div>
+            </group>
+          </div>
+        </popup>
+      </div>
+    </view-box>
   </div>
+
+
 </template>
 
 <script>
@@ -221,6 +232,7 @@
       Radio,
     }, data() {
       return {
+        iscat: false,
         open: false,
         timeExpire: '2018-03-04 12:00:00',
         hour: 3,
@@ -251,8 +263,11 @@
 
         nodata: false,
         searchnodata: false,
-
-        catlist: {},//电影分类
+        catlist: [{id: '0', name: '全部'}, {id: '167', name: '热门'},
+          {id: '166', name: '新歌'}, {id: '167', name: '流行'}, {id: '178', name: '男声'},
+          {id: '179', name: '女生'}, {id: '191', name: '经典'}, {id: '171', name: '怀旧'}, {id: '162', name: 'DJ'},
+          {id: '149', name: '国语'}, {id: '150', name: '粤语'}, {id: '152', name: '英语'}, {id: '153', name: '韩语'},
+          {id: '189', name: '俄语'}, {id: '154', name: '日语'}, {id: '158', name: '儿歌'}, {id: '175', name: '其他'}],//电影分类
         vodlist: [],//电影列表
         searchlist: [],//电影搜索
         cid: '',
@@ -299,6 +314,7 @@
             that.$refs.scroller.disablePullup()
           }
           that.$refs.scroller.donePulldown()
+          that.$refs.scroller.donePullup()
         }, 1)
 
 
@@ -308,9 +324,17 @@
       }
 
 
-
-
     }, methods: {
+      remusiccat(id) {
+        var that = this
+        that.page = 1
+        that.getvideo(id)
+      },
+      showcat() {
+        var that = this
+        console.log(that.catlist.length)
+        this.iscat = !this.iscat
+      },
       otherbuy() {
         try {
           var h = this.hour
@@ -340,7 +364,7 @@
           that.open = false;
         })
       },
-      finish(){
+      finish() {
         this.checkOpen();
       },
       savetop(res) {
@@ -365,12 +389,17 @@
       }, revideo() {
         that.page = 1;
         that.getvideo()
-      }, getvideo() {
+      }
+      , getvideo(id) {
+        var top = ""
+        if (id != null) {
+          top = "&top=" + id
+        }
         that.$vux.loading.show({
           text: 'Loading'
         });
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit;
+        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit  + top;
         console.log(url);
         that.$http.get(url).then(function (res) {
 
@@ -432,7 +461,9 @@
           console.log(that.vodlist)
 
         })
-
+        if (that.iscat) {
+          this.iscat = !this.iscat
+        }
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
         that.getvideo()
@@ -596,11 +627,15 @@
   .vux-header .vux-header-left {
     top: 10px !important;
   }
+
   .vux-header .vux-header-right {
     top: 10px !important;
   }
 </style>
 <style scoped>
+  .vux-search-fixed {
+    top: 46px !important;
+  }
 
   .top {
     height: 36px;

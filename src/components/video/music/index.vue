@@ -49,12 +49,19 @@
     <div v-if="common.hotel!=null">
       <view-box ref="box">
 
+        <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+          <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray;padding: 10px 0px;">
+            <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
+              <x-button @click.native="remusiccat(list.id)" mini>{{list.name}}</x-button>
+            </flexbox-item>
+          </flexbox>
+        </div>
 
         <flexbox class="top">
 
-          <!--<group >-->
-          <!--<selector ref="selectors"  :options="list" v-model="defaultValue"  class="top"></selector>-->
-          <!--</group>-->
+          <div>
+            <x-button style="width:80px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+          </div>
 
           <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
                   @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
@@ -67,7 +74,7 @@
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-37" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 37px;">
           <div>
@@ -154,7 +161,9 @@
         <div v-transfer-dom>
 
           <popup v-model="show" height="270px" is-transparent>
-            <div style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+            <div
+
+              style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
               <group :title="'请选择开通续费时长(单位：小时)'">
                 <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
                        @on-change="changehours"></radio>
@@ -213,6 +222,7 @@
       Radio,
     }, data() {
       return {
+        iscat: false,
         open: false,
         timeExpire: '2018-03-04 12:00:00',
         hour: 3,
@@ -278,7 +288,7 @@
       socket = window.dqsocket
 
 
-      console.log(that.common.savevodlistmusic)
+      // console.log(that.common.savevodlistmusic)
 
       if (that.common.currentlistmusic != null) {
 
@@ -300,12 +310,38 @@
 
 
     }, methods: {
+      remusiccat(id) {
+        var that = this
+        that.page = 1
+        that.getvideo(id)
+      },
+      showcat() {
+        var that = this
+        this.iscat = !this.iscat
+        var url = "http://" + localStorage.getItem("hs") + "/if/music_home.php?sn=" + localStorage.getItem("sn");
+        // console.log(url);
+        that.$http.get(url).then(function (res) {
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='style_list'] entry")
+          console.log(res)
+          var list = [];
+          var el = {id: '', name: "全部"};
+          list.push(el)
+          JQ(styles).each(function (i, e) {
+            var el = {};
+            el.id = JQ(e).find("[name='id']").html()
+            el.name = JQ(e).find("[name='name']").html()
+            list.push(el)
+          });
+          that.catlist = list;
+          // console.log(that.catlist)
+        })
+      },
       otherbuy() {
         try {
-          var h= this.hour
-          if(parseInt(h)>0&&parseInt(h)<24){
-            this.$router.push("/video/otherbuy?type=4&hour="+this.hour)
-          }else{
+          var h = this.hour
+          if (parseInt(h) > 0 && parseInt(h) < 24) {
+            this.$router.push("/video/otherbuy?type=4&hour=" + this.hour)
+          } else {
             this.$vux.toast.text("请输入有效时间", 'center')
           }
         } catch (e) {
@@ -329,34 +365,39 @@
           that.open = false;
         })
       },
-      finish(){
+      finish() {
         this.checkOpen();
       },
       savetop(res) {
         var that = this;
-        console.log(res.top)
+        // console.log(res.top)
         if (res.top != 0) {
           that.common.savevodlistmusic = res.top
         }
       }, revideo() {
         that.page = 1;
         that.getvideo()
-      }, getvideo() {
+      }, getvideo(id) {
+        var tid = ""
+        if (id != null) {
+          tid = "&tid=" + id
+        }
         that.$vux.loading.show({
           text: 'Loading'
         });
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.page + "&pagesize=" + that.limit;
-        console.log(url);
+        var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.page + "&pagesize=" + that.limit + tid;
+        console.log( url);
         that.$http.get(url).then(function (res) {
 
 
           var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='musiclist'] entry")
           var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='musiclist']").find("[name='poster']").html()
 
-          console.log(res)
+          // console.log(res)
 
           var list = [];
+
           JQ(styles).each(function (i, e) {
             var el = {};
             el.id = JQ(e).find("[name='id']").html()
@@ -366,11 +407,17 @@
             el.artists = JQ(e).find("[name='artists']").html().split("|")[1]
             el.albums = JQ(e).find("[name='albums']").html()
 
-            el.tags = JQ(e).find("[name='tags']").html().split("|")[1]
+            var t = JQ(e).find("[name='tags']").html().split("||")
+            var catname=""
 
-            for (var i = 0; i < el.tags.length; i++) {
-              console.log(el.tags[i])
+            for (var i = 0; i < t.length; i++) {
+
+              console.log(t[i].split("|")[1])
+              catname=catname+t[i].split("|")[1].trim()+" "
+
             }
+            el.tags =catname
+
 
             el.publish = JQ(e).find("[name='publish']").html()
             list.push(el)
@@ -413,7 +460,9 @@
           console.log(that.vodlist)
 
         })
-
+        if (that.iscat) {
+          this.iscat = !this.iscat
+        }
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
         that.getvideo()
@@ -467,16 +516,22 @@
               el.artists = JQ(e).find("[name='artists']").html().split("|")[1]
               el.albums = JQ(e).find("[name='albums']").html()
 
-              el.tags = JQ(e).find("[name='tags']").html().split("|")[1]
+              var t = JQ(e).find("[name='tags']").html().split("||")
+              var catname=""
 
-              for (var i = 0; i < el.tags.length; i++) {
-                console.log(el.tags[i])
+              for (var i = 0; i < t.length; i++) {
+
+                console.log(t[i].split("|")[1])
+                catname=catname+t[i].split("|")[1].trim()+" "
+
               }
+              el.tags =catname
+
 
               el.publish = JQ(e).find("[name='publish']").html()
               list.push(el)
-            });
 
+            });
 
             if (that.searchpage == 1) {
               that.searchlist = list;
@@ -550,10 +605,12 @@
             cancelText: "添加",
             onCancel() {
               var cm = "cmd=music_play&pid=" + list.id + "&type=134&idx=0";
+              alert(cm)
               that.sendcmd(cm)
             },
             onConfirm() {
               var cm = "cmd=music_playadd&pid=" + list.id + "&type=134&idx=0";
+              alert(cm)
               that.sendcmd(cm)
 
             }
@@ -581,12 +638,16 @@
   .vux-header .vux-header-left {
     top: 10px !important;
   }
+
   .vux-header .vux-header-right {
     top: 10px !important;
   }
 </style>
 
 <style scoped>
+  .vux-search-fixed {
+    top: 46px!important;
+  }
 
   .top {
     height: 36px;
@@ -884,6 +945,7 @@
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
+
 
   .weui-search-bar__box .weui-icon-search {
     /*搜索图标*/
