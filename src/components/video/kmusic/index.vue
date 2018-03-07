@@ -48,10 +48,21 @@
 
 
     <view-box ref="box">
+
+      <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray;padding: 10px 0px;">
+          <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
+            <x-button @click.native="remusiccat(list.id)" mini>{{list.name}}</x-button>
+          </flexbox-item>
+        </flexbox>
+      </div>
+
       <flexbox class="top">
-        <!--<div>-->
-        <!--<x-button style="width:100px;" v-if="!showsearch" @click.native="showcat"  mini>分类:全部</x-button >-->
-        <!--</div>-->
+
+        <div>
+          <x-button style="width:80px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+        </div>
+
         <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
                 @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
         </search>
@@ -105,13 +116,6 @@
         <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
       </scroller>
 
-      <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-        <flexbox :gutter="0" wrap="wrap" style="text-align: center;">
-          <flexbox-item :span="1/3" style="padding: 10px 0;">
-            <x-button @click.native="" mini>分类</x-button>
-          </flexbox-item>
-        </flexbox>
-      </div>
 
       <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
         <cell title="已点歌曲" is-link link="/kmusic/nowplay">
@@ -259,8 +263,11 @@
 
         nodata: false,
         searchnodata: false,
-
-        catlist: {},//电影分类
+        catlist: [{id: '0', name: '全部'}, {id: '167', name: '热门'},
+          {id: '166', name: '新歌'}, {id: '167', name: '流行'}, {id: '178', name: '男声'},
+          {id: '179', name: '女生'}, {id: '191', name: '经典'}, {id: '171', name: '怀旧'}, {id: '162', name: 'DJ'},
+          {id: '149', name: '国语'}, {id: '150', name: '粤语'}, {id: '152', name: '英语'}, {id: '153', name: '韩语'},
+          {id: '189', name: '俄语'}, {id: '154', name: '日语'}, {id: '158', name: '儿歌'}, {id: '175', name: '其他'}],//电影分类
         vodlist: [],//电影列表
         searchlist: [],//电影搜索
         cid: '',
@@ -318,7 +325,14 @@
 
 
     }, methods: {
+      remusiccat(id) {
+        var that = this
+        that.page = 1
+        that.getvideo(id)
+      },
       showcat() {
+        var that = this
+        console.log(that.catlist.length)
         this.iscat = !this.iscat
       },
       otherbuy() {
@@ -375,12 +389,17 @@
       }, revideo() {
         that.page = 1;
         that.getvideo()
-      }, getvideo() {
+      }
+      , getvideo(id) {
+        var top = ""
+        if (id != null) {
+          top = "&top=" + id
+        }
         that.$vux.loading.show({
           text: 'Loading'
         });
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit;
+        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit  + top;
         console.log(url);
         that.$http.get(url).then(function (res) {
 
@@ -442,7 +461,9 @@
           console.log(that.vodlist)
 
         })
-
+        if (that.iscat) {
+          this.iscat = !this.iscat
+        }
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
         that.getvideo()

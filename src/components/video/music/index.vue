@@ -50,7 +50,7 @@
       <view-box ref="box">
 
         <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-          <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray">
+          <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray;padding: 10px 0px;">
             <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
               <x-button @click.native="remusiccat(list.id)" mini>{{list.name}}</x-button>
             </flexbox-item>
@@ -74,7 +74,7 @@
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-37" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 37px;">
           <div>
@@ -387,7 +387,7 @@
         });
 
         var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.page + "&pagesize=" + that.limit + tid;
-        console.log("sss" + url);
+        console.log( url);
         that.$http.get(url).then(function (res) {
 
 
@@ -516,16 +516,22 @@
               el.artists = JQ(e).find("[name='artists']").html().split("|")[1]
               el.albums = JQ(e).find("[name='albums']").html()
 
-              el.tags = JQ(e).find("[name='tags']").html().split("|")[1]
+              var t = JQ(e).find("[name='tags']").html().split("||")
+              var catname=""
 
-              for (var i = 0; i < el.tags.length; i++) {
-                console.log(el.tags[i])
+              for (var i = 0; i < t.length; i++) {
+
+                console.log(t[i].split("|")[1])
+                catname=catname+t[i].split("|")[1].trim()+" "
+
               }
+              el.tags =catname
+
 
               el.publish = JQ(e).find("[name='publish']").html()
               list.push(el)
-            });
 
+            });
 
             if (that.searchpage == 1) {
               that.searchlist = list;
@@ -599,10 +605,12 @@
             cancelText: "添加",
             onCancel() {
               var cm = "cmd=music_play&pid=" + list.id + "&type=134&idx=0";
+              alert(cm)
               that.sendcmd(cm)
             },
             onConfirm() {
               var cm = "cmd=music_playadd&pid=" + list.id + "&type=134&idx=0";
+              alert(cm)
               that.sendcmd(cm)
 
             }
