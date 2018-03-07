@@ -244,7 +244,8 @@
         if (res.top != 0) {
           that.common.savevodlistktvp = res.top
         }
-
+        that.$refs.scroller.donePulldown()
+        that.$refs.scroller.donePullup()
       },
       revideo() {
         that.page = 1;
@@ -274,18 +275,19 @@
             // el.player = JQ(e).find("[name='player']").html().
             // el.play_time = JQ(e).find("[name='play_time']").html()
             el.name = JQ(e).find("[name='name']").html()
+            el.singer = JQ(e).find("[name='singer']").html().split("|")[1]
             list.push(el)
           });
 
 
           if (that.page == 1) {
-            for(var i = 0; i < 10;i++){
-              var item =  {}
-              item.id = i
-              item.name = '歌曲' + i;
-              item.singer_list = '歌手' + i;
-              list.push(item)
-            }
+            // for(var i = 0; i < 10;i++){
+            //   var item =  {}
+            //   item.id = i
+            //   item.name = '歌曲' + i;
+            //   item.singer_list = '歌手' + i;
+            //   list.push(item)
+            // }
             that.vodlist = list;
 
             that.$refs.scroller.reset({
@@ -316,9 +318,10 @@
           that.$vux.loading.hide()
           console.log(that.vodlist)
 
-        },function () {
-
-          // that.$vux.loading.hide()
+        }, function (res) {
+          that.$vux.loading.hide()
+          that.$refs.scroller.donePulldown();
+          that.$refs.scroller.disablePullup();
         })
 
       }, addvideo() {//影片下拉加载
@@ -482,7 +485,7 @@
 
   .name {
     display: flex;
-    max-width: 80%;
+    max-width: 59%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -512,7 +515,7 @@
     margin-top: 6px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 50%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -526,7 +529,7 @@
     font-size: 14px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 39%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -41,7 +41,7 @@
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
         <div v-if="open" style="padding-bottom: 10px;">
-          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>续费</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini >续费</x-button>
         </div>
       </div>
     </x-header>
@@ -60,15 +60,17 @@
       <flexbox class="top">
 
         <div>
-          <x-button style="width:80px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+          <x-button style="width:70px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
         </div>
 
         <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
                 @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
         </search>
-
-        <div ref="histroy" v-if="!showsearch" class="histroy_btn"
-             v-on:click="histroyshow"/>
+        <div>
+          <x-button style="width:70px;margin-right: 5px;" v-if="!showsearch" @click.native="toplaylist" mini >已点</x-button>
+        </div>
+        <!--<div ref="histroy" v-if="!showsearch" class="histroy_btn"-->
+             <!--v-on:click="histroyshow"/>-->
 
       </flexbox>
 
@@ -325,6 +327,9 @@
 
 
     }, methods: {
+      toplaylist(){
+        this.$router.push("/kmusic/nowplay")
+      },
       remusiccat(id) {
         var that = this
         that.page = 1
@@ -334,6 +339,7 @@
         var that = this
         console.log(that.catlist.length)
         this.iscat = !this.iscat
+
       },
       otherbuy() {
         try {
@@ -460,6 +466,10 @@
           that.$vux.loading.hide()
           console.log(that.vodlist)
 
+        }, function (res) {
+          that.$vux.loading.hide()
+          that.$refs.scroller.donePulldown();
+          that.$refs.scroller.disablePullup();
         })
         if (that.iscat) {
           this.iscat = !this.iscat
@@ -743,7 +753,7 @@
 
   .name {
     display: flex;
-    max-width: 80%;
+    max-width: 59%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -773,7 +783,7 @@
     margin-top: 6px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 59%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -787,7 +797,7 @@
     font-size: 14px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 39%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
