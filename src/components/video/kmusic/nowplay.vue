@@ -1,15 +1,29 @@
 <template>
   <div>
-    <!--style="background-color: #fff;"-->
+
     <div v-if="common.hotel!=null">
       <view-box ref="box">
 
-
+        <x-header slot="header" :left-options="{showBack:false}" title="已点歌曲">
+          <div slot="left">
+            <div v-if="!isedit" style="padding-bottom: 10px;">
+              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="switch_song" mini>切歌</x-button>
+            </div>
+          </div>
+          <div slot="right">
+            <div v-if="!isedit" style="padding-bottom: 10px;">
+              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="edit" mini>排序</x-button>
+            </div>
+            <div v-if="isedit" style="padding-bottom: 10px;">
+              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="canedit" mini>确定</x-button>
+            </div>
+          </div>
+        </x-header>
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-1" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-53" :lock-x="true" :lock-y="isedit" :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top:1px;">
           <div>
@@ -18,15 +32,25 @@
                 暂无数据
               </span>
             </div>
-            <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
-              <div style='display:flex;'>
-                <div class='vodimage'>
 
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
+                <swipeout>
+                  <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 300,handle:'.td'}">
+                  <swipeout-item v-for="(item,index) in vodlist" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
+                    <div slot="right-menu">
+                      <swipeout-button @click.native="totop(item.id)" type="primary" :width="70">置顶</swipeout-button>
+                      <swipeout-button @click.native="deletes(item.id)" type="warn" :width="70">删除</swipeout-button>
+                      <!--<swipeout-button @click.native="onButtonClick('ignore')" type="default" :width="70">取消</swipeout-button>-->
                     </div>
+                    <div slot="content" class='film' >
+
+                    <div slot="content" class="item" style='display:flex;'>
+                        <div class='vodimage'>
+
+                        </div>
+                        <div class='detail'>
+                         <div class='name'>
+                         <div>{{item.name}}
+                         </div>
 
                   </div>
                   <div class='star-bottom'>
@@ -39,15 +63,31 @@
                     </div>
 
                   </div>
+                      </div>
+                      <div class='star-bottom'>
+                         <div class='type'>
+                           {{item.singer_list}}
+                          </div>
+                         <div class='time'>
+                            <div class='price'>{{item.singer_list}}
+                           </div>
+                           <div class="td" v-if="isedit" >
+                             <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
+                           </div>
+                         </div>
 
-                </div>
-              </div>
-            </div>
+                         </div>
+
+                        </div>
+                       </div>
+
+                     </div>
+                  </swipeout-item>
+                  </draggable>
+                </swipeout>
           </div>
           <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
         </scroller>
-
-
       </view-box>
     </div>
 
@@ -55,7 +95,7 @@
 </template>
 
 <script>
-  import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox, Selector} from 'vux'
+  import {Tab, TabItem, Scroller, XInput, FlexboxItem, Flexbox, Selector,XHeader,Swipeout, SwipeoutItem, SwipeoutButton} from 'vux'
   import Search from "vux/src/components/search/index";
   import Cell from "vux/src/components/cell/index";
   import Group from "vux/src/components/group/index";
@@ -64,9 +104,11 @@
   import ViewBox from "vux/src/components/view-box/index";
   import LoadMore from "vux/src/components/load-more/index";
   import JQ from 'jquery';
+  import draggable from 'vuedraggable'
+  import Sortable  from 'sortablejs'
 
   var that;
-  var socket
+  var socket;
   export default {
     name: "index",
 
@@ -86,8 +128,16 @@
       Tab,
       JQ,
       Selector,
+      draggable,
+      Sortable,
+      XHeader,
+      Swipeout,
+      SwipeoutItem,
+      SwipeoutButton
     }, data() {
       return {
+        editid:0,
+        isedit:false,
         defaultValue: 'qb',
         list: [{key: 'qb', value: '全部'}, {key: 'py', value: '拼音'}],
         downconfig: {
@@ -166,12 +216,48 @@
 
 
     }, methods: {
+
+      edit:function () {       // 编辑排序
+        this.isedit = true;
+        this.$refs.scroller.reset()
+      },
+      canedit:function () {       // 取消编辑
+        this.isedit = false
+        this.$refs.scroller.reset()
+
+      },
+      getdata: function(evt){     //当前移动
+        console.log(evt.draggedContext.element.id);
+        this.editid = evt.draggedContext.element.id
+
+
+      },
+      datadragEnd:function(evt){
+        console.log('拖动前的索引：'+evt.oldIndex);
+        console.log('拖动后的索引：'+evt.newIndex);
+      },
+      totop:function (id) {    //置顶
+        console.log(id)
+      },
+      deletes:function (id) {    //删除
+        console.log(id)
+      },
+      switch_song:function () {    //切歌
+
+      },
       savetop(res) {
 
         var that = this;
+        if (that.isedit){
+          that.$refs.scroller.reset({
+            top: that.common.savevodlistktvp
+          })
+          return false;
+        }
         if (res.top != 0) {
           that.common.savevodlistktvp = res.top
         }
+
       },
       revideo() {
         that.page = 1;
@@ -201,12 +287,18 @@
             // el.player = JQ(e).find("[name='player']").html().
             // el.play_time = JQ(e).find("[name='play_time']").html()
             el.name = JQ(e).find("[name='name']").html()
-            el.singer = JQ(e).find("[name='singer']").html().split("|")[1]
             list.push(el)
           });
 
 
           if (that.page == 1) {
+            for(var i = 0; i < 10;i++){
+              var item =  {}
+              item.id = i
+              item.name = '歌曲' + i;
+              item.singer_list = '歌手' + i;
+              list.push(item)
+            }
             that.vodlist = list;
 
             that.$refs.scroller.reset({
@@ -297,6 +389,7 @@
 </script>
 
 <style scoped>
+
 
   .top {
     height: 36px;
@@ -454,9 +547,17 @@
 
   .price {
     position: absolute;
-    right: 0px;
+    right: 30px;
     bottom: 15px;
     font-size: 15px;
+  }
+
+  .td {
+    position: absolute;
+    right: 0px;
+    bottom: 8px;
+    font-size: 15px;
+    -webkit-touch-callout:none;
   }
 
   .star {
