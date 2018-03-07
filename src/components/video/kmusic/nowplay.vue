@@ -60,28 +60,15 @@
                     <div class='time'>
                       <!--<div class='price'>{{item.singer}}-->
                       <!--</div>-->
+                      <div class="td" v-if="isedit" >
+                        <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
+                      </div>
                     </div>
 
                   </div>
-                      </div>
-                      <div class='star-bottom'>
-                         <div class='type'>
-                           {{item.singer_list}}
-                          </div>
-                         <div class='time'>
-                            <div class='price'>{{item.singer_list}}
-                           </div>
-                           <div class="td" v-if="isedit" >
-                             <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
-                           </div>
-                         </div>
-
-                         </div>
-
                         </div>
-                       </div>
-
-                     </div>
+</div>
+                        </div>
                   </swipeout-item>
                   </draggable>
                 </swipeout>
