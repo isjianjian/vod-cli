@@ -31,11 +31,11 @@
                   </div>
                   <div class='star-bottom'>
                     <div class='type'>
-                      {{item.singer_list}}
+                      {{item.singer}}
                     </div>
                     <div class='time'>
-                      <div class='price'>{{item.singer_list}}
-                      </div>
+                      <!--<div class='price'>{{item.singer}}-->
+                      <!--</div>-->
                     </div>
 
                   </div>
@@ -195,18 +195,13 @@
           JQ(styles).each(function (i, e) {
             var el = {};
             el.id = JQ(e).find("[name='id']").html()
-            el.lib_id = JQ(e).find("[name='lib_id']").html()
-            el.name = JQ(e).find("[name='name']").html()
-            el.list_poster = JQ(e).find("[name='list_poster']").html()
-            el.singer_list = JQ(e).find("[name='singer_list']").html().split("|")[1]
+            el.sequence = JQ(e).find("[name='sequence']").html()
+            el.song_id = JQ(e).find("[name='song_id']").html()
             el.flag_cloud = JQ(e).find("[name='flag_cloud']").html()
-            el.flag_hd = JQ(e).find("[name='flag_hd']").html()
-            el.flag_new = JQ(e).find("[name='flag_new']").html()
-            el.flag_hot = JQ(e).find("[name='flag_hot']").html()
-            el.flag_mv = JQ(e).find("[name='flag_mv']").html()
-            el.create_time = JQ(e).find("[name='create_time']").html()
-            el.dl_status = JQ(e).find("[name='dl_status']").html()
-            el.dl_percent = JQ(e).find("[name='dl_percent']").html()
+            // el.player = JQ(e).find("[name='player']").html().
+            // el.play_time = JQ(e).find("[name='play_time']").html()
+            el.name = JQ(e).find("[name='name']").html()
+            el.singer = JQ(e).find("[name='singer']").html().split("|")[1]
             list.push(el)
           });
 
@@ -242,6 +237,9 @@
           that.$vux.loading.hide()
           console.log(that.vodlist)
 
+        },function () {
+
+          // that.$vux.loading.hide()
         })
 
       }, addvideo() {//影片下拉加载

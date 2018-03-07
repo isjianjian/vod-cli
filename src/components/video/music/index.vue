@@ -386,8 +386,11 @@
           text: 'Loading'
         });
 
+        var list = [];
+
         var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.page + "&pagesize=" + that.limit + tid;
-        console.log( url);
+        // var url = "http://cms.kfg365.com/if/music_list.php?page=" + that.page + "&pagesize=" + that.limit + tid;
+        console.log(url);
         that.$http.get(url).then(function (res) {
 
 
@@ -395,8 +398,6 @@
           var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='musiclist']").find("[name='poster']").html()
 
           // console.log(res)
-
-          var list = [];
 
           JQ(styles).each(function (i, e) {
             var el = {};
@@ -408,27 +409,23 @@
             el.albums = JQ(e).find("[name='albums']").html()
 
             var t = JQ(e).find("[name='tags']").html().split("||")
-            var catname=""
+            var catname = ""
 
             for (var i = 0; i < t.length; i++) {
 
-              console.log(t[i].split("|")[1])
-              catname=catname+t[i].split("|")[1].trim()+" "
+              // console.log(t[i].split("|")[1])
+              catname = catname + t[i].split("|")[1] + " "
 
             }
-            el.tags =catname
+            el.tags = catname
 
 
             el.publish = JQ(e).find("[name='publish']").html()
             list.push(el)
           });
 
-
           if (that.page == 1) {
-            //
-            // for (var i = 0; i < 120; i++) {
-            //   that.vodlist.push(list[0])
-            // }
+
             that.vodlist = list;
 
             that.$refs.scroller.reset({
@@ -459,7 +456,13 @@
           that.$vux.loading.hide()
           console.log(that.vodlist)
 
+        }, function (res) {
+          that.$vux.loading.hide()
+          that.$refs.scroller.donePulldown();
+          that.$refs.scroller.donePullup();
         })
+
+
         if (that.iscat) {
           this.iscat = !this.iscat
         }
@@ -493,7 +496,8 @@
           that.$vux.loading.show({
             text: 'Loading'
           });
-
+          // var url = "http://kfg365.com/if/music_list.php?page=" + that.searchpage + "&pagesize=" +
+          //   that.searchlimit + "&keyword=" + that.keyword;
 
           var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.searchpage + "&pagesize=" +
             that.searchlimit + "&keyword=" + that.keyword;
@@ -517,15 +521,15 @@
               el.albums = JQ(e).find("[name='albums']").html()
 
               var t = JQ(e).find("[name='tags']").html().split("||")
-              var catname=""
+              var catname = ""
 
               for (var i = 0; i < t.length; i++) {
 
                 console.log(t[i].split("|")[1])
-                catname=catname+t[i].split("|")[1].trim()+" "
+                catname = catname + t[i].split("|")[1] + " "
 
               }
-              el.tags =catname
+              el.tags = catname
 
 
               el.publish = JQ(e).find("[name='publish']").html()
@@ -561,6 +565,11 @@
             }
 
             that.$vux.loading.hide()
+          }, function (res) {
+            console.log("接口异常")
+            that.$vux.loading.hide()
+            that.$refs.scroller1.donePulldown()
+            that.$refs.scroller1.donePullup()
           })
 
         } else {
@@ -594,6 +603,11 @@
         // console.log(list)
         // cmd=music_play 		立即播放（参数：pid=节目编号&type=134节目类型&idx=播放索引）;
         // cmd=music_playadd 	插播（参数：pid=节目编号&type=134节目类型&idx=播放索引）;
+
+        // var cm = "cmd=music_play&music_id=" + list.id + "&type=134";
+        // alert(cm)
+        // that.sendcmd(cm)
+
         if (that.open) {
           this.common.playvideo = list
           localStorage.setItem("playtype", 4)
@@ -604,12 +618,12 @@
             confirmText: "播放",
             cancelText: "添加",
             onCancel() {
-              var cm = "cmd=music_play&pid=" + list.id + "&type=134&idx=0";
+              var cm = "cmd=music_play&music_id=" + list.id + "&type=134";
               alert(cm)
               that.sendcmd(cm)
             },
             onConfirm() {
-              var cm = "cmd=music_playadd&pid=" + list.id + "&type=134&idx=0";
+              var cm = "cmd=music_playadd&music_id=" + list.id + "&type=134";
               alert(cm)
               that.sendcmd(cm)
 
@@ -646,7 +660,7 @@
 
 <style scoped>
   .vux-search-fixed {
-    top: 46px!important;
+    top: 46px !important;
   }
 
   .top {
@@ -945,7 +959,6 @@
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
-
 
   .weui-search-bar__box .weui-icon-search {
     /*搜索图标*/

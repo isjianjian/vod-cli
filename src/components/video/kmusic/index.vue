@@ -399,7 +399,7 @@
           text: 'Loading'
         });
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit  + top;
+        var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.page + "&pagesize=" + that.limit + top;
         console.log(url);
         that.$http.get(url).then(function (res) {
 
@@ -587,6 +587,8 @@
       }, toplay(list) {
         // console.log(list)
         // 立即播放（参数：song_id=节目编号&type=164节目类型&cloud=是否云播放&first=Y/N是否插播&player=）;
+        // var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=Y&player=";
+        // alert(cm)
         if (that.open) {
           this.common.playvideo = list
           localStorage.setItem("playtype", 3)
