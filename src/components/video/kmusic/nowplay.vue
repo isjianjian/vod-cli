@@ -57,8 +57,8 @@
               </div>
             </div>
                 <swipeout>
-                  <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 100,handle:'.td'}">
-                  <swipeout-item v-for="(item,index) in vodlist" v-if="item.sequence != 0" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
+                  <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 300,handle:'.td'}">
+                  <swipeout-item v-for="(item,index) in vodlist" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
                     <div slot="right-menu">
                       <swipeout-button @click.native="totop(item.id)" type="primary" :width="70">置顶</swipeout-button>
                       <swipeout-button @click.native="deletes(item.id)" type="warn" :width="70">删除</swipeout-button>
@@ -66,7 +66,7 @@
                     </div>
                     <div slot="content" class='film' >
 
-                    <div  class="item" style='display:flex;'>
+                    <div slot="content" class="item" style='display:flex;'>
                         <div class='vodimage'>
 
                         </div>
@@ -83,7 +83,7 @@
                     <div class='time'>
                       <!--<div class='price'>{{item.singer}}-->
                       <!--</div>-->
-                      <div class="td" v-if="isedit && item.sequence != 0" >
+                      <div class="td" v-if="isedit" >
                         <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
                       </div>
                     </div>
@@ -239,6 +239,8 @@
       getdata: function(evt){     //当前移动
         console.log(evt.draggedContext.element.id);
         this.editid = evt.draggedContext.element.id
+
+
       },
       datadragEnd:function(evt){
         console.log('拖动前的索引：'+evt.oldIndex);
@@ -301,6 +303,7 @@
             // el.player = JQ(e).find("[name='player']").html().
             // el.play_time = JQ(e).find("[name='play_time']").html()
             el.name = JQ(e).find("[name='name']").html()
+            el.singer = JQ(e).find("[name='singer']").html().split("|")[1]
             list.push(el)
           });
 
@@ -344,9 +347,10 @@
           that.$vux.loading.hide()
           console.log(that.vodlist)
 
-        },function () {
-
-          // that.$vux.loading.hide()
+        }, function (res) {
+          that.$vux.loading.hide()
+          that.$refs.scroller.donePulldown();
+          that.$refs.scroller.disablePullup();
         })
 
       }, addvideo() {//影片下拉加载
@@ -562,10 +566,9 @@
 
   .price {
     position: absolute;
-    right: 20px;
+    right: 30px;
     bottom: 15px;
     font-size: 15px;
-    color: #3f9de7;
   }
 
   .td {

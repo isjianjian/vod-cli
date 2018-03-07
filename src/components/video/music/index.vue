@@ -60,7 +60,7 @@
         <flexbox class="top">
 
           <div>
-            <x-button style="width:80px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+            <x-button style="width:70px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
           </div>
 
           <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
@@ -459,7 +459,7 @@
         }, function (res) {
           that.$vux.loading.hide()
           that.$refs.scroller.donePulldown();
-          that.$refs.scroller.donePullup();
+          that.$refs.scroller.disablePullup();
         })
 
 
@@ -767,7 +767,7 @@
 
   .name {
     display: flex;
-    max-width: 80%;
+    max-width: 59%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -797,7 +797,7 @@
     margin-top: 6px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 59%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -811,7 +811,7 @@
     font-size: 14px;
     color: #666;
     width: auto;
-    max-width: 80%;
+    max-width: 39%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
