@@ -5,6 +5,20 @@
       <view-box ref="box">
 
         <x-header slot="header" :left-options="{showBack:false}" title="已点歌曲">
+          <div class="overwrite-title-demo" slot="overwrite-title">
+          <marquee style="margin-top: 8px;" :interval="3000">
+            <!--<marquee-item class="align-middle" v-if="open">-->
+              <!--<div style="text-align: center; font-size: 14px;color:#3f9de7;">-->
+                <!--您已开通游戏功能-->
+              <!--</div>-->
+            <!--</marquee-item>-->
+            <marquee-item class="align-middle">
+              <div v-for="(item,index) in vodlist" v-if="item.sequence == 0" style="text-align: center; font-size: 14px;color:#3f9de7;margin-top: 5px;" >
+                正在播放...   《{{item.name}}》 &nbsp;&nbsp; <span style="color: #9ed99d"> {{tip}} </span>
+              </div>
+            </marquee-item>
+          </marquee>
+          </div>
           <div slot="left">
             <div v-if="!isedit" style="padding-bottom: 10px;">
               <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="switch_song" mini>切歌</x-button>
@@ -12,7 +26,7 @@
           </div>
           <div slot="right">
             <div v-if="!isedit" style="padding-bottom: 10px;">
-              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="edit" mini>排序</x-button>
+              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="edit" mini>顺序</x-button>
             </div>
             <div v-if="isedit" style="padding-bottom: 10px;">
               <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="canedit" mini>确定</x-button>
@@ -32,36 +46,13 @@
                 暂无数据
               </span>
             </div>
-            <div class='film' >
-              <div  class="item" style='display:flex;'>
-                <div class='vodimage'>
-
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{vodlist[0].name}}
-                    </div>
-
-                  </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      {{vodlist[0].singer}}
-                    </div>
-                    <div class='time'>
-                      <div class='price'>正在播放...
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
                 <swipeout>
                   <draggable  :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 300,handle:'.td'}">
-                  <swipeout-item v-for="(item,index) in vodlist" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
+                  <swipeout-item v-for="(item,index) in vodlist" v-if="item.sequence != 0" :ref="'swipeoutItem' + item.id" :right-menu-width="210" :sensitivity="15">
+
                     <div slot="right-menu">
-                      <swipeout-button @click.native="totop(item.id)" type="primary" :width="70">置顶</swipeout-button>
-                      <swipeout-button @click.native="deletes(item.id)" type="warn" :width="70">删除</swipeout-button>
+                      <swipeout-button @click.native="totop(item.id,item.sequence)" type="primary" :width="70">优先</swipeout-button>
+                      <swipeout-button @click.native="deletes(item.id,item.sequence)" type="warn" :width="70">删除</swipeout-button>
                       <!--<swipeout-button @click.native="onButtonClick('ignore')" type="default" :width="70">取消</swipeout-button>-->
                     </div>
                     <div slot="content" class='film' >
@@ -146,6 +137,7 @@
       SwipeoutButton
     }, data() {
       return {
+        tip:"",
         editid:0,
         isedit:false,
         defaultValue: 'qb',
@@ -224,6 +216,13 @@
         that.revideo()
       }
 
+      setInterval(function () {
+        if (that.tip == ""){
+          that.tip = "温馨提示: 点击 '顺序' 按钮 可调整歌单顺序  向右滑动可对选择歌曲进行删除操作"
+        }else {
+          that.tip = ""
+        }
+      },20000)
 
     }, methods: {
 
@@ -246,20 +245,65 @@
         console.log('拖动前的索引：'+evt.oldIndex);
         console.log('拖动后的索引：'+evt.newIndex);
         var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + this.editid+
-                  "&seq=" + evt.newIndex;
+                  "&seq=" + evt.newIndex + 1;
         console.log(url);
         that.$http.get(url).then(function (res) {
             console.log("song_playlist_change res:",res)
         });
-      },
-      totop:function (id) {    //置顶
-        console.log(id)
-      },
-      deletes:function (id) {    //删除
-        console.log(id)
-      },
-      switch_song:function () {    //切歌
+        for (var i = 1;i< this.vodlist.length;i++){
+          this.vodlist[i].sequence = i;
+        }
 
+      },
+      totop:function (id,seq) {    //置顶
+        console.log(id)
+
+        var item = this.vodlist[seq];
+        item.sequence = 1;
+        this.vodlist.splice(seq, 1);
+        this.vodlist.splice(1, 0, item);
+        for (var i = 2;i <= seq;i++){
+          that.vodlist[i].sequence = that.vodlist[i].sequence + 1;
+        }
+        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + id +
+          "&seq=1";
+        console.log(url);
+        that.$http.get(url).then(function (res) {
+          console.log("song_playlist_change res:",res)
+        });
+      },
+      deletes:function (id,seq) {    //删除
+        console.log(id)
+        this.elm_delete(seq)
+        console.log("vodlist",this.vodlist)
+      },
+      top_switch:function (id,seq) {
+        this.totop(id,seq);
+        this.switch_song();
+      }
+      ,
+      switch_song:function () {    //切歌
+        if (this.vodlist.length == 1){
+          return;
+        }
+        this.elm_pop()
+        console.log("vodlist",this.vodlist)
+      },
+      elm_pop:function () {
+          var that = this;
+          that.vodlist.splice(0,1);
+          for (var i = 0;i < that.vodlist.length;i++){
+            console.log("after",that.vodlist[i].sequence)
+            that.vodlist[i].sequence = that.vodlist[i].sequence - 1;
+            console.log("before",that.vodlist[i].sequence)
+          }
+      },
+      elm_delete:function (seq) {
+        var that = this
+        that.vodlist.splice(seq,1);
+        for (var i = seq;i < that.vodlist.length;i++){
+          that.vodlist[i].sequence = that.vodlist[i].sequence-1;
+        }
       },
       savetop(res) {
 
@@ -270,7 +314,7 @@
           })
           return false;
         }
-        if (res.top != 0) {
+        if (res.top >= 0) {
           that.common.savevodlistktvp = res.top
         }
 
@@ -279,6 +323,8 @@
         that.page = 1;
         that.getvideo()
       }, getvideo() {
+
+        var that = this;
         that.$vux.loading.show({
           text: 'Loading'
         });
@@ -286,8 +332,6 @@
         var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_list.php?page=" + that.page + "&pagesize=" + that.limit + "&type=1&sn=" + localStorage.getItem("sn");
         console.log(url);
         that.$http.get(url).then(function (res) {
-
-
           var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='playlist'] entry")
           var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='playlist']").find("[name='poster']").html()
 
@@ -319,29 +363,41 @@
             }
             that.vodlist = list;
 
-            that.$refs.scroller.reset({
-              top: 0
-            });
-            that.$refs.scroller.donePulldown()
+            setTimeout(function () {
+              that.$refs.scroller.reset({
+                top: 0
+              });
+              that.$refs.scroller.donePulldown()
+            },50)
+
+
 
           } else {
             for (var i = 0; i < list.length; i++) {
               that.vodlist.push(list[i])
             }
-            that.$refs.scroller.donePullup();
-            that.$refs.scroller.reset()
+            setTimeout(function () {
+              that.$refs.scroller.donePullup();
+              that.$refs.scroller.reset()
+            },50)
           }
           if (list.length == 0) {
-            that.$refs.scroller.disablePullup();
+            setTimeout(function () {
+              that.$refs.scroller.disablePullup();
+            },50)
             if (that.page != 1) {
               that.nodata = true
             }
           } else {
             that.nodata = false;
-            that.$refs.scroller.enablePullup()
+            setTimeout(function () {
+              that.$refs.scroller.enablePullup()
+            },50)
           }
           if (list.length < that.limit && that.page == 1) {
-            that.$refs.scroller.disablePullup()
+            setTimeout(function () {
+              that.$refs.scroller.disablePullup()
+            },50)
           }
 
           that.$vux.loading.hide()
@@ -349,8 +405,10 @@
 
         }, function (res) {
           that.$vux.loading.hide()
-          that.$refs.scroller.donePulldown();
-          that.$refs.scroller.disablePullup();
+          setTimeout(function () {
+            that.$refs.scroller.donePulldown();
+            that.$refs.scroller.disablePullup();
+          },50)
         })
 
       }, addvideo() {//影片下拉加载
@@ -566,9 +624,10 @@
 
   .price {
     position: absolute;
-    right: 30px;
+    right: 20px;
     bottom: 15px;
     font-size: 15px;
+    color: #3f9de7;
   }
 
   .td {
