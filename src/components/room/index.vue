@@ -1,6 +1,6 @@
 <template>
   <div>
-    <iframe style="width: 99%;height:99%;" :src="url"></iframe>
+    <!--<iframe style="width: 99%;height:99%;" :src="url"></iframe>-->
   </div>
 </template>
 
@@ -71,7 +71,8 @@
 
 
       // alert(this.url)
-      console.log(this.url)
+      location.href=this.url
+      // console.log(this.url)
 
     }, methods: {}
   }

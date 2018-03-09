@@ -63,10 +63,14 @@
             <x-button style="width:70px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
           </div>
 
-          <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
+          <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
                   @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
           </search>
+          <div>
 
+            <x-button style="width:70px;margin-right: 5px;" v-if="!showsearch" @click.native="toplaylist" mini>已点
+            </x-button>
+          </div>
         </flexbox>
 
 
@@ -277,6 +281,7 @@
         histroy_n: '',
         histroy_p: '',
         savevodcatpos: 0,
+        starlist:null,
       }
     }, destroyed() {
       var that = this;
@@ -307,9 +312,40 @@
       } else {
         that.revideo()
       }
+      that.getstar()
 
 
     }, methods: {
+      getstar() {
+        var that = this
+        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=9999";
+        // console.log(url);
+        that.$http.get(url).then(function (res) {
+
+
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='star_list'] entry")
+          var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='star_list']").find("[name='poster']").html()
+
+          // console.log(res)
+
+          var list = [];
+          JQ(styles).each(function (i, e) {
+            var el = {};
+            el.id = JQ(e).find("[name='id']").html()
+            el.name = JQ(e).find("[name='name']").html()
+            el.list_poster = host + JQ(e).find("[name='list_poster']").html()
+            list.push(el)
+          });
+
+          that.starlist = list
+          // console.log(that.starlist)
+        }, function () {
+
+        })
+      },
+      toplaylist() {
+        this.$router.push("/music/nowplay")
+      },
       remusiccat(id) {
         var that = this
         that.page = 1
@@ -496,17 +532,26 @@
           that.$vux.loading.show({
             text: 'Loading'
           });
-          // var url = "http://kfg365.com/if/music_list.php?page=" + that.searchpage + "&pagesize=" +
-          //   that.searchlimit + "&keyword=" + that.keyword;
+          keyword = "&keyword=" + that.keyword
+
+          var singer_id = ""
+          console.log(that.starlist.length)
+          for (var i = 0; i < that.starlist.length; i++) {
+            console.log(that.keyword + "@@@@" + that.starlist[i].name)
+            if (that.keyword == that.starlist[i].name) {
+              singer_id = "&singer_id=" + that.starlist[i].id
+              keyword = ""
+            }
+          }
 
           var url = "http://" + localStorage.getItem("hs") + "/if/music_list.php?page=" + that.searchpage + "&pagesize=" +
-            that.searchlimit + "&keyword=" + that.keyword;
+            that.searchlimit + keyword + singer_id;
           console.log(url);
           that.$http.get(url).then(function (res) {
 
 
             var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='musiclist'] entry")
-            var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='musiclist']").find("[name='poster']").html()
+            // var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='musiclist']").find("[name='poster']").html()
 
             console.log(res)
 
@@ -525,7 +570,7 @@
 
               for (var i = 0; i < t.length; i++) {
 
-                console.log(t[i].split("|")[1])
+                // console.log(t[i].split("|")[1])
                 catname = catname + t[i].split("|")[1] + " "
 
               }
@@ -613,18 +658,17 @@
           localStorage.setItem("playtype", 4)
           localStorage.setItem("playname", list.name)
           that.$vux.confirm.show({
+            hideOnBlur: true,
             title: "温馨提示",
             content: "",
-            confirmText: "播放",
-            cancelText: "添加",
+            confirmText: "插播",
+            cancelText: "立即播放",
             onCancel() {
               var cm = "cmd=music_play&music_id=" + list.id + "&type=134";
-              alert(cm)
               that.sendcmd(cm)
             },
             onConfirm() {
               var cm = "cmd=music_playadd&music_id=" + list.id + "&type=134";
-              alert(cm)
               that.sendcmd(cm)
 
             }

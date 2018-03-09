@@ -41,6 +41,7 @@
           if (that.common.hotel != null) {
             window.location.href = "/"
           }
+
         })
 
       },

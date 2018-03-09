@@ -255,7 +255,7 @@
       savevodlist(res) {
         var that = this;
         that.common.savevodlist = res.top
-      },getcat() {
+      }, getcat() {
 
         // var url = "http://cms.kfg365.com/if/movie_home.php";
         var url = "http://" + localStorage.getItem("hs") + "/if/movie_home.php";
@@ -284,18 +284,21 @@
             if (that.common.currentlist != null) {
 
               that.vodlist = that.common.currentlist;
-              that.page= Math.ceil(that.vodlist.length/that.limit)
+              that.page = Math.ceil(that.vodlist.length / that.limit)
               that.savevodcatpos = that.common.savevodcatpos
-              if(that.savevodcatpos!=null){
+              if (that.savevodcatpos != null) {
                 that.cid = "&tid=" + that.catlist[that.savevodcatpos].id;
               }
-              that.$refs.scroller.reset({
-                top: that.common.savevodlist
-              })
-              if (that.vodlist.length < that.limit) {
-                that.$refs.scroller.disablePullup()
-              }
-              that.$refs.scroller.donePulldown()
+              setTimeout(function () {
+                that.$refs.scroller.reset({
+                  top: that.common.savevodlist
+                })
+                if (that.vodlist.length < that.limit) {
+                  that.$refs.scroller.disablePullup()
+                }
+                that.$refs.scroller.donePulldown()
+              }, 1)
+
             } else {
               that.recat(that.catlist[0])
             }
@@ -320,7 +323,7 @@
       }, revideo(list) {//点击分类初始化列表
         that.page = 1;
         that.getvideo()
-      } , getvideo() {
+      }, getvideo() {
         that.$vux.loading.show({
           text: 'Loading'
         });
@@ -395,7 +398,7 @@
       }, setkeyword(res) {//输入关键词
         that.keyword = res;
         that.research2()
-      }  , research() {//搜索下拉刷新
+      }, research() {//搜索下拉刷新
         this.$refs.search.setBlur();
         that.searchpage = 1;
         that.getsearch()
@@ -467,7 +470,7 @@
             }
 
             that.$vux.loading.hide()
-          } )
+          })
 
         } else {
           //输入空
@@ -480,7 +483,7 @@
         }
 
 
-      } ,
+      },
       histroyshow() {//历史记录
         console.log(that.$refs.histroy);
         that.showhistroy = !that.showhistroy
@@ -527,7 +530,7 @@
   @import 'video.css';
 
   .vux-search-fixed {
-    top: 0px!important;
+    top: 0px !important;
   }
 </style>
 

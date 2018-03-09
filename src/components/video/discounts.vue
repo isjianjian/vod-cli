@@ -1,53 +1,55 @@
 <template>
   <div>
-    <!--<scroller :pulldown-config="downconfig"-->
-    <!--@on-pulldown-loading="reloaddata"-->
-    <!--:use-pulldown="true" ref="scroller" lock-x :scrollbar-x=false-->
-    <!--:scrollbar-y=false>-->
+    <scroller   :pullup-config="upconfig" :pulldown-config="downconfig"
+              @on-pulldown-loading=""
+              @on-pullup-loading=""
+              @on-scroll=""
+              :use-pulldown="true" :use-pullup="true" ref="scroller"  lock-x :scrollbar-x=false
+              :scrollbar-y=false
+              style="width: 100%;">
+
+      <div v-if="loading" class='loading'>
+        <img style='height:14px;width:14px;' src='../../assets/images/loading.gif'></img>
+      <!--</div>-->
+      <!--<div v-if="list != null" class="weui-cells weui-cells_after-title">-->
+        <!--<div data-sid='{{list.id}}' bindtap='toMovie' class="weui-cell" hover-class="weui-cell_active">-->
+          <!--<div class="weui-cell__hd">-->
+            <!--<img src="{{list.pic}}" style="margin-right: 5px;vertical-align: middle;"></img>-->
+          <!--</div>-->
+          <!--<div class="weui-cell__bd">-->
+            <!--<div class="weui-flex bd_content">-->
+              <!--<div class="weui-flex__item left">-->
+                <!--{{list.name}}-->
+              <!--</div>-->
+              <!--<div class="right">-->
+                <!--优惠观影-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex price">-->
+              <!--<div class="weui-flex__item left buytime">-->
+                <!--价格:-->
+                <!--<text class='firstPrice'>{{list.firstPrice}}</text>-->
+                <!--<text class="offerPrice">{{list.offerPrice}}</text>-->
+                <!--元-->
+              <!--</div>-->
+              <!--<div class="right">-->
+                <!--<img v-if=" list.failureTime < nowDate " src='../../assets/images/due.png'/>-->
+
+                <!--<img v-if="list.buy == 1" src='../../assets/images/used.png'/>-->
+
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="weui-flex bd_base">-->
+              <!--<div class="weui-flex__item left">-->
+                <!--失效时间:{{list.failureTime}}-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
 
 
-    <!--<div v-if="loading" class='loading'>-->
-    <!--<img style='height:14px;width:14px;' src='../../assets/images/loading.gif'></img>-->
-    <!--</div>-->
-    <!--<div v-if="list != null" class="weui-cells weui-cells_after-title">-->
-    <!--<div data-sid='{{list.id}}' bindtap='toMovie' class="weui-cell" hover-class="weui-cell_active">-->
-    <!--<div class="weui-cell__hd">-->
-    <!--<img src="{{list.pic}}" style="margin-right: 5px;vertical-align: middle;"></img>-->
-    <!--</div>-->
-    <!--<div class="weui-cell__bd">-->
-    <!--<div class="weui-flex bd_content">-->
-    <!--<div class="weui-flex__item left">-->
-    <!--{{list.name}}-->
-    <!--</div>-->
-    <!--<div class="right">-->
-    <!--优惠观影-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="weui-flex price">-->
-    <!--<div class="weui-flex__item left buytime">-->
-    <!--价格:-->
-    <!--<text class='firstPrice'>{{list.firstPrice}}</text>-->
-    <!--<text class="offerPrice">{{list.offerPrice}}</text>-->
-    <!--元-->
-    <!--</div>-->
-    <!--<div class="right">-->
-    <!--<img v-if=" list.failureTime < nowDate " src='../../assets/images/due.png'/>-->
-
-    <!--<img v-if="list.buy == 1" src='../../assets/images/used.png'/>-->
-
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="weui-flex bd_base">-->
-    <!--<div class="weui-flex__item left">-->
-    <!--失效时间:{{list.failureTime}}-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-
-    <!--</div>-->
-    <!--</scroller>-->
+      </div>
+    </scroller>
   </div>
 </template>
 
@@ -66,6 +68,7 @@
 
     , data() {
       return {
+        loading:false,
         downconfig: {
           content: '下拉刷新',
           height: 60,
@@ -74,6 +77,16 @@
           upContent: '松手刷新数据',
           loadingContent: '正在刷新...',
           clsPrefix: 'xs-plugin-pulldown-'
+        },
+        upconfig: {
+          content: '上拉加载',
+          pullUpHeight: 60,
+          height: 40,
+          autoRefresh: false,
+          downContent: '上拉加载',
+          upContent: '加载更多',
+          loadingContent: '正在加载...',
+          clsPrefix: 'xs-plugin-pullup-'
         },
         list: null,
         nowDate: '',
@@ -85,10 +98,10 @@
     }, methods: {
       reloaddata() {
         var url = "api/vod/queryVod";
-        console.log(url);
+        // console.log(url);
         that.api_post(url, function (res) {
           console.log(res);
-          that.list = res.watch
+          that.list = res
         })
       }, resetvideotop() {//回到到顶部
         setTimeout(() => {

@@ -40,7 +40,8 @@ import main from './components/video/main'
 import music from './components/video/music/index'
 import kmusic from './components/video/kmusic/index'
 import game from './components/video/game/index'
-import nowplay from './components/video/kmusic/nowplay'
+import nowplay from './components/video/music/nowplay'
+import knowplay from './components/video/kmusic/nowplay'
 import obuy from './components/video/otherbuy'
 // import md5 from 'js-md5'
 
@@ -102,8 +103,9 @@ const routes = [{
     {path: '/mine', component: mine, meta: {allowBack: false, title: '我的'}}
   ]
 }, {path: '/music', component: music, meta: {allowBack: true, title: 'HIFI音乐'}},
+  {path: '/music/nowplay', component: nowplay, meta: {allowBack: true, title: '播放列表'}},
   {path: '/kmusic', component: kmusic, meta: {allowBack: true, title: 'K歌'}},
-  {path: '/kmusic/nowplay', component: nowplay, meta: {allowBack: true, title: '已点歌曲'}},
+  {path: '/kmusic/nowplay', component: knowplay, meta: {allowBack: true, title: '已点歌曲'}},
   {path: '/game', component: game, meta: {allowBack: true, title: '电子游戏'}},
   {
     path: '/video', component: video, meta: {allowBack: true, title: '点播'}
@@ -165,9 +167,9 @@ const routes = [{
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
   // APPID: 'wxc24d07d05cfea4d3',//lv
- APPID: 'wxb636c0b09a3fd9d1',//zhu
- //  APPID: 'wx4c232a8e7d2158ab',//公司
- //  APPID: 'wx23186818f05e0eeb',//广州
+ // APPID: 'wxb636c0b09a3fd9d1',//zhu
+  // APPID: 'wx4c232a8e7d2158ab',//公司
+  APPID: 'wx23186818f05e0eeb',//广州
   user: {},
 };
 Vue.prototype.his = {
@@ -178,9 +180,9 @@ Vue.prototype.his = {
 Vue.prototype.common = {
   ID_HIGH_ORDER : 10000000000,
   // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
-  SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
+  // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
   // SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
-  // SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
   TOKEN: {},
   lastPage: '',

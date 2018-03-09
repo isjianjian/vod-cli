@@ -15,24 +15,25 @@
               <marquee-item class="align-middle">
                 <div v-for="(item,index) in vodlist" v-if="item.sequence == 0"
                      style="text-align: center; font-size: 14px;color:#3f9de7;margin-top: 5px;">
-                  {{item.name==null?"":"下一首: 《"+item.name+"》 "}}&nbsp;&nbsp; <span style="color: #9ed99d"> {{tip}} </span>
+                  <!--{{item.name==null?"":"下一首: 《"+item.name+"》 "}}&nbsp;-->
+                  &nbsp; <span style="color: #9ed99d"> {{tip}} </span>
                 </div>
               </marquee-item>
             </marquee>
           </div>
           <div slot="left">
             <div v-if="!isedit" style="padding-bottom: 10px;">
-              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="switch_song" mini>切歌</x-button>
+              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="switch_song" mini>遥控</x-button>
             </div>
           </div>
-          <div slot="right">
-            <div v-if="!isedit" style="padding-bottom: 10px;">
-              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="edit" mini>顺序</x-button>
-            </div>
-            <div v-if="isedit" style="padding-bottom: 10px;">
-              <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="canedit" mini>确定</x-button>
-            </div>
-          </div>
+          <!--<div slot="right">-->
+            <!--<div v-if="!isedit" style="padding-bottom: 10px;">-->
+              <!--<x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="edit" mini>播放</x-button>-->
+            <!--</div>-->
+            <!--<div v-if="isedit" style="padding-bottom: 10px;">-->
+              <!--<x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="canedit" mini>确定</x-button>-->
+            <!--</div>-->
+          <!--</div>-->
         </x-header>
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
@@ -49,15 +50,16 @@
               </span>
             </div>
             <swipeout>
+              <!--v-if="item.sequence != 0"-->
               <draggable :list="vodlist" :move="getdata" @update="datadragEnd" :options="{animation: 300,handle:'.td'}">
-                <swipeout-item v-for="(item,index) in vodlist" v-if="item.sequence != 0" :ref="'swipeoutItem' + item.id"
+                <swipeout-item v-for="(item,index) in vodlist"  :ref="'swipeoutItem' + item.id"
                                :right-menu-width="210" :sensitivity="15">
 
                   <div slot="right-menu">
-                    <swipeout-button @click.native="totop(item.id,item.sequence)" type="primary" :width="70">优先
-                    </swipeout-button>
-                    <swipeout-button @click.native="deletes(item.id,item.sequence)" type="warn" :width="70">删除
-                    </swipeout-button>
+                    <!--<swipeout-button @click.native="totop(item.id,item.sequence)" type="primary" :width="70">优先-->
+                    <!--</swipeout-button>-->
+                    <!--<swipeout-button @click.native="deletes(item.id,item.sequence)" type="warn" :width="70">删除-->
+                    <!--</swipeout-button>-->
                     <!--<swipeout-button @click.native="onButtonClick('ignore')" type="default" :width="70">取消</swipeout-button>-->
                   </div>
                   <div slot="content" class='film'>
@@ -74,11 +76,11 @@
                         </div>
                         <div class='star-bottom'>
                           <div class='type'>
-                            {{item.singer}}
+                            {{item.tags}}
                           </div>
                           <div class='time'>
-                            <!--<div class='price'>{{item.singer}}-->
-                            <!--</div>-->
+                            <div class='price'>{{item.artists}}
+                            </div>
                             <div class="td" v-if="isedit">
                               <img src="../../../assets/images/td.png" style="-webkit-touch-callout:none;" width="25"/>
                             </div>
@@ -208,44 +210,31 @@
       }
     }, destroyed() {
       var that = this;
-      // that.common.currentlistktvp = that.vodlist
+
     }
     , mounted() {
       socket = window.dqsocket
       that = this;
-      //
-      // if (that.common.currentlistktvp != null) {
-      //
-      //   that.vodlist = that.common.currentlistktvp;
-      //   that.page = Math.ceil(that.vodlist.length / that.limit)
-      //   setTimeout(function () {
-      //     that.$refs.scroller.reset({
-      //       top: that.common.savevodlistktvp
-      //     })
-      //     if (that.vodlist.length < that.limit) {
-      //       that.$refs.scroller.disablePullup()
-      //     }
-      //   }, 1)
-      //
-      //
-      // } else {
+
 
       that.revideo()
-      // }
 
-      setInterval(function () {
-        if (that.tip == "") {
-          that.tip = "温馨提示: 点击 '顺序' 按钮 可调整歌单顺序  向右滑动可对选择歌曲进行删除操作"
-        } else {
-          that.tip = ""
-        }
-      }, 20000)
+
+      // setInterval(function () {
+      //   if (that.tip == "") {
+      //     that.tip = "温馨提示:  向右滑动可对选择歌曲进行删除操作"
+      //   } else {
+      //     that.tip = ""
+      //   }
+      // }, 20000)
 
     }, methods: {
 
       edit: function () {       // 编辑排序
-        this.isedit = true;
-        this.$refs.scroller.reset()
+
+        window.dqsocket.send("cmd=music_resume")
+        // this.isedit = true;
+        // this.$refs.scroller.reset()
       },
       canedit: function () {       // 取消编辑
         this.isedit = false
@@ -259,42 +248,45 @@
 
       },
       datadragEnd: function (evt) {
-        console.log('拖动前的索引：' + evt.oldIndex);
-        console.log('拖动后的索引：' + evt.newIndex);
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + this.editid +
-          "&seq=" + evt.newIndex + 1;
-        console.log(url);
-        that.$http.get(url).then(function (res) {
-          console.log("song_playlist_change res:", res)
-        });
-        for (var i = 1; i < this.vodlist.length; i++) {
-          this.vodlist[i].sequence = i;
-        }
-
-        this.vodlist[0].name = this.vodlist[1]
+        // console.log('拖动前的索引：' + evt.oldIndex);
+        // console.log('拖动后的索引：' + evt.newIndex);
+        // var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + this.editid +
+        //   "&seq=" + evt.newIndex + 1;
+        // console.log(url);
+        // that.$http.get(url).then(function (res) {
+        //   console.log("song_playlist_change res:", res)
+        // });
+        // for (var i = 1; i < this.vodlist.length; i++) {
+        //   this.vodlist[i].sequence = i;
+        // }
+        //
+        // this.vodlist[0].name = this.vodlist[1]
 
       },
       totop: function (id, seq) {    //置顶
-        console.log(id)
-        var item = this.vodlist[seq];
-        item.sequence = 1;
-        this.vodlist.splice(seq, 1);
-        this.vodlist.splice(1, 0, item);
-        this.vodlist[0].name = item.name
-        for (var i = 2; i <= seq; i++) {
-          that.vodlist[i].sequence = parseInt(that.vodlist[i].sequence) + 1;
-        }
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + id +
-          "&seq=1";
-        console.log(url);
-        that.$http.get(url).then(function (res) {
-          console.log("song_playlist_change res:", res)
-        });
+        // console.log(id)
+        // var item = this.vodlist[seq];
+        // item.sequence = 1;
+        // this.vodlist.splice(seq, 1);
+        // this.vodlist.splice(1, 0, item);
+        // this.vodlist[0].name = item.name
+        // for (var i = 2; i <= seq; i++) {
+        //   that.vodlist[i].sequence = parseInt(that.vodlist[i].sequence) + 1;
+        // }
+        // var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_change.php?sn=" + localStorage.getItem("sn") + "&id=" + id +
+        //   "&seq=1";
+        // console.log(url);
+        // that.$http.get(url).then(function (res) {
+        //   console.log("song_playlist_change res:", res)
+        // });
       },
       deletes: function (id, seq) {    //删除
-        console.log(id)
-        this.elm_delete(id, seq)
-        console.log("vodlist", this.vodlist)
+        // console.log(id)
+        // this.elm_delete(id, seq)
+        // console.log("vodlist", this.vodlist)
+
+
+
       },
       top_switch: function (id, seq) {
         this.totop(id, seq);
@@ -302,12 +294,14 @@
       }
       ,
       switch_song: function () {    //切歌
-        if (this.vodlist.length == 1) {
-          return;
-        }
-        this.elm_pop()
-        console.log("vodlist", this.vodlist)
-        window.dqsocket.send("cmd=ktv_next")
+
+        this.$router.push("/video/ctrl")
+        // if (this.vodlist.length == 1) {
+        //   return;
+        // }
+        // this.elm_pop()
+        // console.log("vodlist", this.vodlist)
+        // window.dqsocket.send("cmd=ktv_next")
         this.vodlist[0].name = this.vodlist[1].name
 
       },
@@ -321,7 +315,7 @@
       elm_delete: function (id, seq) {//删除
         var that = this
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_del.php?sn=" + localStorage.getItem("sn") + "&id=" + id;
+        var url = "http://" + localStorage.getItem("hs") + "/if/music_playlist_del.php?sn=" + localStorage.getItem("sn") + "&id=" + id;
         that.$http.get(url).then(function (res) {
           that.vodlist.splice(seq, 1);
           for (var i = seq; i < that.vodlist.length; i++) {
@@ -357,11 +351,10 @@
           text: 'Loading'
         });
 
-        var url = "http://" + localStorage.getItem("hs") + "/if/song_playlist_list.php?page=" + that.page + "&pagesize=" + that.limit + "&type=1&sn=" + localStorage.getItem("sn");
+        var url = "http://" + localStorage.getItem("hs") + "/if/music_playing.php?page=" + that.page + "&pagesize=" + that.limit + "&type=1&sn=" + localStorage.getItem("sn");
         console.log(url);
         that.$http.get(url).then(function (res) {
-          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='playlist'] entry")
-          var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='playlist']").find("[name='poster']").html()
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='playing'] entry")
 
           console.log(res)
 
@@ -369,15 +362,29 @@
           JQ(styles).each(function (i, e) {
             var el = {};
             el.id = JQ(e).find("[name='id']").html()
-            el.sequence = JQ(e).find("[name='sequence']").html()
-            el.song_id = JQ(e).find("[name='song_id']").html()
+            el.lib_id = JQ(e).find("[name='lib_id']").html()
             el.flag_cloud = JQ(e).find("[name='flag_cloud']").html()
-            // el.player = JQ(e).find("[name='player']").html().
-            // el.play_time = JQ(e).find("[name='play_time']").html()
             el.name = JQ(e).find("[name='name']").html()
-            el.singer = JQ(e).find("[name='singer']").html().split("|")[1]
+            el.artists = JQ(e).find("[name='artists']").html().split("|")[1]
+            el.albums = JQ(e).find("[name='albums']").html()
+
+            var t = JQ(e).find("[name='tags']").html().split("||")
+            var catname = ""
+
+            for (var i = 0; i < t.length; i++) {
+
+              // console.log(t[i].split("|")[1])
+              catname = catname + t[i].split("|")[1] + " "
+
+            }
+            el.tags = catname
+
+
+            el.publish = JQ(e).find("[name='publish']").html()
             list.push(el)
           });
+
+          console.log(list.length)
 
 
           if (that.page == 1) {
@@ -392,12 +399,13 @@
 
             that.vodlist = list;
 
-            var item = {};
-            if (that.vodlist.length > 0) {
-              item.name = that.vodlist[0].name
-            }
-            item.sequence = 0;
-            that.vodlist.splice(0, 0, item);
+
+            // var item = {};
+            // if (that.vodlist.length > 0) {
+            //   item.name = that.vodlist[0].name
+            // }
+            // item.sequence = 0;
+            // that.vodlist.splice(0, 0, item);
 
 
             setTimeout(function () {

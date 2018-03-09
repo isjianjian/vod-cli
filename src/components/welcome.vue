@@ -1,6 +1,6 @@
 <template>
   <div>
-    <load-more :show-loading="false" tip="正在启动" background-color="#fbf9fe"></load-more>
+    <!--<load-more :show-loading="false" tip="正在启动" background-color="#fbf9fe"></load-more>-->
   </div>
 </template>
 
@@ -46,7 +46,7 @@
                 that.common.hotel = res.data;
                 that.$router.replace(that.common.lastPage)
               }, function (res) {
-                that.$vux.toast.text(res.msg, 'center');
+                // that.$vux.toast.text(res.msg, 'center');
                 that.$router.replace(that.common.lastPage)
               })
             }

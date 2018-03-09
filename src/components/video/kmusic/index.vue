@@ -41,7 +41,7 @@
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
         <div v-if="open" style="padding-bottom: 10px;">
-          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini >续费</x-button>
+          <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>续费</x-button>
         </div>
       </div>
     </x-header>
@@ -63,14 +63,15 @@
           <x-button style="width:70px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
         </div>
 
-        <search ref="search" placeholder="歌曲名称" @on-change="setkeyword"
+        <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
                 @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
         </search>
         <div>
-          <x-button style="width:70px;margin-right: 5px;" v-if="!showsearch" @click.native="toplaylist" mini >已点</x-button>
+          <x-button style="width:70px;margin-right: 5px;" v-if="!showsearch" @click.native="toplaylist" mini>已点
+          </x-button>
         </div>
         <!--<div ref="histroy" v-if="!showsearch" class="histroy_btn"-->
-             <!--v-on:click="histroyshow"/>-->
+        <!--v-on:click="histroyshow"/>-->
 
       </flexbox>
 
@@ -292,6 +293,7 @@
         histroy_n: '',
         histroy_p: '',
         savevodcatpos: 0,
+        starlist: [],
       }
     }, destroyed() {
       var that = this;
@@ -324,10 +326,37 @@
 
         that.revideo()
       }
-
+      that.getstar();
 
     }, methods: {
-      toplaylist(){
+      getstar() {
+        var that = this
+        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=9999";
+        // console.log(url);
+        that.$http.get(url).then(function (res) {
+
+
+          var styles = JQ(res.bodyText.replace(/param/g, "p")).find("list[name='star_list'] entry")
+          var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='star_list']").find("[name='poster']").html()
+
+          console.log(res)
+
+          var list = [];
+          JQ(styles).each(function (i, e) {
+            var el = {};
+            el.id = JQ(e).find("[name='id']").html()
+            el.name = JQ(e).find("[name='name']").html()
+            el.list_poster = host + JQ(e).find("[name='list_poster']").html()
+            list.push(el)
+          });
+
+          that.starlist = list
+          console.log(that.starlist)
+        }, function () {
+
+        })
+      },
+      toplaylist() {
         this.$router.push("/kmusic/nowplay")
       },
       remusiccat(id) {
@@ -504,10 +533,20 @@
           that.$vux.loading.show({
             text: 'Loading'
           });
+          keyword = "&keyword=" + that.keyword
 
+          var singer_id = ""
+          console.log(that.starlist.length)
+          for (var i = 0; i < that.starlist.length; i++) {
+            console.log(that.keyword + "@@@@" + that.starlist[i].name)
+            if (that.keyword == that.starlist[i].name) {
+              singer_id = "&singer_id=" + that.starlist[i].id
+              keyword = ""
+            }
+          }
 
           var url = "http://" + localStorage.getItem("hs") + "/if/song_list.php?page=" + that.searchpage + "&pagesize=" +
-            that.searchlimit + "&keyword=" + that.keyword;
+            that.searchlimit + keyword + singer_id;
           console.log(url);
           that.$http.get(url).then(function (res) {
 
@@ -605,16 +644,18 @@
           localStorage.setItem("playname", list.name)
 
           that.$vux.confirm.show({
+            hideOnBlur:true,
             title: "温馨提示",
             content: "",
-            confirmText: "播放",
+            confirmText: "插播",
             cancelText: "添加",
             onCancel() {
-              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=Y&player=";
+              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=N&player=";
               that.sendcmd(cm)
             },
             onConfirm() {
-              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=N&player=";
+              var cm = "cmd=ktv_play&song_id=" + list.id + "&type=164" + "&cloud=N&first=Y&player=";
+
               that.sendcmd(cm)
 
             }
