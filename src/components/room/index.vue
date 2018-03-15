@@ -15,23 +15,13 @@
       return {
         url:
           "http://1.dev-reservation.ffun360.com/site_admin/index?"
-        // +"&t=1519809759" +
-        // "&openid=oDsqh1C2ebM_dMiiLCATdHeLwalk" +
-        // "&nickname=Liu&sex=1&province=%E5%B9%BF%E4%B8%9C" +
-        // "&city=%E5%B9%BF%E5%B7%9E" +
-        // "&country=china" +
-        // "&headimgurl=http%3A%2F%2Fthirdwx.qlogo.cn%2Fmmopen%2Fvi_32%2FNoCVVq1btRUBkz0jsx7l2xXDnnwdgicZIa3YeoNtCDeMDe0lhEeia34mnwEuj3NjickNBr4WGEkvochG6RovUfLWw%2F132&token=03D85B26BB7263B46998BC69A86DCFCC",
       }
 
     },
     mounted() {
-      // console.log(md5)
       var that = this
-      // console.log(this.wxinfo.user)
       var time = Math.round(new Date().getTime() / 1000);
-
       var user = this.wxinfo.user
-
       var eidtionTypeList = [
         {key: "come_from", val: "1"},
         {key: "t", val: time},
@@ -69,10 +59,7 @@
         + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country) +
         "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
-
-      // alert(this.url)
       location.href=this.url
-      // console.log(this.url)
 
     }, methods: {}
   }

@@ -23,7 +23,7 @@
           <div style="width: 60vw;"> {{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount">播放量: {{list.playAmount}}</div>
+            <div class="playAmount" style="display: none">播放量: {{list.playAmount}}</div>
             <div class="price">点播收费: ￥{{list.price}}</div>
           </div>
         </div>
@@ -31,6 +31,7 @@
       <div class="desc">
         {{list.descript}}
       </div>
+      <img src=""></img>
       <div v-bind:class="btn_style==0?'buy':btn_style==1?'buy':'play'" v-on:click="buy(list)">
         {{btn_style==0?'购买':btn_style==1?'购买':'播放'}}
       </div>

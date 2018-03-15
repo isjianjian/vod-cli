@@ -278,14 +278,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 10,
+        limit: 100,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 10,
+        searchlimit: 100,
         showhistroy: false,
 
         clickbuy: false,
@@ -331,7 +331,7 @@
     }, methods: {
       getstar() {
         var that = this
-        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=9999";
+        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=99";
         // console.log(url);
         that.$http.get(url).then(function (res) {
 
@@ -340,6 +340,7 @@
           var host = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='star_list']").find("[name='poster']").html()
 
           console.log(res)
+
 
           var list = [];
           JQ(styles).each(function (i, e) {
@@ -391,6 +392,7 @@
       },
       checkOpen() {
         var that = this;
+
         that.api_post("api/module/countdown?type=3", function (res) {
           that.open = true;
           that.timeExpire = new Date().getTime() + res.data.count;

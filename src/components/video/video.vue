@@ -49,7 +49,7 @@
                     <div>{{item.name}}
                     </div>
 
-                    <div class='times'>{{item.playAmount}}
+                    <div class='times' style="display: none">{{item.playAmount}}
                       <span style='font-size:12px'>次</span>
                     </div>
 
@@ -121,7 +121,7 @@
                     <div>{{item.name}}
                     </div>
 
-                    <div class='times'>{{item.playAmount}}
+                    <div class='times' style="display: none">{{item.playAmount}}
                       <span style='font-size:12px'>次</span>
                     </div>
 
@@ -220,14 +220,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 6,
+        limit: 100,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 6,
+        searchlimit: 100,
         showhistroy: false,
 
         clickbuy: false,
@@ -269,6 +269,7 @@
             var el = {id: '', name: "全部"};
 
             list.push(el);
+
             JQ(styles).each(function (i, e) {
               // console.log("e", e)
               var el = {};

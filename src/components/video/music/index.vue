@@ -266,14 +266,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 10,
+        limit: 100,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 10,
+        searchlimit: 100,
         showhistroy: false,
 
         clickbuy: false,
@@ -318,7 +318,7 @@
     }, methods: {
       getstar() {
         var that = this
-        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=9999";
+        var url = "http://" + localStorage.getItem("hs") + "/if/star_list.php?page=1&pagesize=99";
         // console.log(url);
         that.$http.get(url).then(function (res) {
 
@@ -668,7 +668,7 @@
               that.sendcmd(cm)
             },
             onConfirm() {
-              var cm = "cmd=music_playadd&music_id=" + list.id + "&type=134";
+              var cm = "cmd=music_playadd&music_id=" + list.id + "&type=327";
               that.sendcmd(cm)
 
             }

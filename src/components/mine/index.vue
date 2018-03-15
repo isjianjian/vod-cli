@@ -1,5 +1,6 @@
 <template>
   <div style="height:100%;background: #fff;">
+    <actionsheet v-model="otypeshow" :menus="otypemenus" @on-click-menu="otype" show-cancel></actionsheet>
     <view-box ref="viewBox">
       <div class="userinfo">
         <div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>
@@ -7,23 +8,23 @@
         <div class="leave">{{this.wxinfo.user.level}}</div>
       </div>
       <group>
-        <cell title="我的订单" link="/mine/order?i=0" is-link>
+        <cell title="我的订单" is-link @click.native="showtype(0)">
           <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/order.png">
         </cell>
         <grid>
-          <grid-item link="/mine/order?i=1" label="余额">
+          <grid-item @click.native="showtype(1)" label="余额">
             <img slot="icon" src="../../assets/images/obligation.png">
             <span style="color:#8DE93A;" slot="label">待付款</span>
           </grid-item>
-          <grid-item link="/mine/order?i=3">
+          <grid-item @click.native="showtype(3)">
             <img slot="icon" src="../../assets/images/dis_evaluate.png">
             <span style="color:#F9D48E;" slot="label">待评价</span>
           </grid-item>
-          <grid-item link="/mine/order?i=2">
+          <grid-item @click.native="showtype(2)">
             <img slot="icon" src="../../assets/images/completed.png">
             <span style="color:#FF5555;" slot="label">已完成</span>
           </grid-item>
-          <grid-item link="/mine/order?i=4">
+          <grid-item @click.native="showtype(4)">
             <img slot="icon" src="../../assets/images/refund.png">
             <span style="color:#55B9FF;" slot="label">退款</span>
           </grid-item>
@@ -66,12 +67,15 @@
         <cell title="发票" is-link link="/mine/about/agree">
           <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
         </cell>
-        <cell title="测试" is-link link="/video/otherbuy?hour=1&type=2">
-          <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
-        </cell>
+        <!--<cell title="测试" is-link link="/video/otherbuy?hour=1&type=2">-->
+          <!--<img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">-->
+        <!--</cell>-->
 
       </group>
+
     </view-box>
+
+
   </div>
 </template>
 <style>
@@ -134,7 +138,10 @@
 
 </style>
 <script>
-  import {Divider, Card, Group, Cell, CellBox, Grid, GridItem} from 'vux'
+  import md5 from 'js-md5';
+
+  let Base64 = require('js-base64').Base64;
+  import {Divider, Card, Group, Cell, CellBox, Grid, GridItem, Actionsheet} from 'vux'
   import XImg from "vux/src/components/x-img/index";
   import ViewBox from "vux/src/components/view-box/index";
   import man_img from '../../assets/images/man.png'
@@ -143,6 +150,13 @@
   export default {
     data() {
       return {
+        url: "http://1.dev-reservation.ffun360.com/site_admin/order_entrance?",
+        typeindex: 0,
+        otypeshow: false,
+        otypemenus: {
+          menu1: "娱乐",
+          menu2: "订房"
+        },
         balance: 0,
         integral: 0,
         sex_img: woman_img
@@ -157,7 +171,8 @@
       Cell,
       CellBox,
       Grid,
-      GridItem
+      GridItem,
+      Actionsheet
     },
     mounted() {
       if (this.wxinfo.user.sexId == 1) {
@@ -166,8 +181,19 @@
       this.walletInfo()
     },
     methods: {
+      showtype(res) {
+        this.otypeshow = !this.otypeshow
+        this.typeindex = res
+      },
+      otype(res, index) {
+        if (res == "menu1") {
+          this.$router.push("/mine/order?i=" + this.typeindex)
+        } else if (res == "menu2") {
+          this.toroomlink()
+        }
+      },
       walletInfo: function () {
-        var that=this;
+        var that = this;
         this.api_post("api/member/credits/residue", function (res) {
           console.log("credits", res);
           that.integral = res.credits
@@ -192,7 +218,57 @@
       },
       pay: function () {
 
+      }, toroomlink() {
+        var that = this
+        var user = this.wxinfo.user
+        var time = Math.round(new Date().getTime() / 1000);
+        var order_state = 100
+        switch (this.typeindex) {
+          case 0://全部
+            order_state = 100
+            break;
+          case 1://待付款
+            order_state = 101
+            break;
+          case 2://已完成
+            order_state = 103
+            break;
+          case 3://待使用
+            order_state = 102
+            break;
+          case 4: //退款
+            order_state = 104
+            break;
+        }
+
+        var eidtionTypeList = [
+          {key: "come_from", val: "1"},
+          {key: "t", val: time},
+          {key: "openid", val: user.openId},
+          {key: "order_state", val: order_state},
+          {key: "yxtoken", val: that.common.TOKEN.token},
+        ];
+
+        eidtionTypeList.sort(function (a, b) {
+          return a.key > b.key;
+        });
+
+        console.log(eidtionTypeList[0].key + "" + eidtionTypeList[0].val);
+
+        var s = ""
+        for (var i = 0; i < eidtionTypeList.length; i++) {
+          s += eidtionTypeList[i].key + "" + eidtionTypeList[i].val
+        }
+        s = "8cff406dd2e5897bf0581723e95fe246" + s + "8cff406dd2e5897bf0581723e95fe246";
+        console.log(s);
+        var token = md5(s)
+
+        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&order_state=" + order_state +
+          "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
+
+        location.href = this.url
       }
+
     }
   }
 </script>
