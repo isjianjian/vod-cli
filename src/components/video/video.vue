@@ -16,9 +16,9 @@
         <scroller v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
                   ref="scrollercat" style="position:absolute;width: 100%;top: 37px;" @on-scroll="savevodcat">
 
-          <tab bar-active-color="#3f9de7" :line-width="2" active-color='#3f9de7'
+          <tab bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
                v-bind:style="'width:'+cat_width +'px'">
-            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)"
+            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)"  active-class="active_cat"
                       :selected="index==savevodcatpos">
               {{item.name}}
             </tab-item>
@@ -29,7 +29,7 @@
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-88" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-81" lock-x :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top: 81px;">
           <div>
@@ -220,14 +220,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 100,
+        limit: 50,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 100,
+        searchlimit: 50,
         showhistroy: false,
 
         clickbuy: false,
@@ -383,6 +383,8 @@
 
           that.$vux.loading.hide()
 
+        },function () {
+          that.$vux.loading.hide()
         })
 
       }, addvideo() {//影片下拉加载
@@ -471,6 +473,8 @@
             }
 
             that.$vux.loading.hide()
+          },function () {
+            that.$vux.loading.hide()
           })
 
         } else {
@@ -536,6 +540,11 @@
 </style>
 
 <style>
+
+  .active_cat {
+    background: #3f9de7 !important;
+  }
+
 
   .weui-search-bar {
     position: relative;

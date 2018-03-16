@@ -278,14 +278,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 100,
+        limit: 50,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 100,
+        searchlimit: 50,
         showhistroy: false,
 
         clickbuy: false,

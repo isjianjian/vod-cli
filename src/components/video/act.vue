@@ -1,281 +1,423 @@
 <template>
-  <div style="text-align: center">
-    <div v-if="state == 1" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
-      padding-top: 10px;padding-bottom: 10px;">
-      恭喜你!!! 获得好友赠送的影片 <span style="font-size: 14px;color:#FD2A13"> {{movie.name}} </span> 的优惠观看资格
-    </div>
-    <div v-if="state == 402" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
-      padding-top: 10px;padding-bottom: 10px;">
-      你已拥有优惠,不能重复获取哦
-    </div>
-    <div v-if="state == 400 || state == 500" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
-      padding-top: 10px;padding-bottom: 10px;">
-      该优惠已失效
-    </div>
-    <div v-if="state == 401" style=" background: #FDFD13;font-size: 10px;color: #B8860B;text-shadow:1px 1px 1px #FAFAD2;
-      padding-top: 10px;padding-bottom: 10px;">
-      非新用户不能领取，进入主页查看其他活动
-    </div>
-    <div style="margin-top: 80px;" class="weui-cells weui-cells_after-title">
-      <div class="weui-cell">
-        <div class="weui-cell__hd">
-          <img slot="icon" :src="movie.pic" style="margin-left: 110px;vertical-align: middle;"></img>
-        </div>
-        <div class="weui-cell__bd">
-          <div class="weui-flex bd_title">
-            <div class="weui-flex__item left">
-                {{movie.descript}}
-            </div>
-            <div class="weui-flex__item right">
-              <img src="../../assets/images/friend.gif" style="width: 120px;"/>
-            </div>
+  <view-box v-bind:style="windowHeight">
+    <!--<div style="background: rgba(0,0,0,0.5);">-->
+    <div>
+      <div>
+        <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
+        <!--<img class="top-bg2"/>-->
+        <!--<img class="top-bg3"/>-->
+        <!--<img class="top-bg4"/>-->
+
+      </div>
+      <div class="top">
+        <img v-bind:src="list.pic"></img>
+        <div class="info">
+          <div style="width: 60vw;">
+            <span class="name">{{list.name}}</span>
+            <span hidden="true" class="year"> ({{list.year}})</span>
+          </div>
+          <div style="width: 60vw;"> {{list.year}}</div>
+          <div style="width: 60vw;"> {{list.length}}</div>
+          <div style="width: 60vw;"> 导演: {{list.director}}</div>
+          <div style="width: 55vw;"> 演员: {{list.act}}</div>
+          <div style="width: 60vw;"> {{list.language}}</div>
+
+          <div class="price-bottom">
+            <div class="playAmount" style="display: none">播放量: {{list.playAmount}}</div>
+            <div class="price">点播收费: ￥{{list.price}}</div>
           </div>
         </div>
       </div>
+      <div class="desc">
+        {{list.descript}}
+      </div>
+      <img src=""></img>
+      <div class="play" v-on:click="buy(list)">
+        播放
+      </div>
+      <div @click="ctrl" :hidden="true">
+        <img v-if="paid" class="pause" src="../../assets/images/cl_pause.png"/>
+      </div>
+      <div v-if="!show_share && paid" @click="show_share = true" class="flow">
+        <img src="../../assets/images/flow.png"/>
+      </div>
     </div>
 
+  </view-box>
 
-    <div v-if="state == 1" class="buy" v-on:click="buy">
-      <span><span style="font-weight: 600;font-size: 21px;">{{account.giftseemoney}}</span>元观看</span>
-      <img src="../../assets/images/watch.png" style="width: 20px;margin-left:5px;position: relative;top:4px;"/>
-    </div>
-    <div v-if="state == 402 || state == 401 || state == 400" class="buy" style="background-color: #3f9de7"
-         v-on:click="detail">
-      <span>查看详情</span>
-    </div>
-
-    <div class="hotel" style="background-color: #3f9de7"
-         v-on:click="hotel">
-      <span>附近的酒店</span>
-    </div>
-
-  </div>
 </template>
 
 <script>
-  import {Divider, Card} from 'vux'
-  import Cell from "vux/src/components/cell/index";
+  import Actionsheet from "vux/src/components/actionsheet/index";
+
+  var that;
+  import ViewBox from "vux/src/components/view-box/index";
+  import {XDialog, TransferDomDirective as TransferDom} from 'vux'
+  import JQ from 'jquery';
 
   export default {
-    name: "act",
-    components: {
-      Cell,
-      Card,
-      Divider
+    directives: {
+      TransferDom
     },
-    mounted() {
-
-
-      var that = this;
-      var sid = this.$router.currentRoute.query.sid;
-      var tsid = this.$router.currentRoute.query.openid;
-      var url = "api/tuisong/add?sid=" + sid + "&tsid=" + tsid;
-      this.api_post(url, function (res) {
-        console.log(res);
-        that.account = res.data;
-        that.state = 1;
-      }, function (res) {  alert(res.code)
-        that.state = res.code
-      });
-      this.api_post("api/vod/" + sid, function (res) {
-        that.movie = res.data
-      });
-
-      that.hotellist();
+    name: "detail",
+    components: {
+      Actionsheet,
+      XDialog,
+      ViewBox,
+      JQ
     },
     data() {
       return {
-        sid: 0,
-        tsid: '',
-        movie: {},
+        windowHeight: '',
+        list: '',
+        show_share: false,
         account: {},
-        state: 0,
-        hotel_list: {},
+        id: 0,
+        btn_style: 0,
+        paid: false,
+        show1: false,
+        menus1: {
+          d2: '2D 播放',
+          d3: '3D 播放'
+        },
       }
     },
-    methods: {
-      buy: function () {
-        this.$router.replace('/video/buy?id=' + this.sid)
-      }, hotel() {
-        this.$router.push('/video/hotel')
+    mounted(res) {
+      that = this;
+      that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
+      var vid = 0;
+      // console.log("获取影片详情", that.$router.currentRoute.query)
+      // alert(that.$router.currentRoute.query.id)
+      if (that.$router.currentRoute.query.id != null) {
+        vid = that.$router.currentRoute.query.id;
+      } else {
+        vid = that.current.vid
+      }
+      // console.log("******************",vid)
+      if(that.common.hotel != null){
+        that.ispay(vid);
+        that.getlib_id(vid);//获取影片
+      }else{
+        console.log("detail error",res)
+        that.api_post("api/vod/" + id, function (res) {
+          that.list = res.data
+        });
+      }
+
+
+      that.api_post("api/account", function (res) {
+        // console.log("---------------", res)
+        that.account = res.data
+      });
+
+      var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
+      var type = that.common.hotel.type;
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" +   this.toHighId(vid,type,1);
+      // console.log("link", link)
+      that.$wechat.onMenuShareAppMessage({
+        title: '好友赠送你一部影片', // 分享标题
+        // desc: '好友赠送你一部影片', // 分享描述
+        link: link, // 分享链接
+        imgUrl: 'http://mp.11yuanxian.com/logo1.png', // 分享图标
+        success: function () {
+          that.show_share = false;
+          that.$vux.toast.text('分享成功！', 'center')
+        },
+        cancel: function () {
+          that.$vux.toast.text('已取消分享！', 'center')
+        }
+      });
+
+
+    }, methods: {
+      ispay(vid) {
+        var url = "api/vod/vi?sid=" + vid;
+        that.api_post(url, function (res) {
+          // console.log(res)
+          that.paid = res.data;
+          if (!that.paid) {
+            that.btn_style = 1;
+          } else {
+            that.btn_style = 2;
+          }
+        })
       },
-      detail: function () {
-        this.$router.replace('/detail?id=' + this.sid)
+      getlib_id(id) {
+
+        var url = "http://" + localStorage.getItem("hs") + "/if/movie_path.php?uid=" + id + "" +
+          "&type=134&sn=" + localStorage.getItem("sn") + "&cloud=&pid=&idx=1&output=1";
+
+        console.log("111111111111111111", url);
+        that.$http.get(url).then(function (res) {
+            var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='program_info']");
+
+            JQ(styles).each(function (i, e) {
+              // console.log("e", e)
+              that.id = JQ(e).find("[name='pid']").html()
+            });
+
+            that.getdetail();
+          },function(res){
+
+          }
+        )
+      },
+      getdetail() {
+        var url = "http://" + localStorage.getItem("hs") + "/if/movie_detail.php?id=" + that.id;
+        // console.log("111111111111111111", url)
+        that.$http.get(url).then(function (res) {
+            // console.log("111111111111111111",res)
+
+            var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='movie_detail']");
+            var listtmp = [];
+            JQ(styles).each(function (i, e) {
+              // console.log("e", e)
+              var el = {};
+
+              el.id = JQ(e).find("[name='id']").html();
+              el.lib_id = JQ(e).find("[name='lib_id']").html();
+              el.pic = JQ(e).find("[name='org_poster']").html();
+              el.name = JQ(e).find("[name='name']").html();
+              el.year = JQ(e).find("[name='year']").html();
+              el.cName = JQ(e).find("[name='name']").html();
+              el.length = JQ(e).find("[name='alias']").html();
+              el.director = JQ(e).find("[name='director']").html();
+              el.act = JQ(e).find("[name='actor']").html();
+              el.language = JQ(e).find("[name='dimension']").html();
+              el.dimension = JQ(e).find("[name='dimension']").html();
+              el.playAmount = '0';
+              el.price = JQ(e).find("[name='price']").html() / 100;
+              el.descript = JQ(e).find("[name='intro']").html();
+
+              listtmp.push(el)
+            });
+            that.list = listtmp[0]
+            // console.log("--------------", that.list)
+          }
+        )
+      },
+      buy(list) {
+        if (that.paid) {
+          // 播放
+          if (list.dimension == "2D") {
+            that.Play(that.list.lib_id, 1, list, 1);
+          } else {
+            that.show1 = true
+          }
+        } else {
+          // 购买
+          that.$router.push({path: '/video/buy', query: {id: list.lib_id, pid: list.id}})
+        }
+      }, ctrl() {
+        this.$router.push("/video/ctrl")
+      }, menud(res) {
+        var dimensions = "2d";
+        if (res == "d2") {
+          dimensions = "1"
+        } else if (res == "d3") {
+          dimensions = "2"
+        } else if (res == "蓝光") {
+          dimensions = "3"
+        }
+        that.Play(that.list.lib_id, dimensions, this.list, 1);
       }
     }
-
   }
 </script>
 
-<style scoped lang="less">
+<style scoped>
+  .top {
 
-  .weui-cells_after-title {
-    margin-top: 0;
-  }
-
-  .weui-cells {
+    margin: 20px 15px;
+    display: flex;
     position: relative;
-    background-color: #FFFFFF;
-    line-height: 1.41176471;
-    font-size: 17px;
-    background-size: 100%;
-    height: 100%;
-    background: #FBF9FE;
   }
 
-  view {
-    display: block;
-
-  }
-
-  .hotel {
-    position: absolute;
-    display: block;
+  .top-bg {
+    margin-top: -20px;
     width: 100%;
-    bottom: 70px;
-    background: red;
-    color: #FDFD13;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 20px;
-    padding: 6px 0;
-    border-radius: 10px;
-    /*background-image: url("../../assets/images/buy_n.png");*/
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: 120%;
+    position: absolute;
+    /*z-index: -2;*/
+    opacity: 1;
+    filter: blur(21px);
   }
 
-  .hotel:active {
+  .top-bg2 {
+    margin-top: -20px;
+    width: 100%;
+    height: 200px;
+    background-repeat: no-repeat;
+    position: absolute;
+    z-index: -3;
     background-image: url("../../assets/images/detail_bg.png");
+  }
+
+  .top-bg3 {
+    margin-top: -20px;
+    width: 100%;
+    height: 200px;
+    background-repeat: no-repeat;
+    position: absolute;
+    z-index: -4;
+    opacity: 1;
+    background-image: url("../../assets/images/detail_bg.png");
+  }
+
+  .top-bg4 {
+    margin-top: -20px;
+    width: 100%;
+    height: 200px;
+    background-repeat: no-repeat;
+    position: absolute;
+    z-index: -5;
+    opacity: 1;
+    background-image: url("../../assets/images/detail_bg.png");
+  }
+
+  .top img {
+    width: 106px;
+    height: 150px;
+    margin-right: 10px;
+  }
+
+  .name {
+    color: #fff;
+    font-size: 16px;
+    line-height: 16px;
+    height: 16px;
+    width: auto;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .year {
+    color: #fff;
+    font-size: 13px;
+    line-height: 13px;
+    height: 13px;
+    width: auto;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .info {
+    width: 100%;
+    height: 150px;
+  }
+
+  .info div {
+    font-size: 13px;
+    color: #fff;
+    margin-top: 2px;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+  }
+
+  .price-bottom {
+    font-size: 16px;
+    line-height: 16px;
+    height: 16px;
+    display: flex;
+    border-top: 1px solid #fff;
+    margin-right: 20px;
+    bottom: 0;
+  }
+
+  .playAmount {
+    height: 14px;
+    font-size: 14px;
+    line-height: 14px;
+  }
+
+  .price {
+    height: 14px;
+    font-size: 14px;
+    line-height: 14px;
+    position: absolute;
+    right: 20px;
+  }
+
+  .desc {
+    background: #fff;
+    padding: 20px 20px;
+    font-size: 13px;
+    color: #666;
   }
 
   .buy {
     position: absolute;
-    display: block;
     width: 100%;
-    bottom: 30px;
+    bottom: 0;
     background: red;
-    color: #FDFD13;
+    color: #fff;
     text-align: center;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 20px;
-    padding: 6px 0;
-    border-radius: 10px;
+    padding: 10px 0;
     /*background-image: url("../../assets/images/buy_n.png");*/
   }
 
   .buy:active {
-    background-image: url("../../assets/images/detail_bg.png");
+    /*background: #3f9de7;*/
+    /*background-image: url("../../assets/images/buy_p.png");*/
   }
 
-  .weui-cells::after {
-    content: " ";
+  .play {
     position: absolute;
-    left: 0;
+    width: 100%;
     bottom: 0;
-    right: 0;
-    height: 1px;
-    color: #D9D9D9;
-
+    background: #3f9de7;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    /*background-image: url("../../assets/images/play_n.png");*/
   }
 
-  .weui-cells::before {
-    content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 1px;
-    color: #D9D9D9;
-
+  .play:active {
+    /*background: red;*/
+    /*background-image: url("../../assets/images/play_p.png");*/
   }
 
-  .weui-cell {
-    padding: 10px 15px;
-    position: relative;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-
+  .pause {
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+    width: 100px;
+    height: 100px;
+    height: 100px;
   }
 
-  view {
-    display: block;
+  .flow {
+    position: fixed;
+    right: 20px;
+    bottom: 70px;
+    width: 40px;
+    height: 40px;
+    background: red;
+    border-radius: 20px;
+    border: 1px solid #696;
+    padding: 1px 0;
+    text-align: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    -webkit-box-shadow: #666 0px 0px 10px;
+    -moz-box-shadow: #666 0px 0px 10px;
+
+    box-shadow: #666 0px 0px 10px;
   }
 
-  .weui-cell:first-child::before {
-    display: none;
+  .flow img {
+    height: 36px;
+    width: 36px;
+    text-align: center;
   }
-
-  .weui-cell::before {
-    content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 1px;
-    border-top: 1px solid #D9D9D9;
-    color: #D9D9D9;
-    left: 15px;
-
-  }
-
-  .weui-cell__bd {
-    margin-left: 10px;
-
-  }
-
-  .weui-cell__bd {
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-  }
-
-  .weui-flex {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-  }
-
-  .weui-flex__item {
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-  }
-
-  .weui-cell__hd, .weui-cell__hd img {
-    width: 120px;
-
-  }
-
-  .weui-cell__bd {
-    margin-left: 10px;
-  }
-
-  .left {
-    align-items: left;
-    text-align: left;
-  }
-
-  .right {
-    align-items: right;
-    text-align: right;
-  }
-
-  .bd_title {
-    font-size: 10px;
-    color: #B6B6B6;
-  }
-
-  .bd_title .right {
-    color: #75B8EC;
-  }
-
-  html, body {
-    height: 100%
-  }
-
 </style>

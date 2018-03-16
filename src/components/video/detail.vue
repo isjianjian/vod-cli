@@ -132,9 +132,9 @@
       // console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题
-        desc: '好友赠送你一部影片', // 分享描述
+        // desc: '好友赠送你一部影片', // 分享描述
         link: link, // 分享链接
-        imgUrl: 'https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1040759678,2647214604&fm=58', // 分享图标
+        imgUrl: 'http://mp.11yuanxian.com/logo1.png', // 分享图标
         success: function () {
           that.show_share = false;
           that.$vux.toast.text('分享成功！', 'center')
