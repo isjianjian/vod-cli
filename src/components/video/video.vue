@@ -4,84 +4,90 @@
     <div v-if="common.hotel!=null">
       <view-box ref="box">
 
-        <flexbox class="top">
-          <search ref="search" placeholder="输入片名、主演或导演" @on-change="setkeyword"
-                  @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
-          </search>
+        <div>
+          <flexbox class="top">
+            <search ref="search" placeholder="输入片名、主演或导演" @on-change="setkeyword"
+                    @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
+            </search>
 
-          <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
-               v-on:click="histroyshow"/>
-        </flexbox>
+            <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
+                 v-on:click="histroyshow"/>
+          </flexbox>
+        </div>
         <!--分类  :selected="index === common.savevodcatpos"-->
-        <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
-                  ref="scrollercat" style="position:absolute;width: 100%;top: 50px;" @on-scroll="savevodcat">
+        <div>
+          <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
+                    ref="scrollercat" @on-scroll="savevodcat">
 
-          <tab bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
-               v-bind:style="'width:'+cat_width +'px'">
-            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
-                      :selected="index==savevodcatpos">
-              {{item.name}}
-            </tab-item>
-          </tab>
-        </scroller>
+            <tab bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
+                 v-bind:style="'width:'+cat_width +'px'">
+              <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
+                        :selected="index==savevodcatpos">
+                {{item.name}}
+              </tab-item>
+            </tab>
+          </scroller>
+        </div>
 
-        <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="revideo"
-                  @on-pullup-loading="addvideo"
-                  @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-94" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="width: 100%;top: 94px;">
-          <div>
-            <div v-if="vodlist.length == 0" class='loading'>
+        <div>
+          <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+                    @on-pulldown-loading="revideo"
+                    @on-pullup-loading="addvideo"
+                    @on-scroll="savevodlist"
+                    :use-pulldown="true" :use-pullup="true" ref="scroller" lock-x :scrollbar-x=false
+                    :scrollbar-y=false height="-94" >
+            <div>
+              <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-            </div>
-            <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
+              </div>
+              <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
-              <div style='display:flex;'>
-                <div class='vodimage'>
-                  <img :src="item.pic"></img>
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
-
-                    <div class='times' style="display: none">{{item.playAmount}}
-                      <span style='font-size:12px'>次</span>
-                    </div>
-
+                <div style='display:flex;'>
+                  <div class='vodimage'>
+                    <img :src="item.pic"></img>
                   </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      类型：{{item.cName}}
+                  <div class='detail'>
+                    <div class='name'>
+                      <div>{{item.name}}
+                      </div>
+
+                      <div class='times' style="display: none">{{item.playAmount}}
+                        <span style='font-size:12px'>次</span>
+                      </div>
+
                     </div>
-                    <div class='time'>
-                      <div>年份：{{item.length}}</div>
-                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
-                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
+                    <div class='star-bottom'>
+                      <div class='type'>
+                        类型：{{item.cName}}
+                      </div>
+                      <div class='time'>
+                        <div>年份：{{item.length}}</div>
+                        <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                          <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
+                        </div>
+                      </div>
+                      <div class='star'>
+                        主演：{{item.act}}
                       </div>
                     </div>
-                    <div class='star'>
-                      主演：{{item.act}}
+
+                    <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                      {{item.paid?'播放':'购买'}}
                     </div>
-                  </div>
 
-                  <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
-                    {{item.paid?'播放':'购买'}}
                   </div>
-
                 </div>
               </div>
             </div>
-          </div>
-          <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
+            <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+          </scroller>
+        </div>
 
 
-        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 50px;"   v-on:click="histroyshow">
+        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 50px;"
+             v-on:click="histroyshow">
           <cell title="历史记录" is-link link="/record">
             <img slot="icon" width="20" style="display:block;margin-right:5px;"
                  src="../../assets/images/histroy_icon.png">
@@ -96,60 +102,61 @@
           </cell>
         </div>
 
-        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                  @on-pulldown-loading="research"
-                  @on-pullup-loading="addsearch"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
-                  :scrollbar-y=false
-                  style="z-index: 2;width: 100%;top: 50px;" :hidden="!showsearch">
+        <div>
+          <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                    @on-pulldown-loading="research"
+                    @on-pullup-loading="addsearch"
+                    :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-50" lock-x :scrollbar-x=false
+                    :scrollbar-y=false>
 
-          <div>
-            <div v-if="searchlist.length == 0" class='loading'>
+            <div>
+              <div v-if="searchlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-            </div>
+              </div>
 
-            <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
+              <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
 
-              <div style='display:flex;'>
-                <div class='vodimage'>
-                  <img :src="item.pic"></img>
-                </div>
-                <div class='detail'>
-                  <div class='name'>
-                    <div>{{item.name}}
-                    </div>
-
-                    <div class='times' style="display: none">{{item.playAmount}}
-                      <span style='font-size:12px'>次</span>
-                    </div>
-
+                <div style='display:flex;'>
+                  <div class='vodimage'>
+                    <img :src="item.pic"></img>
                   </div>
-                  <div class='star-bottom'>
-                    <div class='type'>
-                      类型：{{item.cName}}
+                  <div class='detail'>
+                    <div class='name'>
+                      <div>{{item.name}}
+                      </div>
+
+                      <div class='times' style="display: none">{{item.playAmount}}
+                        <span style='font-size:12px'>次</span>
+                      </div>
+
                     </div>
-                    <div class='time'>
-                      <div> 年份：{{item.length}}</div>
-                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
-                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
+                    <div class='star-bottom'>
+                      <div class='type'>
+                        类型：{{item.cName}}
+                      </div>
+                      <div class='time'>
+                        <div> 年份：{{item.length}}</div>
+                        <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                          <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
+                        </div>
+                      </div>
+                      <div class='star'>
+                        主演:{{item.act}}
                       </div>
                     </div>
-                    <div class='star'>
-                      主演:{{item.act}}
+                    <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                      {{item.paid?'播放':'购买'}}
                     </div>
-                  </div>
-                  <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
-                    {{item.paid?'播放':'购买'}}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-        </scroller>
+            <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+          </scroller>
 
+        </div>
 
       </view-box>
     </div>
@@ -350,7 +357,11 @@
             el.price = JQ(e).find("[name='price']").html() / 100; //价格
             el.act = JQ(e).find("[name='actor']").html();//演员
             el.director = JQ(e).find("[name='director']").html();//导演
-            list.push(el)
+
+            // for (var i = 0; i < 100; i++) {
+            //   list.push(el)
+            // }
+            list.push(el);
           });
 
 
@@ -590,7 +601,7 @@
     /*点击搜索框后*/
     content: '';
     position: absolute;
-    left: 0;
+    left: 0px;
     top: 0;
     width: 200%;
     height: 200%;
@@ -599,23 +610,32 @@
     -webkit-transform-origin: 0 0;
     transform-origin: 0 0;
     border-radius: 0px !important;
-    border: 10px solid #E6E6EA;
+    border: 1px solid #E6E6EA!important;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+  }
+
+  .weui-icon-search {
+    font-size: 30px !important;
   }
 
   .weui-search-bar__box .weui-icon-search {
     /*搜索图标*/
     position: absolute;
     left: 8px !important;
-    top: 5px !important;
+    top: 10px !important;
     line-height: 28px;
+    font-size: 30px !important;
+  }
+
+  .weui-search-bar__input {
+    margin-left: 15px !important;
   }
 
   .weui-search-bar__box .weui-icon-clear {
     /*清除内容*/
     position: absolute;
-    top: 5px !important;
+    top: 10px !important;
     right: 0;
     padding: 0 10px;
     line-height: 28px;
@@ -631,7 +651,7 @@
     /*取消按钮*/
     display: none;
     margin-left: 0px !important;
-    margin: 5px 10px !important;
+    margin: 10px 10px !important;
     line-height: 28px;
     color: #3f9de7 !important;
     white-space: nowrap;

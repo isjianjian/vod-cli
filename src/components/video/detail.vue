@@ -23,7 +23,8 @@
           <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span></div>
+            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span>
+            </div>
             <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
         </div>
@@ -139,7 +140,7 @@
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
       var type = that.common.hotel.type;
       var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + this.toHighId(vid, type, 1);
-      console.log("link", link)
+      // console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题
         // desc: '好友赠送你一部影片', // 分享描述
@@ -173,20 +174,31 @@
       },
       getlib_id(id) {
 
+        //
         var url = "http://" + localStorage.getItem("hs") + "/if/movie_path.php?uid=" + id + "" +
           "&type=134&sn=" + localStorage.getItem("sn") + "&cloud=&pid=&idx=1&output=1";
 
-        console.log("111111111111111111", url);
+        // console.log("111111111111111111", url);
         that.$http.get(url).then(function (res) {
             var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='program_info']");
-
             JQ(styles).each(function (i, e) {
               // console.log("e", e)
               that.id = JQ(e).find("[name='pid']").html()
             });
-
+            if (that.id == '') {
+              var styles = JQ(res.bodyText.replace(/param/g, "p")).find("seg[id='error']");
+              var message
+              JQ(styles).each(function (i, e) {
+                // console.log("e", e)
+                message = JQ(e).find("[name='message']").html()
+              });
+              this.$vux.toast.text(message, 'center')
+              return;
+            }
+            // console.log("111111111111111111", url);
             that.getdetail();
           }, function (res) {
+
 
           }
         )

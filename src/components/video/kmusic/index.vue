@@ -49,75 +49,79 @@
 
     <view-box ref="box">
 
-      <div v-if="iscat" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
-        <flexbox :gutter="0" wrap="wrap" style="text-align: center;background: gray;padding: 10px 0px;">
+      <div v-if="iscat" style="position:absolute;z-index: 3;background: #ccc;width: 100%;top: 47px;">
+        <flexbox :gutter="0" wrap="wrap" style="text-align: center; padding: 10px 0px;">
           <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
-            <x-button @click.native="remusiccat(list.id)" mini>{{list.name}}</x-button>
+            <x-button class="cat_name_ac" @click.native="remusiccat(list)" mini>{{list.name}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
 
-      <flexbox class="top">
+      <div>
+        <flexbox class="top">
 
-        <div>
-          <x-button style="width:70px;margin-left: 5px;" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
-        </div>
+          <div>
+            <x-button class="cat_name" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
+          </div>
 
-        <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
-                @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
-        </search>
-        <div>
-          <x-button style="width:70px;margin-right: 5px;" v-if="!showsearch" @click.native="toplaylist" mini>已点
-          </x-button>
-        </div>
-        <!--<div ref="histroy" v-if="!showsearch" class="histroy_btn"-->
-        <!--v-on:click="histroyshow"/>-->
+          <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
+                  @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
+          </search>
+          <div>
+            <x-button class="c_music" v-if="!showsearch" @click.native="toplaylist" mini>已点
+            </x-button>
+          </div>
+          <!--<div ref="histroy" v-if="!showsearch" class="histroy_btn"-->
+          <!--v-on:click="histroyshow"/>-->
 
-      </flexbox>
+        </flexbox>
 
+      </div>
 
-      <scroller v-if="!showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
-                @on-pulldown-loading="revideo"
-                @on-pullup-loading="addvideo"
-                @on-scroll="savetop"
-                :use-pulldown="true" :use-pullup="true" ref="scroller" height="-83" lock-x :scrollbar-x=false
-                :scrollbar-y=false
-                style="width: 100%;top: 37px;">
-        <div>
-          <div v-if="vodlist.length == 0" class='loading'>
+      <div>
+        <scroller v-if="!showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+                  @on-pulldown-loading="revideo"
+                  @on-pullup-loading="addvideo"
+                  @on-scroll="savetop"
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-92" lock-x :scrollbar-x=false
+                  :scrollbar-y=false
+        >
+          <div>
+            <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-          </div>
-          <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
+            </div>
+            <div class='film' v-for="(item,index) in vodlist" v-on:click="toplay(item)">
 
-            <div style='display:flex;'>
-              <div class='vodimage'>
+              <div style='display:flex;'>
+                <div class='vodimage'>
 
-              </div>
-              <div class='detail'>
-                <div class='name'>
-                  <div>{{item.name}}
+                </div>
+                <div class='detail'>
+                  <div class='name'>
+                    <div>{{item.name}}
+                    </div>
+
+                  </div>
+                  <div class='star-bottom'>
+                    <div class='type'>
+                      {{item.singer_list}}
+                    </div>
+                    <div class='time'>
+                      <!--<div class='price'>{{item.singer_list}}-->
+                      <!--</div>-->
+                    </div>
+
                   </div>
 
                 </div>
-                <div class='star-bottom'>
-                  <div class='type'>
-                    {{item.singer_list}}
-                  </div>
-                  <div class='time'>
-                    <!--<div class='price'>{{item.singer_list}}-->
-                    <!--</div>-->
-                  </div>
-
-                </div>
-
               </div>
             </div>
           </div>
-        </div>
-        <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-      </scroller>
+          <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+        </scroller>
+      </div>
 
 
       <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
@@ -127,51 +131,53 @@
         </cell>
       </div>
 
-      <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                @on-pulldown-loading="research"
-                @on-pullup-loading="addsearch"
-                @on-scroll="savevodlist"
-                :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
-                :scrollbar-y=false
-                style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+      <div>
+        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                  @on-pulldown-loading="research"
+                  @on-pullup-loading="addsearch"
+                  @on-scroll="savevodlist"
+                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-92" lock-x :scrollbar-x=false
+                  :scrollbar-y=false
+                  :hidden="!showsearch">
 
-        <div>
-          <div v-if="searchlist.length == 0" class='loading'>
+          <div>
+            <div v-if="searchlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-          </div>
+            </div>
 
-          <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
+            <div class='film' v-for="(item,index) in searchlist" v-on:click="toplay(item)">
 
-            <div style='display:flex;'>
-              <div class='vodimage'>
-
-              </div>
-              <div class='detail'>
-                <div class='name'>
-                  <div>{{item.name}}
-                  </div>
+              <div style='display:flex;'>
+                <div class='vodimage'>
 
                 </div>
-                <div class='star-bottom'>
-                  <div class='type'>
-                    {{item.singer_list}}
-                  </div>
-                  <div class='time'>
-                    <div class='price'>{{item.singer_list}}
+                <div class='detail'>
+                  <div class='name'>
+                    <div>{{item.name}}
                     </div>
+
+                  </div>
+                  <div class='star-bottom'>
+                    <div class='type'>
+                      {{item.singer_list}}
+                    </div>
+                    <div class='time'>
+                      <div class='price'>{{item.singer_list}}
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
-
               </div>
             </div>
           </div>
-        </div>
-        <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-      </scroller>
+          <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+        </scroller>
 
+      </div>
       <div v-transfer-dom>
 
         <popup v-model="show" height="270px" is-transparent>
@@ -360,10 +366,10 @@
       toplaylist() {
         this.$router.push("/kmusic/nowplay")
       },
-      remusiccat(id) {
+      remusiccat(list) {
         var that = this
         that.page = 1
-        that.getvideo(id)
+        that.getvideo(list.id)
       },
       showcat() {
         var that = this
@@ -646,7 +652,7 @@
           localStorage.setItem("playname", list.name)
 
           that.$vux.confirm.show({
-            hideOnBlur:true,
+            hideOnBlur: true,
             title: "温馨提示",
             content: "",
             confirmText: "插播",
@@ -688,18 +694,36 @@
   }
 </style>
 <style scoped>
+
+  .cat_name {
+    width: 70px;
+    margin-left: 5px;
+    overflow: hidden;
+    height: 29px;
+    color: #fff;
+    background: #3f9de7;
+  }
+
+  .cat_name_ac:active {
+    color: #fff !important;
+    background: #3f9de7 !important;
+  }
+
+  .c_music {
+    width: 70px;
+    margin-right: 5px;
+    background: #e5e5e5;
+  }
+
   .vux-search-fixed {
     top: 46px !important;
   }
 
   .top {
-    height: 36px;
-    line-height: 36px;
-    display: flex;
+    height: 45px;
+    line-height: 45px;
     background: #fff;
     border-bottom: 1px solid #efeff4;
-    position: absolute;
-
   }
 
   .seacher_input {
@@ -926,6 +950,8 @@
     display: inline-block;
 
   }
+
+
 </style>
 
 
@@ -984,23 +1010,30 @@
     -webkit-transform-origin: 0 0;
     transform-origin: 0 0;
     border-radius: 0px !important;
-    border: 10px solid #E6E6EA;
+    border: 1px solid #E6E6EA !important;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+  }
+
+  .weui-icon-search {
+    font-size: 30px !important;
   }
 
   .weui-search-bar__box .weui-icon-search {
     /*搜索图标*/
     position: absolute;
     left: 8px !important;
-    top: 5px !important;
+    top: 10px !important;
     line-height: 28px;
+    font-size: 30px !important;
   }
+
+
 
   .weui-search-bar__box .weui-icon-clear {
     /*清除内容*/
     position: absolute;
-    top: 5px !important;
+    top: 10px !important;
     right: 0;
     padding: 0 10px;
     line-height: 28px;
@@ -1016,7 +1049,7 @@
     /*取消按钮*/
     display: none;
     margin-left: 0px !important;
-    margin: 5px 10px !important;
+    margin: 10px 10px !important;
     line-height: 28px;
     color: #3f9de7 !important;
     white-space: nowrap;

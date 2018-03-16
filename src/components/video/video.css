@@ -2,10 +2,8 @@
 .top {
   height: 45px;
   line-height: 45px;
-  display: flex;
   background: #fff;
   border-bottom: 5px solid #efeff4;
-  position: absolute;
 
 }
 
