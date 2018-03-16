@@ -669,7 +669,7 @@
   .price {
     position: absolute;
     right: 20px;
-    bottom: 15px;
+    bottom: 0px;
     font-size: 15px;
     color: #3f9de7;
   }

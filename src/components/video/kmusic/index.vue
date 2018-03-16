@@ -712,55 +712,55 @@
   }
 
   .seacher_btn {
-    width: 20px;
-    height: 20px;
+    width: 29px;
+    height: 29px;
     padding: 8px;
     background: url("../../../assets/images/search.png");
-    background-size: 20px;
+    background-size: 29px;
     background-repeat: no-repeat;
     background-position: center;
     border-right: 1px solid #efeff4;
   }
 
   .seacher_btn:active {
-    width: 20px;
-    height: 20px;
+    width: 29px;
+    height: 29px;
     padding: 8px;
     background: url("../../../assets/images/search_p.png");
-    background-size: 20px;
+    background-size: 29px;
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .histroy_btn {
     border-left: 1px solid #efeff4;
-    width: 20px;
-    height: 20px;
+    width: 29px;
+    height: 29px;
     padding: 8px;
     background: url("../../../assets/images/menu.png");
-    background-size: 20px;
+    background-size: 29px;
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .histroy_btn:active {
     border-left: 1px solid #efeff4;
-    width: 20px;
-    height: 20px;
+    width: 29px;
+    height: 29px;
     padding: 8px;
     background: url("../../../assets/images/menu_p.png");
-    background-size: 20px;
+    background-size: 29px;
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .histroy_btn_p {
     border-left: 1px solid #efeff4;
-    width: 20px;
-    height: 20px;
+    width: 29px;
+    height: 29px;
     padding: 8px;
     background: url("../../../assets/images/menu_p.png");
-    background-size: 20px;
+    background-size: 29px;
     background-repeat: no-repeat;
     background-position: center;
   }

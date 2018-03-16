@@ -63,6 +63,8 @@
 
         typeinput: false,
       }
+    }, destroyed() {
+      this.resettime()
     }, mounted() {
       that = this
 
@@ -72,7 +74,7 @@
       },
       memberSendCode() {//获取验证码
 
-        console.log(that.$refs.getcode);
+        // console.log(that.$refs.getcode);
         if (this.sendCodetimeout == 60) {
           var url = 'api/memberSendCode?telPhone=' + that.telPhone;
 
@@ -81,11 +83,11 @@
             this.api_post(url, function (res) {
               that.Codetimeout();
               that.TruesendCode = res.sendCode;
-              that.sendCode = res.sendCode;
-
               that.typeinput = true;
+              console.log(res.sendCode)
 
-              that.$refs.codeinput.currentValue = res.sendCode
+              // that.sendCode = res.sendCode;
+              // that.$refs.codeinput.currentValue = res.sendCode
 
 
             }, function () {
@@ -98,12 +100,15 @@
 
       }
       , resettime() {
+        if (that.interval != "") {
+          clearInterval(that.interval);//停止定时器
+          that.typeinput = false;
+          that.sendCodetips = '发送验证码',
+            that.sendCodetimeout = 60,
+            console.log("停止定时器", that.sendCodetimeout);
+        }
 
-        clearInterval(that.interval);//停止定时器
-        that.typeinput = false;
-        that.sendCodetips = '发送验证码',
-          that.sendCodetimeout = 60,
-          console.log("停止定时器", that.sendCodetimeout);
+
       }, Codetimeout() {//获取验证码倒计时
 
         that.interval = setInterval(function () {
@@ -124,12 +129,12 @@
       , rephone(res) {//实时获取电话号码
         that.telPhone = res
       }
-      , recode(res) {//实时获取验证码
+      , recode(res) {//实时获取输入的验证码
         that.sendCode = res
       }
       , check(res) {//核对验证码
 
-        clearInterval(that.interval);//停止定时器
+
 
         if (that.telPhone != '' && that.telPhone.length == 11) {
 
@@ -139,14 +144,15 @@
           } else {
             //注意 测试时用的data.TruesendCode为后台获取真实验证码。实际以data.sendCode传给后台
             //"&pushOpenId=1122&pushType=1&productId=2"推送者ID 推送类型 （1推送影片  2 推送酒店）影片id或者酒店id
+            clearInterval(that.interval);//停止定时器
 
             var url = "api/phone/bind?telPhone=" + that.telPhone + "&sendCode=" + that.sendCode;
             this.api_post(url, function (res) {
 
-                that.$vux.toast.text("綁定成功", 'center');
-                that.$router.back();
+              that.$vux.toast.text("綁定成功", 'center');
+              that.$router.back();
 
-            },function (res) {
+            }, function (res) {
               that.$vux.toast.text(res.msg, 'center')
             })
           }

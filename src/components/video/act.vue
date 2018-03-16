@@ -1,13 +1,8 @@
 <template>
   <view-box v-bind:style="windowHeight">
-    <!--<div style="background: rgba(0,0,0,0.5);">-->
     <div>
       <div>
         <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
-        <!--<img class="top-bg2"/>-->
-        <!--<img class="top-bg3"/>-->
-        <!--<img class="top-bg4"/>-->
-
       </div>
       <div class="top">
         <img v-bind:src="list.pic"></img>
@@ -16,25 +11,34 @@
             <span class="name">{{list.name}}</span>
             <span hidden="true" class="year"> ({{list.year}})</span>
           </div>
-          <div style="width: 60vw;"> {{list.year}}</div>
-          <div style="width: 60vw;"> {{list.length}}</div>
-          <div style="width: 60vw;"> 导演: {{list.director}}</div>
-          <div style="width: 55vw;"> 演员: {{list.act}}</div>
-          <div style="width: 60vw;"> {{list.language}}</div>
+          <div style="width: 60vw;"> 年份：{{list.year}}</div>
+          <div style="width: 60vw;">{{list.length}}</div>
+          <div style="width: 60vw;"> 导演：{{list.director}}</div>
+          <div style="width: 55vw;"> 演员：{{list.act}}</div>
+          <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount" style="display: none">播放量: {{list.playAmount}}</div>
-            <div class="price">点播收费: ￥{{list.price}}</div>
+            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span></div>
+            <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
         </div>
       </div>
-      <div class="desc">
-        {{list.descript}}
+
+      <scroller ref="scroller" lock-x :scrollbar-x=false height="-340"
+                :scrollbar-y=false>
+
+        <div class="desc">
+          {{list.descript}}
+        </div>
+      </scroller>
+
+      <div class="adbottom">
+        <img src="http://mp.11yuanxian.com/share.jpg" style="width: 100%;height: 120px;" v-on:click="toad"></img>
+        <div class="play" v-on:click="buy(list)">
+          播放
+        </div>
       </div>
-      <img src=""></img>
-      <div class="play" v-on:click="buy(list)">
-        播放
-      </div>
+
       <div @click="ctrl" :hidden="true">
         <img v-if="paid" class="pause" src="../../assets/images/cl_pause.png"/>
       </div>
@@ -48,7 +52,10 @@
 </template>
 
 <script>
-  import Actionsheet from "vux/src/components/actionsheet/index";
+  import {Actionsheet, Scroller} from 'vux'
+  import md5 from 'js-md5';
+
+  let Base64 = require('js-base64').Base64;
 
   var that;
   import ViewBox from "vux/src/components/view-box/index";
@@ -62,6 +69,7 @@
     name: "detail",
     components: {
       Actionsheet,
+      Scroller,
       XDialog,
       ViewBox,
       JQ
@@ -80,56 +88,37 @@
           d2: '2D 播放',
           d3: '3D 播放'
         },
+
+        url: "http://1.dev-reservation.ffun360.com/site_admin/nearby_hotel?",
+
       }
     },
     mounted(res) {
-      that = this;
+
+
+
+
+      var that = this;
+      var sid = this.$router.currentRoute.query.sid;
+      var tsid = this.$router.currentRoute.query.openid;
       that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
-      var vid = 0;
-      // console.log("获取影片详情", that.$router.currentRoute.query)
-      // alert(that.$router.currentRoute.query.id)
-      if (that.$router.currentRoute.query.id != null) {
-        vid = that.$router.currentRoute.query.id;
-      } else {
-        vid = that.current.vid
-      }
-      // console.log("******************",vid)
-      if(that.common.hotel != null){
-        that.ispay(vid);
-        that.getlib_id(vid);//获取影片
-      }else{
-        console.log("detail error",res)
-        that.api_post("api/vod/" + id, function (res) {
-          that.list = res.data
-        });
-      }
 
-
-      that.api_post("api/account", function (res) {
-        // console.log("---------------", res)
-        that.account = res.data
+      this.api_post("api/vod/" + sid, function (res) {
+        console.log("----",res)
+        that.list = res.data
+      },function () {
+        console.log("----0000000000")
       });
+      // alert(that.movie.name)
 
-      var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
-      var type = that.common.hotel.type;
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" +   this.toHighId(vid,type,1);
-      // console.log("link", link)
-      that.$wechat.onMenuShareAppMessage({
-        title: '好友赠送你一部影片', // 分享标题
-        // desc: '好友赠送你一部影片', // 分享描述
-        link: link, // 分享链接
-        imgUrl: 'http://mp.11yuanxian.com/logo1.png', // 分享图标
-        success: function () {
-          that.show_share = false;
-          that.$vux.toast.text('分享成功！', 'center')
-        },
-        cancel: function () {
-          that.$vux.toast.text('已取消分享！', 'center')
-        }
-      });
+
+
 
 
     }, methods: {
+      toad() {
+        location.href = "https://www.baidu.com"
+      },
       ispay(vid) {
         var url = "api/vod/vi?sid=" + vid;
         that.api_post(url, function (res) {
@@ -157,7 +146,7 @@
             });
 
             that.getdetail();
-          },function(res){
+          }, function (res) {
 
           }
         )
@@ -197,17 +186,52 @@
         )
       },
       buy(list) {
-        if (that.paid) {
-          // 播放
-          if (list.dimension == "2D") {
-            that.Play(that.list.lib_id, 1, list, 1);
-          } else {
-            that.show1 = true
-          }
-        } else {
-          // 购买
-          that.$router.push({path: '/video/buy', query: {id: list.lib_id, pid: list.id}})
+
+        var that = this
+        var user = this.wxinfo.user
+        var time = Math.round(new Date().getTime() / 1000);
+        var order_state = 100
+
+        var that = this
+        var time = Math.round(new Date().getTime() / 1000);
+        var user = this.wxinfo.user
+        var eidtionTypeList = [
+          {key: "come_from", val: "1"},
+          {key: "t", val: time},
+          {key: "openid", val: user.openId},
+          {key: "nickname", val: user.nickname},
+          {key: "sex", val: user.sexId},
+          {key: "province", val: user.province},
+          {key: "city", val: user.city},
+          {key: "country", val: user.country},
+          {key: "headimgurl", val: user.headImgUrl},
+          {key: "yxtoken", val: that.common.TOKEN.token},
+        ];
+        eidtionTypeList.sort(function (a, b) {
+          return a.key > b.key;
+        });
+
+
+        console.log(eidtionTypeList[0].key + "" + eidtionTypeList[0].val);
+
+        var s = ""
+        for (var i = 0; i < eidtionTypeList.length; i++) {
+          s += eidtionTypeList[i].key + "" + eidtionTypeList[i].val
         }
+        s = "8cff406dd2e5897bf0581723e95fe246" + s + "8cff406dd2e5897bf0581723e95fe246";
+        // 8cff406dd2e5897bf0581723e95fe2467892E144620F8264634487B77C2BE562
+        console.log(s);
+
+
+        var token = md5(s)
+        token = token.toString().toUpperCase()
+
+
+        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&nickname=" + encodeURIComponent(user.nickname)
+          + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country) +
+          "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
+
+        location.href=this.url
       }, ctrl() {
         this.$router.push("/video/ctrl")
       }, menud(res) {
@@ -324,9 +348,9 @@
   }
 
   .price-bottom {
-    font-size: 16px;
-    line-height: 16px;
-    height: 16px;
+    font-size: 26px;
+    line-height: 26px;
+    height: 26px;
     display: flex;
     border-top: 1px solid #fff;
     margin-right: 20px;
@@ -334,9 +358,9 @@
   }
 
   .playAmount {
-    height: 14px;
-    font-size: 14px;
-    line-height: 14px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 24px;
   }
 
   .price {
@@ -354,10 +378,14 @@
     color: #666;
   }
 
-  .buy {
-    position: absolute;
+  .adbottom {
     width: 100%;
+    position: absolute;
+    right: 0;
     bottom: 0;
+  }
+
+  .buy {
     background: red;
     color: #fff;
     text-align: center;
@@ -371,9 +399,6 @@
   }
 
   .play {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
     background: #3f9de7;
     color: #fff;
     text-align: center;

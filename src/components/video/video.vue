@@ -13,12 +13,12 @@
                v-on:click="histroyshow"/>
         </flexbox>
         <!--分类  :selected="index === common.savevodcatpos"-->
-        <scroller v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
-                  ref="scrollercat" style="position:absolute;width: 100%;top: 37px;" @on-scroll="savevodcat">
+        <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
+                  ref="scrollercat" style="position:absolute;width: 100%;top: 50px;" @on-scroll="savevodcat">
 
           <tab bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
                v-bind:style="'width:'+cat_width +'px'">
-            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)"  active-class="active_cat"
+            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
                       :selected="index==savevodcatpos">
               {{item.name}}
             </tab-item>
@@ -29,9 +29,9 @@
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savevodlist"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-81" lock-x :scrollbar-x=false
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-94" lock-x :scrollbar-x=false
                   :scrollbar-y=false
-                  style="width: 100%;top: 81px;">
+                  style="width: 100%;top: 94px;">
           <div>
             <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
@@ -56,16 +56,16 @@
                   </div>
                   <div class='star-bottom'>
                     <div class='type'>
-                      {{item.cName}}
+                      类型：{{item.cName}}
                     </div>
                     <div class='time'>
-                      <div>{{item.length}}</div>
-                      <div class='price'>{{item.price}}
-                        <span style='font-size:12px'>元</span>
+                      <div>年份：{{item.length}}</div>
+                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
                       </div>
                     </div>
                     <div class='star'>
-                      主演:{{item.act}}
+                      主演：{{item.act}}
                     </div>
                   </div>
 
@@ -81,7 +81,7 @@
         </scroller>
 
 
-        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 37px;">
+        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 50px;"   v-on:click="histroyshow">
           <cell title="历史记录" is-link link="/record">
             <img slot="icon" width="20" style="display:block;margin-right:5px;"
                  src="../../assets/images/histroy_icon.png">
@@ -95,13 +95,13 @@
                  src="../../assets/images/discount_icon.png">
           </cell>
         </div>
-        <!---->
+
         <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="research"
                   @on-pullup-loading="addsearch"
                   :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-90" lock-x :scrollbar-x=false
                   :scrollbar-y=false
-                  style="z-index: 2;width: 100%;top: 37px;" :hidden="!showsearch">
+                  style="z-index: 2;width: 100%;top: 50px;" :hidden="!showsearch">
 
           <div>
             <div v-if="searchlist.length == 0" class='loading'>
@@ -128,12 +128,12 @@
                   </div>
                   <div class='star-bottom'>
                     <div class='type'>
-                      {{item.cName}}
+                      类型：{{item.cName}}
                     </div>
                     <div class='time'>
-                      <div>{{item.length}}</div>
-                      <div class='price'>{{item.price}}
-                        <span style='font-size:12px'>元</span>
+                      <div> 年份：{{item.length}}</div>
+                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
                       </div>
                     </div>
                     <div class='star'>
@@ -353,6 +353,7 @@
             list.push(el)
           });
 
+
           if (that.page == 1) {
             that.vodlist = list;
 
@@ -383,7 +384,7 @@
 
           that.$vux.loading.hide()
 
-        },function () {
+        }, function () {
           that.$vux.loading.hide()
         })
 
@@ -473,7 +474,7 @@
             }
 
             that.$vux.loading.hide()
-          },function () {
+          }, function () {
             that.$vux.loading.hide()
           })
 
@@ -544,7 +545,6 @@
   .active_cat {
     background: #3f9de7 !important;
   }
-
 
   .weui-search-bar {
     position: relative;

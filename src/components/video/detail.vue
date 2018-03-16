@@ -16,25 +16,34 @@
             <span class="name">{{list.name}}</span>
             <span hidden="true" class="year"> ({{list.year}})</span>
           </div>
-          <div style="width: 60vw;"> {{list.year}}</div>
-          <div style="width: 60vw;"> {{list.length}}</div>
-          <div style="width: 60vw;"> 导演: {{list.director}}</div>
-          <div style="width: 55vw;"> 演员: {{list.act}}</div>
-          <div style="width: 60vw;"> {{list.language}}</div>
+          <div style="width: 60vw;"> 年份：{{list.year}}</div>
+          <div style="width: 60vw;">{{list.length}}</div>
+          <div style="width: 60vw;"> 导演：{{list.director}}</div>
+          <div style="width: 55vw;"> 演员：{{list.act}}</div>
+          <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount" style="display: none">播放量: {{list.playAmount}}</div>
-            <div class="price">点播收费: ￥{{list.price}}</div>
+            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span></div>
+            <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
         </div>
       </div>
-      <div class="desc">
-        {{list.descript}}
+
+      <scroller ref="scroller" lock-x :scrollbar-x=false height="-340"
+                :scrollbar-y=false>
+
+        <div class="desc">
+          {{list.descript}}
+        </div>
+      </scroller>
+
+      <div class="adbottom">
+        <img src="http://mp.11yuanxian.com/share.jpg" style="width: 100%;height: 120px;" v-on:click="toad"></img>
+        <div v-bind:class="btn_style==0?'buy':btn_style==1?'buy':'play'" v-on:click="buy(list)">
+          {{btn_style==0?'购买':btn_style==1?'购买':'播放'}}
+        </div>
       </div>
-      <img src=""></img>
-      <div v-bind:class="btn_style==0?'buy':btn_style==1?'buy':'play'" v-on:click="buy(list)">
-        {{btn_style==0?'购买':btn_style==1?'购买':'播放'}}
-      </div>
+
       <div @click="ctrl" :hidden="true">
         <img v-if="paid" class="pause" src="../../assets/images/cl_pause.png"/>
       </div>
@@ -64,7 +73,7 @@
 </template>
 
 <script>
-  import Actionsheet from "vux/src/components/actionsheet/index";
+  import {Actionsheet, Scroller} from 'vux'
 
   var that;
   import ViewBox from "vux/src/components/view-box/index";
@@ -78,6 +87,7 @@
     name: "detail",
     components: {
       Actionsheet,
+      Scroller,
       XDialog,
       ViewBox,
       JQ
@@ -110,11 +120,11 @@
         vid = that.current.vid
       }
       // console.log("******************",vid)
-      if(that.common.hotel != null){
+      if (that.common.hotel != null) {
         that.ispay(vid);
         that.getlib_id(vid);//获取影片
-      }else{
-        console.log("detail error",res)
+      } else {
+        console.log("detail error", res)
         that.api_post("api/vod/" + id, function (res) {
           that.list = res.data
         });
@@ -128,13 +138,13 @@
 
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
       var type = that.common.hotel.type;
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" +   this.toHighId(vid,type,1);
-      // console.log("link", link)
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + this.toHighId(vid, type, 1);
+      console.log("link", link)
       that.$wechat.onMenuShareAppMessage({
         title: '好友赠送你一部影片', // 分享标题
         // desc: '好友赠送你一部影片', // 分享描述
         link: link, // 分享链接
-        imgUrl: 'http://mp.11yuanxian.com/logo1.png', // 分享图标
+        imgUrl: 'http://mp.11yuanxian.com/logo1.jpg', // 分享图标
         success: function () {
           that.show_share = false;
           that.$vux.toast.text('分享成功！', 'center')
@@ -146,6 +156,9 @@
 
 
     }, methods: {
+      toad() {
+        location.href = "https://www.baidu.com"
+      },
       ispay(vid) {
         var url = "api/vod/vi?sid=" + vid;
         that.api_post(url, function (res) {
@@ -173,7 +186,7 @@
             });
 
             that.getdetail();
-          },function(res){
+          }, function (res) {
 
           }
         )
@@ -340,9 +353,9 @@
   }
 
   .price-bottom {
-    font-size: 16px;
-    line-height: 16px;
-    height: 16px;
+    font-size: 26px;
+    line-height: 26px;
+    height: 26px;
     display: flex;
     border-top: 1px solid #fff;
     margin-right: 20px;
@@ -350,9 +363,9 @@
   }
 
   .playAmount {
-    height: 14px;
-    font-size: 14px;
-    line-height: 14px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 24px;
   }
 
   .price {
@@ -370,10 +383,14 @@
     color: #666;
   }
 
-  .buy {
-    position: absolute;
+  .adbottom {
     width: 100%;
+    position: absolute;
+    right: 0;
     bottom: 0;
+  }
+
+  .buy {
     background: red;
     color: #fff;
     text-align: center;
@@ -387,9 +404,6 @@
   }
 
   .play {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
     background: #3f9de7;
     color: #fff;
     text-align: center;
