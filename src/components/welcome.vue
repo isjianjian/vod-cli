@@ -51,6 +51,8 @@
               })
             }
           },function () {
+
+
             var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.wxinfo.APPID
               + "&redirect_uri=" + encodeURIComponent(that.common.lastUrl)
               + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
@@ -61,7 +63,7 @@
         if (this.wxinfo.user.unionId != null) {
           return;
         }
-        var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + this.wxinfo.APPID
+        var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.wxinfo.APPID
           + "&redirect_uri=" + encodeURIComponent(this.common.lastUrl)
           + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 

@@ -1,6 +1,6 @@
 <template>
   <div style="height:100%;background: #fff;">
-    <actionsheet v-model="otypeshow" :menus="otypemenus" @on-click-menu="otype" show-cancel></actionsheet>
+    <!--<actionsheet v-model="otypeshow" :menus="otypemenus" @on-click-menu="otype" show-cancel></actionsheet>-->
     <view-box ref="viewBox">
       <div class="userinfo">
         <div class="h_img"><img width="68" height="68" :src="this.wxinfo.user.headImgUrl"></div>
@@ -72,10 +72,26 @@
         <!--</cell>-->
 
       </group>
-
+      <div v-transfer-dom>
+        <x-dialog v-model="otypeshow" class="dialog-demo" hide-on-blur>
+          <div style="padding-top:5px; padding-bottom:5px;">选择订单类型</div>
+          <grid>
+            <grid-item @click.native="otype(1)">
+              <img style="" slot="icon" src="../../assets/images/vod_order.png">
+              <span style="color: #EF0000" slot="label">娱乐</span>
+            </grid-item>
+            <grid-item @click.native="otype(2)">
+              <img style="" slot="icon" src="../../assets/images/room_order.png">
+              <span style="color: #7ED479" slot="label">订房</span>
+            </grid-item>
+            <grid-item @click.native="otype(3)">
+              <img style=""  slot="icon" src="../../assets/images/shop_order_no.png">
+              <span style="color: #CECECE" slot="label">商城</span>
+            </grid-item>
+          </grid>
+        </x-dialog>
+      </div>
     </view-box>
-
-
   </div>
 </template>
 <style>
@@ -92,12 +108,12 @@
   }
 
   .weui-grid__icon {
-    width: 18px !important;
-    height: 18px !important;
+    width: 22px !important;
+    height: 21px !important;
   }
 
   .weui-grid__label {
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
 
   .weui-cells {
@@ -141,13 +157,16 @@
   import md5 from 'js-md5';
 
   let Base64 = require('js-base64').Base64;
-  import {Divider, Card, Group, Cell, CellBox, Grid, GridItem, Actionsheet} from 'vux'
+  import {Divider, Card, Group, Cell, CellBox, Grid, GridItem, Actionsheet,XDialog,TransferDomDirective as TransferDom} from 'vux'
   import XImg from "vux/src/components/x-img/index";
   import ViewBox from "vux/src/components/view-box/index";
   import man_img from '../../assets/images/man.png'
   import woman_img from '../../assets/images/woman.png'
 
   export default {
+    directives: {
+      TransferDom
+    },
     data() {
       return {
         url: "http://1.dev-reservation.ffun360.com/site_admin/order_entrance?",
@@ -163,6 +182,7 @@
       }
     },
     components: {
+      XDialog,
       ViewBox,
       XImg,
       Card,
@@ -182,13 +202,18 @@
     },
     methods: {
       showtype(res) {
-        this.otypeshow = !this.otypeshow
+
         this.typeindex = res
+        if (res == 4){
+          this.otype(2)
+          return
+        }
+        this.otypeshow = !this.otypeshow
       },
-      otype(res, index) {
-        if (res == "menu1") {
+      otype(index) {
+        if (index == 1) {
           this.$router.push("/mine/order?i=" + this.typeindex)
-        } else if (res == "menu2") {
+        } else if (index == 2) {
           this.toroomlink()
         }
       },
