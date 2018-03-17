@@ -591,6 +591,8 @@
 
   .vodimage {
     height: 50px;
+
+
   }
 
   .vodimage img {

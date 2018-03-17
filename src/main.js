@@ -166,10 +166,10 @@ const routes = [{
 
 Vue.prototype.wxinfo = {
   URL: "http%3A%2F%2F19f176814r.imwork.net",
-   // APPID: 'wxc24d07d05cfea4d3',//lv
- APPID: 'wxb636c0b09a3fd9d1',//zhu
+  // APPID: 'wxc24d07d05cfea4d3',//lv
+  // APPID: 'wxb636c0b09a3fd9d1',//zhu
   // APPID: 'wx4c232a8e7d2158ab',//公司
-  // APPID: 'wx23186818f05e0eeb',//广州
+  APPID: 'wx23186818f05e0eeb',//广州
   user: {},
 };
 Vue.prototype.his = {
@@ -178,11 +178,11 @@ Vue.prototype.his = {
   time: 0
 };
 Vue.prototype.common = {
-  ID_HIGH_ORDER : 10000000000,
-   // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
- SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
- //  SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
- //  SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  ID_HIGH_ORDER: 10000000000,
+  // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
+  // SERVER_URL: "http://192.168.2.7:8080/hotel_vod/",//zhu
+  //  SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
+   SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
   TOKEN: {},
   lastPage: '',
@@ -191,9 +191,9 @@ Vue.prototype.common = {
   dqurl: "",
   playvideo: {},
   playtype: 0,
-  savevodcatpos:0,
-  savevodcat:0,
-  savevodlistpos:0,
+  savevodcatpos: 0,
+  savevodcat: 0,
+  savevodlistpos: 0,
   savevodlist: 0,
   savevodlistmusic: 0,
   savevodlistktv: 0,
@@ -245,32 +245,31 @@ Vue.prototype.getUrlKey = function (name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [, ""])[1].replace(/\+/g, '%20')) || null;
 };
 
-Vue.prototype.toHighId = function (id,type,sType) {
+Vue.prototype.toHighId = function (id, type, sType) {
 
-  return (sType * 10 * this.common.ID_HIGH_ORDER) + ( parseInt(type) * this.common.ID_HIGH_ORDER) + parseInt(id);
+  return (sType * 10 * this.common.ID_HIGH_ORDER) + (parseInt(type) * this.common.ID_HIGH_ORDER) + parseInt(id);
 }
 
 Vue.prototype.formHighId = function (hid) {
-  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER) {
     return hid;
   }
   return parseInt(hid) % this.common.ID_HIGH_ORDER;
 }
 
-Vue.prototype.getSType = function(hid){
-  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+Vue.prototype.getSType = function (hid) {
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER) {
     return 1;
   }
-  return  parseInt(hid/(this.common.ID_HIGH_ORDER*10));
+  return parseInt(hid / (this.common.ID_HIGH_ORDER * 10));
 }
 
-Vue.prototype.getType = function(hid){
-  if (parseInt(hid) < this.common.ID_HIGH_ORDER){
+Vue.prototype.getType = function (hid) {
+  if (parseInt(hid) < this.common.ID_HIGH_ORDER) {
     return 1;
   }
-  return parseInt(hid/this.common.ID_HIGH_ORDER) % 10;
+  return parseInt(hid / this.common.ID_HIGH_ORDER) % 10;
 }
-
 
 
 Vue.prototype.QRcode = function () {
@@ -463,8 +462,6 @@ router.beforeEach((to, from, next) => {
 FastClick.attach(document.body);
 
 Vue.config.productionTip = false;
-
-
 
 
 Vue.prototype.dqsocketcon = function () {

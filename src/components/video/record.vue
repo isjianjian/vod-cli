@@ -9,7 +9,7 @@
 
           <div style='display:flex;'>
             <div class='vodimage'>
-              <img :src="item.spic"></img>
+              <img :src="item.spic" style=" object-fit: cover;"></img>
             </div>
             <div class='detail' style="margin-top: 10px;">
 
