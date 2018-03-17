@@ -13,11 +13,11 @@
           </flexbox>
         </div>
         <!--分类  :selected="index === common.savevodcatpos"-->
-        <div>
+        <div >
           <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
-                    ref="scrollercat" @on-scroll="savevodcat">
+                    ref="scrollercat" @on-scroll="savevodcat" >
 
-            <tab bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
+            <tab style="background: #C0C0C0;"  bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
                  v-bind:style="'width:'+cat_width +'px'">
               <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
                         :selected="index==savevodcatpos">

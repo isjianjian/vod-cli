@@ -48,7 +48,7 @@
 
 
 
-      <div v-if="iscat" style="position:absolute;z-index: 3;background: #ccc;width: 100%;top: 47px;">
+      <div v-if="iscat" style="position:absolute;z-index: 3;background: #ccc;width: 100%;top: 92px;">
         <flexbox :gutter="0" wrap="wrap" style="text-align: center; padding: 10px 0px;">
           <flexbox-item :span="1/3" style="padding: 5px 0;" v-for="list in catlist">
             <x-button class="cat_name_ac" @click.native="remusiccat(list)" mini>{{list.name}}</x-button>
