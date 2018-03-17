@@ -1,6 +1,7 @@
 <template>
-  <view-box v-bind:style="windowHeight">
-    <!--<div style="background: rgba(0,0,0,0.5);">-->
+  <!--<view-box >-->
+  <!--<div style="background: rgba(0,0,0,0.5);">-->
+  <div>
     <div>
       <div>
         <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
@@ -29,14 +30,16 @@
           </div>
         </div>
       </div>
+      <div>
 
-      <scroller ref="scroller" lock-x :scrollbar-x=false height="-340"
-                :scrollbar-y=false>
+        <scroller ref="scroller" lock-x :scrollbar-x=false height="-340"
+                  :scrollbar-y=false>
 
-        <div class="desc">
-          {{list.descript}}
-        </div>
-      </scroller>
+          <div class="desc">
+            {{list.descript}}
+          </div>
+        </scroller>
+      </div>
 
       <div class="adbottom">
         <img src="http://mp.11yuanxian.com/share.jpg" style="width: 100%;height: 120px;" v-on:click="toad"></img>
@@ -69,7 +72,8 @@
       </x-dialog>
       <actionsheet v-model="show1" :menus="menus1" @on-click-menu="menud"></actionsheet>
     </div>
-  </view-box>
+  </div>
+  <!--</view-box>-->
 
 </template>
 
@@ -95,7 +99,6 @@
     },
     data() {
       return {
-        windowHeight: '',
         list: '',
         show_share: false,
         account: {},
@@ -111,7 +114,7 @@
     },
     mounted(res) {
       that = this;
-      that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
+      // that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
       var vid = 0;
       // console.log("获取影片详情", that.$router.currentRoute.query)
       // alert(that.$router.currentRoute.query.id)

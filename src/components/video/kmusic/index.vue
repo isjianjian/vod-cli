@@ -624,7 +624,6 @@
           }
         }
 
-
       },
       buy(list) {// 购买&播放
         if (!that.clickbuy) {
