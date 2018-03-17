@@ -1,8 +1,6 @@
 <template>
   <div>
-    <!--style="background-color: #fff;"-->
     <div v-if="common.hotel!=null">
-      <view-box ref="box">
 
         <div>
           <flexbox class="top">
@@ -29,8 +27,8 @@
           </scroller>
         </div>
 
-        <div>
-          <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+        <div v-if="!showsearch">
+          <scroller  :pullup-config="upconfig" :pulldown-config="downconfig"
                     @on-pulldown-loading="revideo"
                     @on-pullup-loading="addvideo"
                     @on-scroll="savevodlist"
@@ -102,7 +100,7 @@
           </cell>
         </div>
 
-        <div>
+        <div v-if="showsearch">
           <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                     @on-pulldown-loading="research"
                     @on-pullup-loading="addsearch"
@@ -158,7 +156,6 @@
 
         </div>
 
-      </view-box>
     </div>
 
   </div>
