@@ -47,7 +47,6 @@
     </x-header>
 
 
-    <view-box ref="box">
 
       <div v-if="iscat" style="position:absolute;z-index: 3;background: #ccc;width: 100%;top: 47px;">
         <flexbox :gutter="0" wrap="wrap" style="text-align: center; padding: 10px 0px;">
@@ -64,7 +63,7 @@
             <x-button class="cat_name" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
           </div>
 
-          <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
+          <search ref="search" placeholder="搜索歌曲/歌星" @on-change="setkeyword"
                   @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
           </search>
           <div>
@@ -78,8 +77,8 @@
 
       </div>
 
-      <div>
-        <scroller v-if="!showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
+      <div  v-if="!showsearch" >
+        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
                   @on-pullup-loading="addvideo"
                   @on-scroll="savetop"
@@ -131,7 +130,7 @@
         </cell>
       </div>
 
-      <div>
+      <div  v-if="showsearch">
         <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="research"
                   @on-pullup-loading="addsearch"
@@ -1030,7 +1029,9 @@
     font-size: 30px !important;
   }
 
-
+  .weui-search-bar__input {
+    margin-left: 15px !important;
+  }
 
   .weui-search-bar__box .weui-icon-clear {
     /*清除内容*/
