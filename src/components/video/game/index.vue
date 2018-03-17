@@ -248,6 +248,9 @@
           that.open = true;
           that.timeExpire = new Date().getTime() + res.data.count;
           console.log('timeExpire', that.timeExpire)
+          if(res.data.count ==  0){
+            that.open = false;
+          }
         }, function () {
           that.open = false;
         })

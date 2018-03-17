@@ -404,6 +404,9 @@
         that.api_post("api/module/countdown?type=4", function (res) {
           that.open = true;
           that.timeExpire = new Date().getTime() + res.data.count;
+          if(res.data.count ==  0){
+            that.open = false;
+          }
           console.log('timeExpire', that.timeExpire)
         }, function () {
           that.open = false;
