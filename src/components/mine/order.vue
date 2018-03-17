@@ -205,7 +205,7 @@
             for (var i = 0; i < res.page.list.length; i++) {
               var item = res.page.list[i];
               item.isExpire = new Date(item.timeExpire).getTime() < new Date().getTime();
-              item.isvod = that.getSType(item.comd_id) == 1;
+              item.isvod = that.getSType(item.cmid) == 1;
               that.list.push(item)
             }
             that.$refs.scroller.donePullup();
