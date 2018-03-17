@@ -65,7 +65,7 @@
             <x-button class="cat_name" v-if="!showsearch" @click.native="showcat" mini>分类</x-button>
           </div>
 
-          <search ref="search" placeholder="输入歌曲名称、歌星名称" @on-change="setkeyword"
+          <search ref="search" placeholder="搜索歌曲/歌星" @on-change="setkeyword"
                   @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
           </search>
           <div>
@@ -1044,6 +1044,10 @@
     top: 10px !important;
     line-height: 28px;
     font-size: 30px !important;
+  }
+
+  .weui-search-bar__input {
+    margin-left: 15px !important;
   }
 
   .weui-search-bar__box .weui-icon-clear {
