@@ -1,160 +1,179 @@
 <template>
   <div>
-    <div v-if="common.hotel!=null">
+    <div v-if="common.hotel!=null" style="background: #393a3f;">
 
-        <div>
-          <flexbox class="top">
-            <search ref="search" placeholder="输入片名、主演或导演" @on-change="setkeyword"
-                    @on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">
-            </search>
+      <div>
+        <flexbox class="video_top">
+          <flexbox-item :span="4/5">
+            <flexbox
+              style="background: #ccc;border-radius:17px;margin: 20px 0 20px 20px; height: 36px;line-height: 36px; ">
 
-            <div ref="histroy" v-bind:hidden="showsearch" class="histroy_btn"
+              <div class="seacher_btn" v-on:click="research"/>
+              <x-input placeholder="请输入片名、主演或导演" style="height: 30px;" @on-change="setkeyword"
+                       @on-submit="research"
+                       @on-focus="searchshow" @on-cancel="searchhide"></x-input>
+
+            </flexbox>
+
+          </flexbox-item>
+          <flexbox-item>
+            <div ref="histroy" v-if="showsearch" v-on:click="cancle"
+                 style=" color: #3f9de7; position: absolute;right: 0;top: 0;width: 50px; height: 26px; ">取消
+            </div>
+            <div ref="histroy" v-if="!showsearch" class="histroy_btn"
                  v-on:click="histroyshow"/>
-          </flexbox>
-        </div>
-        <!--分类  :selected="index === common.savevodcatpos"-->
-        <div >
-          <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
-                    ref="scrollercat" @on-scroll="savevodcat" >
+          </flexbox-item>
+          <!--<search ref="search" placeholder="请输入片名、主演或导演" @on-change="setkeyword"-->
+          <!--@on-submit="research" @on-focus="searchshow" @on-cancel="searchhide">-->
+          <!--</search>-->
 
-            <tab style="background: #C0C0C0;"  bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
-                 v-bind:style="'width:'+cat_width +'px'">
-              <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
-                        :selected="index==savevodcatpos">
-                {{item.name}}
-              </tab-item>
-            </tab>
-          </scroller>
-        </div>
 
-        <div v-if="!showsearch">
-          <scroller  :pullup-config="upconfig" :pulldown-config="downconfig"
-                    @on-pulldown-loading="revideo"
-                    @on-pullup-loading="addvideo"
-                    @on-scroll="savevodlist"
-                    :use-pulldown="true" :use-pullup="true" ref="scroller" lock-x :scrollbar-x=false
-                    :scrollbar-y=false height="-94" >
-            <div>
-              <div v-if="vodlist.length == 0" class='loading'>
+        </flexbox>
+      </div>
+      <!--分类  :selected="index === common.savevodcatpos"-->
+      <div>
+        <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
+                  ref="scrollercat" @on-scroll="savevodcat">
+          <!--style="background: #C0C0C0;"-->
+          <tab style="background: #393a3f;" bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
+               v-bind:style="'width:'+cat_width +'px'">
+            <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
+                      style="color: #fff;"
+                      :selected="index==savevodcatpos">
+              {{item.name}}
+            </tab-item>
+          </tab>
+        </scroller>
+      </div>
+
+      <div v-if="!showsearch">
+        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                  @on-pulldown-loading="revideo"
+                  @on-pullup-loading="addvideo"
+                  @on-scroll="savevodlist"
+                  :use-pulldown="true" :use-pullup="true" ref="scroller" lock-x :scrollbar-x=false
+                  :scrollbar-y=false height="-94">
+          <div>
+            <div v-if="vodlist.length == 0" class='loading'>
               <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
                 暂无数据
               </span>
-              </div>
-              <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
+            </div>
+            <div class='film' v-for="(item,index) in vodlist" v-on:click="detail(item)">
 
-                <div style='display:flex;'>
-                  <div class='vodimage'>
-                    <img :src="item.pic"   style=" object-fit: cover;"></img>
+              <div style='display:flex;'>
+                <div class='vodimage'>
+                  <img :src="item.pic" style=" object-fit: cover;"></img>
+                </div>
+                <div class='detail'>
+                  <div class='name'>
+                    <div>{{item.name}}
+                    </div>
+
+                    <div class='times' style="display: none">{{item.playAmount}}
+                      <span style='font-size:12px'>次</span>
+                    </div>
+
                   </div>
-                  <div class='detail'>
-                    <div class='name'>
-                      <div>{{item.name}}
-                      </div>
-
-                      <div class='times' style="display: none">{{item.playAmount}}
-                        <span style='font-size:12px'>次</span>
-                      </div>
-
+                  <div class='star-bottom'>
+                    <div class='type'>
+                      类型：{{item.cName}}
                     </div>
-                    <div class='star-bottom'>
-                      <div class='type'>
-                        类型：{{item.cName}}
-                      </div>
-                      <div class='time'>
-                        <div>年份：{{item.length}}</div>
-                        <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
-                          <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
-                        </div>
-                      </div>
-                      <div class='star'>
-                        主演：{{item.act}}
+                    <div class='time'>
+                      <div>年份：{{item.length}}</div>
+                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
                       </div>
                     </div>
+                    <div class='star'>
+                      主演：{{item.act}}
+                    </div>
+                  </div>
 
-                    <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
-                      {{item.paid?'播放':'购买'}}
+                  <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                    {{item.paid?'播放':'购买'}}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+        </scroller>
+      </div>
+
+
+      <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #393a3f;width: 100%;top: 49px;"
+           v-on:click="histroyshow">
+        <cell title="历史记录" is-link link="/record" style="color: #fff;">
+          <img slot="icon" width="20" style="display:block;margin-right:5px;"
+               src="../../assets/images/histroy_icon.png">
+        </cell>
+        <cell title="已购买影片" is-link link="/bought" style="color: #fff;">
+          <img slot="icon" width="20" style="display:block;margin-right:5px;"
+               src="../../assets/images/ispay_icon.png">
+        </cell>
+        <cell title="优惠影片" is-link link="/discounts" style="color: #fff;">
+          <img slot="icon" width="20" style="display:block;margin-right:5px;"
+               src="../../assets/images/discount_icon.png">
+        </cell>
+      </div>
+
+      <div v-if="showsearch">
+        <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
+                  @on-pulldown-loading="research"
+                  @on-pullup-loading="addsearch"
+                  :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-50" lock-x :scrollbar-x=false
+                  :scrollbar-y=false>
+
+          <div>
+            <div v-if="searchlist.length == 0" class='loading'>
+              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
+                暂无数据
+              </span>
+            </div>
+
+            <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
+
+              <div style='display:flex;'>
+                <div class='vodimage'>
+                  <img :src="item.pic" style=" object-fit: cover;"></img>
+                </div>
+                <div class='detail'>
+                  <div class='name'>
+                    <div>{{item.name}}
                     </div>
 
+                    <div class='times' style="display: none">{{item.playAmount}}
+                      <span style='font-size:12px'>次</span>
+                    </div>
+
+                  </div>
+                  <div class='star-bottom'>
+                    <div class='type'>
+                      类型：{{item.cName}}
+                    </div>
+                    <div class='time'>
+                      <div> 年份：{{item.length}}</div>
+                      <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
+                        <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
+                      </div>
+                    </div>
+                    <div class='star'>
+                      主演:{{item.act}}
+                    </div>
+                  </div>
+                  <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
+                    {{item.paid?'播放':'购买'}}
                   </div>
                 </div>
               </div>
             </div>
-            <load-more v-if="nodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-          </scroller>
-        </div>
+          </div>
+          <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
+        </scroller>
 
-
-        <div v-bind:hidden="!showhistroy" style="position:absolute;z-index: 3;background: #fff;width: 100%;top: 50px;"
-             v-on:click="histroyshow">
-          <cell title="历史记录" is-link link="/record">
-            <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../assets/images/histroy_icon.png">
-          </cell>
-          <cell title="已购买影片" is-link link="/bought">
-            <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../assets/images/ispay_icon.png">
-          </cell>
-          <cell title="优惠影片" is-link link="/discounts">
-            <img slot="icon" width="20" style="display:block;margin-right:5px;"
-                 src="../../assets/images/discount_icon.png">
-          </cell>
-        </div>
-
-        <div v-if="showsearch">
-          <scroller :pullup-config="upconfig" :pulldown-config="downconfig"
-                    @on-pulldown-loading="research"
-                    @on-pullup-loading="addsearch"
-                    :use-pulldown="true" :use-pullup="true" ref="scroller1" height="-50" lock-x :scrollbar-x=false
-                    :scrollbar-y=false>
-
-            <div>
-              <div v-if="searchlist.length == 0" class='loading'>
-              <span style='color:#B6B6B6;display: block;padding-top: 120px;'>
-                暂无数据
-              </span>
-              </div>
-
-              <div class='film' v-for="(item,index) in searchlist" v-on:click="detail(item)">
-
-                <div style='display:flex;'>
-                  <div class='vodimage'>
-                    <img :src="item.pic"    style=" object-fit: cover;"></img>
-                  </div>
-                  <div class='detail'>
-                    <div class='name'>
-                      <div>{{item.name}}
-                      </div>
-
-                      <div class='times' style="display: none">{{item.playAmount}}
-                        <span style='font-size:12px'>次</span>
-                      </div>
-
-                    </div>
-                    <div class='star-bottom'>
-                      <div class='type'>
-                        类型：{{item.cName}}
-                      </div>
-                      <div class='time'>
-                        <div> 年份：{{item.length}}</div>
-                        <div class='price'>{{isNaN(item.price)?"未设置价格":item.price}}
-                          <span style='font-size:12px' v-if="!isNaN(item.price)">元</span>
-                        </div>
-                      </div>
-                      <div class='star'>
-                        主演:{{item.act}}
-                      </div>
-                    </div>
-                    <div hidden="true" v-bind:class="item.paid?'play':'buy'" :buy="item" v-on:click="buy(item)">
-                      {{item.paid?'播放':'购买'}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <load-more v-if="searchnodata" :show-loading="false" tip="这是底线" background-color="#fbf9fe"></load-more>
-          </scroller>
-
-        </div>
+      </div>
 
     </div>
 
@@ -399,6 +418,8 @@
       }, addvideo() {//影片下拉加载
         that.page = that.page + 1;
         that.getvideo()
+      }, cancle() {//取消
+        that.showsearch = false;
       }, searchshow() {//聚焦输入框
         that.showsearch = true;
         that.showhistroy = false;
@@ -488,12 +509,13 @@
 
         } else {
           //输入空
-          if (that.searchpage == 1) {
-            that.$refs.scroller1.reset({
-              top: 0
-            });
-            that.$refs.scroller1.donePulldown()
-          }
+          // if (that.searchpage == 1) {
+          //   that.$refs.scroller1.reset({
+          //     top: 0
+          //   });
+          //   that.$refs.scroller1.donePulldown()
+          // }
+          that.searchlist = ""
         }
 
 
@@ -543,118 +565,139 @@
 <style scoped>
   @import 'video.css';
 
+  .video_top {
+    height: 45px;
+    line-height: 45px;
+    background: #393a3f;
+    border-bottom: 5px solid #393a3f;
+  }
+
   .vux-search-fixed {
     top: 0px !important;
   }
-</style>
-
-<style>
 
   .active_cat {
     background: #3f9de7 !important;
+    border-radius: 6px;
   }
-
-  .weui-search-bar {
-    position: relative;
-    padding: 0px 0px !important;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    background-color: #fff !important;
-  }
-
-  .weui-search-bar:before {
-    content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 1px;
-    border-top: 0px solid #D7D6DC !important;
-    color: #fff !important;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -webkit-transform: scaleY(0.5);
-    transform: scaleY(0.5);
-  }
-
-  .weui-search-bar__label {
-    /*默认显示搜索框*/
-    position: absolute;
-    top: 0px !important;
-    right: 0px !important;
-    bottom: 0px !important;
-    left: 0px !important;
-    padding-left: 8px;
-    z-index: 2;
-    border-radius: 0px !important;
-    text-align: left !important;
-    color: #9B9B9B !important;
-  }
-
-  .weui-search-bar__form:after {
-    /*点击搜索框后*/
-    content: '';
-    position: absolute;
-    left: 0px;
-    top: 0;
-    width: 200%;
-    height: 200%;
-    -webkit-transform: scale(0.5);
-    transform: scale(0.5);
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    border-radius: 0px !important;
-    border: 1px solid #E6E6EA!important;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-
-  .weui-icon-search {
-    font-size: 30px !important;
-  }
-
-  .weui-search-bar__box .weui-icon-search {
-    /*搜索图标*/
-    position: absolute;
-    left: 8px !important;
-    top: 10px !important;
-    line-height: 28px;
-    font-size: 30px !important;
-  }
-
-  .weui-search-bar__input {
-    margin-left: 15px !important;
-  }
-
-  .weui-search-bar__box .weui-icon-clear {
-    /*清除内容*/
-    position: absolute;
-    top: 10px !important;
-    right: 0;
-    padding: 0 10px;
-    line-height: 28px;
-  }
-
-  .weui-icon-clear {
-    /*清除内容*/
-    color: #B2B2B2;
-    font-size: 14px;
-  }
-
-  .weui-search-bar__cancel-btn {
-    /*取消按钮*/
-    display: none;
-    margin-left: 0px !important;
-    margin: 10px 10px !important;
-    line-height: 28px;
-    color: #3f9de7 !important;
-    white-space: nowrap;
-
-  }
-
-
 </style>
+
+<!--<style>-->
+
+
+<!--/*393a3f*/-->
+<!--.weui-search-bar__box {-->
+<!--/*最底层背景*/-->
+<!--background-color: #393a3f !important;-->
+<!--}-->
+
+<!--.weui-search-bar {-->
+<!--background: #393a3f !important;-->
+<!--position: relative;-->
+<!--padding: 0px 0px !important;;-->
+
+<!--}-->
+
+<!--.weui-search-bar:before {-->
+<!--content: " ";-->
+<!--position: absolute;-->
+<!--left: 0px !important;-->
+<!--top: 0;-->
+<!--right: 0px !important;-->
+<!--height: 1px;-->
+<!--border-top: 0px solid #000 !important;-->
+<!-- -webkit-transform-origin: 0 0;-->
+<!--transform-origin: 0 0;-->
+<!-- -webkit-transform: scaleY(0.5);-->
+<!--transform: scaleY(0.5);-->
+<!--/*background: #fff !important;*/-->
+<!--}-->
+
+<!--.weui-search-bar__label {-->
+<!--/*默认显示搜索框*/-->
+<!--position: absolute;-->
+<!--top: 0px !important;-->
+<!--right: 10px !important;-->
+<!--bottom: 0px !important;-->
+<!--left: 20px !important;-->
+<!--padding-left: 8px !important;-->
+<!--/*padding-top: 5px!important;*/-->
+<!--z-index: 2;-->
+<!--border-radius: 20px !important;;-->
+<!--text-align: left !important;-->
+<!--vertical-align: center !important;-->
+<!--color: #393a3f !important;-->
+<!--background: #ccc !important;-->
+<!--}-->
+
+<!--.weui-search-bar__form:after {-->
+<!--/*点击搜索框后*/-->
+<!--content: '';-->
+<!--position: absolute;-->
+<!--left: 20px;-->
+<!--top: 0;-->
+<!--width: 200%;-->
+<!--height: 200%;-->
+<!-- -webkit-transform: scale(0.5);-->
+<!--transform: scale(0.5);-->
+<!-- -webkit-transform-origin: 0 0;-->
+<!--transform-origin: 0 0;-->
+<!--border-radius: 0px !important;-->
+<!--border: 0px solid #E6E6EA !important;-->
+<!-- -webkit-box-sizing: border-box;-->
+<!--box-sizing: border-box;-->
+<!--background: #ccc !important;-->
+<!--}-->
+
+<!--.weui-icon-search { /*选中层搜索按钮*/-->
+<!--font-size: 30px !important;-->
+
+<!--}-->
+
+<!--.weui-search-bar__box .weui-icon-search {-->
+<!--/*选中层搜索图标*/-->
+<!--position: absolute;-->
+<!--left: 14px !important;-->
+<!--top: 10px !important;-->
+<!--line-height: 35px;-->
+<!--font-size: 30px !important;-->
+
+<!--}-->
+
+<!--.weui-search-bar__input {-->
+<!--/*选中层输入框*/-->
+<!--margin-left: 25px !important;-->
+
+<!--}-->
+
+<!--.weui-search-bar__box .weui-icon-clear {-->
+<!--/*清除内容*/-->
+<!--position: absolute;-->
+<!--top: 10px !important;-->
+<!--right: 0;-->
+<!--padding: 0 10px;-->
+<!--line-height: 30px;-->
+<!--}-->
+
+<!--.weui-icon-clear {-->
+<!--/*清除内容*/-->
+<!--color: #B2B2B2;-->
+<!--font-size: 14px;-->
+<!--}-->
+
+<!--.weui-search-bar__cancel-btn {-->
+<!--/*取消按钮*/-->
+<!--display: none;-->
+<!--margin-left: 0px !important;;-->
+<!--margin: 10px 10px !important;-->
+<!--/*line-height:48px !important;*/-->
+<!--color: #3f9de7 !important;-->
+<!--/*background: #0bb20c!important;*/-->
+<!--white-space: nowrap;-->
+<!--/*border-bottom: 0px!important;*/-->
+
+<!--}-->
+
+
+<!--</style>-->
 

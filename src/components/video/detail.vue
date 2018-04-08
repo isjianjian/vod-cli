@@ -1,7 +1,7 @@
 <template>
   <!--<view-box >-->
   <!--<div style="background: rgba(0,0,0,0.5);">-->
-  <div>
+  <div style="background: #393a3f;">
     <div>
       <div>
         <img class="top-bg" v-bind:style="'background-image: url('+list.pic+');'"/>
@@ -24,7 +24,7 @@
           <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span>
+            <div class="playAmount"><span>费用：</span><span style="font-size: 22px; ">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span>
             </div>
             <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
@@ -271,8 +271,8 @@
 
 <style scoped>
   .top {
-
-    margin: 20px 15px;
+    padding-top: 20px;
+    margin: 0px 15px;
     display: flex;
     position: relative;
   }
@@ -392,10 +392,10 @@
   }
 
   .desc {
-    background: #fff;
+    background: #393a3f;
     padding: 20px 20px;
     font-size: 13px;
-    color: #666;
+    color: #fff;
   }
 
   .adbottom {
@@ -403,6 +403,7 @@
     position: absolute;
     right: 0;
     bottom: 0;
+    background: #393a3f;
   }
 
   .buy {

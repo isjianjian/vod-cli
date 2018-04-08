@@ -174,7 +174,7 @@
 
             style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
             <group :title="'请选择开通续费时长(单位：小时)'">
-              <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+              <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue" fill-placeholder="1小时起"
                      @on-change="changehours"></radio>
               <div style="padding:20px 15px;">
                 <x-button type="primary" @click.native="otherbuy">确定</x-button>

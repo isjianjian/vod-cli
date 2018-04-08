@@ -39,13 +39,21 @@
         </flexbox>
         <!--3333333333333333333333333-->
         <flexbox :gutter="0">
-          <flexbox-item :span="2/3">
+          <!--<flexbox-item :span="2/3">-->
+          <!--<div class="images">-->
+          <!--<img class="bwmh" src="../../assets/images/m_vrgame_icon.jpg" v-on:click="menus(6)"/></div>-->
+          <!--</flexbox-item>-->
+          <flexbox-item :span="1/3">
             <div class="images">
-              <img class="bwmh" src="../../assets/images/m_vrgame_icon.jpg" v-on:click="menus(6)"/></div>
+              <img class="mwmh" src="../../assets/images/m_tv_icon.jpg" v-on:click="menus(6)"/></div>
           </flexbox-item>
           <flexbox-item :span="1/3">
             <div class="images">
-              <img class="mwmh" src="../../assets/images/m_game_icon.jpg" v-on:click="menus(7)"/></div>
+              <img class="mwmh" src="../../assets/images/m_vrgame_icon.jpg" v-on:click="menus(7)"/></div>
+          </flexbox-item>
+          <flexbox-item :span="1/3">
+            <div class="images">
+              <img class="mwmh" src="../../assets/images/m_game_icon.jpg" v-on:click="menus(8)"/></div>
           </flexbox-item>
         </flexbox>
       </view-box>
@@ -82,7 +90,7 @@
         this.QRcode()
       },
       menus(type) {
-        var that=this
+        var that = this
         if (this.common.hotel == null) {
           this.$vux.confirm.show({
             hideOnBlur: true,
@@ -115,9 +123,11 @@
             case 5://K歌
               url = "/kmusic";
               break;
-            case 6://VR体验
+            case 6://电视直播
               break;
-            case 7://电子游戏
+            case 7://VR体验
+              break;
+            case 8://电子游戏
               url = "/game";
               break;
           }

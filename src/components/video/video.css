@@ -3,8 +3,7 @@
   height: 45px;
   line-height: 45px;
   background: #fff;
-  border-bottom: 5px solid #efeff4;
-
+  border-bottom: 5px solid #393a3f;
 }
 
 .seacher_input {
@@ -17,62 +16,71 @@
 }
 
 .seacher_btn {
-  width: 29px;
-  height: 29px;
-  padding: 8px;
+  width: 25px;
+  height: 25px;
+  /*padding: 8px;*/
+  padding-left: 10px;
   background: url("../../assets/images/search.png");
-  background-size: 29px;
+  background-size: 25px;
   background-repeat: no-repeat;
   background-position: center;
-  border-right: 1px solid #efeff4;
+  border-right: 1px solid #000;
 }
 
 .seacher_btn:active {
-  width: 29px;
-  height: 29px;
-  padding: 8px;
+  width: 25px;
+  height: 25px;
+  /*padding: 8px;*/
+  padding-left: 10px;
   background: url("../../assets/images/search_p.png");
-  background-size: 29px;
+  background-size: 25px;
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .histroy_btn {
-  border-left: 1px solid #efeff4;
-  width: 29px;
-  height: 29px;
-  padding: 8px;
+  /*border-left: 1px solid #efeff4;*/
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 26px;
+  height: 26px;
+  padding: 12px;
   background: url("../../assets/images/menu.png");
-  background-size: 29px;
+  background-size: 26px;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: #393a3f;
 }
+
 .histroy_btn:active {
-  border-left: 1px solid #efeff4;
-  width: 29px;
-  height: 29px;
-  padding: 8px;
+  /*border-left: 1px solid #efeff4;*/
+  width: 26px;
+  height: 26px;
+  padding: 12px;
   background: url("../../assets/images/menu_p.png");
-  background-size: 29px;
+  background-size:26px;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: #393a3f;
 }
 
 .histroy_btn_p {
-  border-left: 1px solid #efeff4;
-  width: 29px;
-  height: 29px;
-  padding: 8px;
+  /*border-left: 1px solid #efeff4;*/
+  width: 26px;
+  height: 26px;
+  padding: 12px;
   background: url("../../assets/images/menu_p.png");
-  background-size: 29px;
+  background-size: 26px;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: #393a3f;
 }
 
 /* 电影list */
 
 .film {
-  background: #fff;
+  background: #393a3f;
   padding: 8px 10px;
   border-bottom: 1px solid #efeff4;
 }
@@ -89,6 +97,7 @@
 .vodimage img {
   margin-right: 10px;
   width: 70px;
+  border: 1px solid #fff;
   height: 100%;
 }
 
@@ -100,6 +109,7 @@
 }
 
 .name {
+  color: #fff;
   display: flex;
   max-width: 80%;
   overflow: hidden;
@@ -129,7 +139,7 @@
 .type {
   font-size: 14px;
   margin-bottom: 6px;
-  color: #666;
+  color: #fff;
   width: auto;
   max-width: 80%;
   overflow: hidden;
@@ -143,7 +153,7 @@
   display: -webkit-flex;
   display: flex;
   font-size: 14px;
-  color: #666;
+  color: #fff;
   width: auto;
   max-width: 80%;
   overflow: hidden;
@@ -156,22 +166,21 @@
   right: 0px;
   bottom: 0px;
   font-size: 14px;
-  color: #da251c;
+  /*color: #da251c;*/
+  color: #3f9de7;
 }
 
 .star {
   height: 14px;
   font-size: 14px;
   line-height: 14px;
-  color: #666;
+  color: #fff;
   width: auto;
   max-width: 80%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
-
 
 .buy {
   float: right;
@@ -211,7 +220,7 @@
   background: #ECECEC;
 }
 
-.loading{
+.loading {
   height: 80px;
   /* line-height: 80px; */
   align-items: center;

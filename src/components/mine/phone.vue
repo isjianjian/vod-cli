@@ -135,27 +135,28 @@
       , check(res) {//核对验证码
 
 
-
         if (that.telPhone != '' && that.telPhone.length == 11) {
 
 
-          if (that.sendCode != that.TruesendCode) {
-            that.$vux.toast.text("输入验证码失败", 'center')
-          } else {
-            //注意 测试时用的data.TruesendCode为后台获取真实验证码。实际以data.sendCode传给后台
-            //"&pushOpenId=1122&pushType=1&productId=2"推送者ID 推送类型 （1推送影片  2 推送酒店）影片id或者酒店id
-            clearInterval(that.interval);//停止定时器
+          // if (that.sendCode != that.TruesendCode) {
+          //   that.$vux.toast.text("输入验证码失败", 'center')
+          // } else {
+          //注意 测试时用的data.TruesendCode为后台获取真实验证码。实际以data.sendCode传给后台
+          //"&pushOpenId=1122&pushType=1&productId=2"推送者ID 推送类型 （1推送影片  2 推送酒店）影片id或者酒店id
+          clearInterval(that.interval);//停止定时器
 
-            var url = "api/phone/bind?telPhone=" + that.telPhone + "&sendCode=" + that.sendCode;
-            this.api_post(url, function (res) {
+          var url = "api/phone/bind?telPhone=" + that.telPhone + "&sendCode=" + that.sendCode;
+          this.api_post(url, function (res) {
 
-              that.$vux.toast.text("綁定成功", 'center');
-              that.$router.back();
+            that.$vux.toast.text("綁定成功", 'center');
+            that.$router.back();
 
-            }, function (res) {
-              that.$vux.toast.text(res.msg, 'center')
-            })
-          }
+          }, function (res) {
+            that.$vux.toast.text(res.msg, 'center')
+          })
+
+
+          // }
 
         } else {
 

@@ -37,9 +37,8 @@
         </x-header>
         <scroller v-bind:hidden="showsearch" :pullup-config="upconfig" :pulldown-config="downconfig"
                   @on-pulldown-loading="revideo"
-                  @on-pullup-loading="addvideo"
                   @on-scroll="savetop"
-                  :use-pulldown="true" :use-pullup="true" ref="scroller" height="-53" :lock-x="true" :lock-y="isedit"
+                  :use-pulldown="true" ref="scroller" height="-46" :lock-x="true" :lock-y="isedit"
                   :scrollbar-x=false
                   :scrollbar-y=false
                   style="width: 100%;top:1px;">
@@ -192,14 +191,14 @@
 
         onFetching: false,
         page: 1,
-        limit: 10,
+        limit: 999,
 
 
         showsearch: false,
 
         keyword: '',
         searchpage: 1,
-        searchlimit: 10,
+        searchlimit: 999,
         showhistroy: false,
 
         clickbuy: false,

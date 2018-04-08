@@ -30,11 +30,12 @@
         </marquee>
       </div>
       <div slot="left">
-        <div v-if="open" style="padding-bottom: 10px;">
+        <!--<div v-if="open" style="padding-bottom: 10px;">-->
+        <div style="padding-bottom: 10px;">
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="ctrl" mini>遥控</x-button>
         </div>
       </div>
-      <div slot="right">
+      <div slot="right" style="display: none;">
         <div v-if="!open" style="padding-bottom: 10px;">
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
@@ -225,10 +226,10 @@
     , methods: {
       otherbuy() {
         try {
-          var h= this.hour
-          if(parseInt(h)>0&&parseInt(h)<24){
-            this.$router.push("/video/otherbuy?type=5&hour="+this.hour)
-          }else{
+          var h = this.hour
+          if (parseInt(h) > 0 && parseInt(h) < 24) {
+            this.$router.push("/video/otherbuy?type=5&hour=" + this.hour)
+          } else {
             this.$vux.toast.text("请输入有效时间", 'center')
           }
         } catch (e) {
@@ -248,14 +249,14 @@
           that.open = true;
           that.timeExpire = new Date().getTime() + res.data.count;
           console.log('timeExpire', that.timeExpire)
-          if(res.data.count ==  0){
+          if (res.data.count == 0) {
             that.open = false;
           }
         }, function () {
           that.open = false;
         })
       },
-      finish(){
+      finish() {
         this.checkOpen();
       },
       savetop(res) {
@@ -337,17 +338,17 @@
       }, toplay(list) {
         // console.log(list)
         // cmd=game_run 		立即运行（参数：gamename=游戏目录名称&gameid=游戏编号&type=2D运行维度&vol=默认音量）;
-        if (this.open) {
-          this.common.playvideo = list;
-          localStorage.setItem("playtype", 5);
-          localStorage.setItem("playname", list.name);
+        // if (this.open) {
+        this.common.playvideo = list;
+        localStorage.setItem("playtype", 5);
+        localStorage.setItem("playname", list.name);
 
-          var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
-          // alert(cm)
-          this.sendcmd(cm)
-        } else {
-          this.$vux.toast.text("请先开通", "center")
-        }
+        var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
+        // alert(cm)
+        this.sendcmd(cm)
+        // } else {
+        //   this.$vux.toast.text("请先开通", "center")
+        // }
       }, sendcmd(cmd) {
         // var cmd = "cmd=poweroff"
         // alert(cmd)
@@ -368,6 +369,7 @@
   .vux-header .vux-header-left {
     top: 10px !important;
   }
+
   .vux-header .vux-header-right {
     top: 10px !important;
   }
