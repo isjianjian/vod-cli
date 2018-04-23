@@ -26,6 +26,7 @@
         {key: "come_from", val: "1"},
         {key: "t", val: time},
         {key: "openid", val: user.openId},
+        {key: "unionid", val: user.unionId},
         {key: "nickname", val: user.nickname},
         {key: "sex", val: user.sexId},
         {key: "province", val: user.province},
@@ -55,11 +56,11 @@
       // console.log(token.toString().toUpperCase());
 
 
-      this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&nickname=" + encodeURIComponent(user.nickname)
+      this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&unionid=" + user.unionId + "&nickname=" + encodeURIComponent(user.nickname)
         + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country) +
         "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
-      location.href=this.url
+      location.href = this.url
 
     }, methods: {}
   }

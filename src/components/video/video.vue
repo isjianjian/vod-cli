@@ -35,7 +35,7 @@
         <scroller v-if="catlist.length>0" v-bind:hidden="showsearch" lock-y :scrollbar-x=false :scrollbar-y=false
                   ref="scrollercat" @on-scroll="savevodcat">
           <!--style="background: #C0C0C0;"-->
-          <tab style="background: #393a3f;" bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
+          <tab style="background: #999;" bar-active-color="#3f9de7" :line-width="2" active-color='#fff'
                v-bind:style="'width:'+cat_width +'px'">
             <tab-item v-for="(item,index) in catlist" @on-item-click="recat(item,index)" active-class="active_cat"
                       style="color: #fff;"
@@ -390,9 +390,13 @@
             that.$refs.scroller.donePulldown()
 
           } else {
-            for (var i = 0; i < list.length; i++) {
-              that.vodlist.push(list[i])
+
+            if (list.length > 0) {
+              for (var i = 0; i < list.length; i++) {
+                that.vodlist.push(list[i])
+              }
             }
+
             that.$refs.scroller.donePullup();
             that.$refs.scroller.reset()
           }
@@ -413,6 +417,8 @@
 
         }, function () {
           that.$vux.loading.hide()
+          that.$refs.scroller.donePulldown();
+          that.$refs.scroller.disablePullup();
         })
 
       }, addvideo() {//影片下拉加载
@@ -482,8 +488,10 @@
               });
               that.$refs.scroller1.donePulldown()
             } else {
-              for (var i = 0; i < list.length; i++) {
-                that.searchlist.push(list[i])
+              if (list.length > 0) {
+                for (var i = 0; i < list.length; i++) {
+                  that.searchlist.push(list[i])
+                }
               }
               that.$refs.scroller1.donePullup();
               that.$refs.scroller1.reset()
@@ -505,6 +513,8 @@
             that.$vux.loading.hide()
           }, function () {
             that.$vux.loading.hide()
+            that.$refs.scroller1.donePulldown();
+            that.$refs.scroller1.disablePullup();
           })
 
         } else {

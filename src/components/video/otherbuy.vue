@@ -10,10 +10,14 @@
           <span style="color: red">-￥{{preorder.discounts_amount}}</span>
         </div>
       </cell>
-      <x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +
-       '  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"
-                :inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' "
-                prevent-default @on-click="dis"></x-switch>
+      <!--<x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +-->
+      <!--'  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"-->
+      <!--:inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' "-->
+      <!--prevent-default @on-click="dis"></x-switch>-->
+    </group>
+    <group>
+      <x-number :min="0" :max="preorder.credits<preorder.can_use_credits?preorder.credits:preorder.can_use_credits"
+                title="积分抵扣" fillable @on-change="changecredit"></x-number>
     </group>
     <flexbox class="buybar">
       <flexbox-item :span="4">
@@ -41,6 +45,7 @@
 
 <script>
   import Group from "vux/src/components/group/index";
+  import XNumber from "vux/src/components/x-number/index";
   import Cell from "vux/src/components/cell/index";
   import XSwitch from "vux/src/components/x-switch/index";
   import youhui from "../../assets/images/youhui.png"
@@ -63,7 +68,8 @@
       XSwitch,
       Cell,
       Group,
-      JQ
+      JQ,
+      XNumber,
     },
     name: "buy",
     mounted() {
@@ -73,7 +79,7 @@
 
       that.type = type
       that.hour = hour
-      switch (type){
+      switch (type) {
         case '2':
           that.desc = "直播";
           break;
@@ -87,43 +93,43 @@
           that.desc = "游戏";
           break;
       }
-      console.log("desc--",that.desc)
-      console.log("type---",type)
+      console.log("desc--", that.desc)
+      console.log("type---", type)
 
-      that.desc += hour +  "小时"
+      that.desc += hour + "小时"
       var url = 'api/other/preorder?hour=' + that.hour + "&sType=" + type;   //根据资源类型获取预下单信息
 
-          that.api_post(url, function (res) {
-            console.log("sssssssssssssssss", res);
-            that.preorder = res.data;
-            that.price = res.data.price;
-            that.total = res.data.price;
+      that.api_post(url, function (res) {
+        console.log("sssssssssssssssss", res);
+        that.preorder = res.data;
+        that.price = res.data.price;
+        that.total = res.data.price;
 
-          }, function (res) {
-            if (res.code == 202) {
-              that.$vux.toast.show("未绑定手机号");
+      }, function (res) {
+        if (res.code == 202) {
+          that.$vux.toast.show("未绑定手机号");
 
-              setTimeout(function () {
-                that.$router.push("/mine/phone")
-              }, 1500)
+          setTimeout(function () {
+            that.$router.push("/mine/phone")
+          }, 1500)
 
-            } else {
-              that.$vux.toast.text(res.msg, "center")
-            }
-          })
+        } else {
+          that.$vux.toast.text(res.msg, "center")
+        }
+      })
 
 
     },
     data() {
       return {
-        desc:'',
-        type:2,
-        hour:1,
+        desc: '',
+        type: 2,
+        hour: 1,
         youhui: youhui,
         preorder: {},
         discounts: 0,
         total: 0,
-        price:0,
+        price: 0,
         use_credit: false,
         oldOrder: {},
         oldOrderItem: [],
@@ -149,7 +155,7 @@
           }
         }],
         pay_done: false,
-
+        endcredits: 0,
 
       }
     },
@@ -168,12 +174,13 @@
       order: function () {
         var that = this;
         console.log('提交订单');
-        var url = 'api/vod/order?sid=' + that.hour + "&sType=" + that.type;
-        if (this.use_credit) {
-          url += '&credits=' + this.preorder.can_use_credits
-        } else {
-          url += '&credits=' + 0
-        }
+        var url = 'api/vod/order?sid=' + that.hour + "&sType=" + that.type + '&credits=' + this.endcredits;
+
+        // if (this.use_credit) {
+        //   url += '&credits=' + this.preorder.can_use_credits
+        // } else {
+        //   url += '&credits=' + 0
+        // }
         this.api_post(url, function (res) {
             console.log(res);
             var data = res.data;
@@ -236,7 +243,12 @@
           // this.use_credit = false
         }
         this.use_credit = !this.use_credit
+      }, changecredit(res) {
+        this.endcredits = res
+        this.total = (this.preorder.price - res / this.preorder.credits_ratio).toFixed(2);
+        this.discounts = res / this.preorder.credits_ratio
       },
+
       use_credits: function (res) {
 
         if (res) {

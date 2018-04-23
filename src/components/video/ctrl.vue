@@ -222,7 +222,7 @@
         </div>
 
 
-        <div v-if="restype== 0" class='loading'>
+        <div v-if="restype== 0||restype==null" class='loading'>
         <span style='color:#B6B6B6;display: block;padding-top: 100px;'>
         先去播放吧
         </span>

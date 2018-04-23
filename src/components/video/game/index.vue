@@ -30,12 +30,12 @@
         </marquee>
       </div>
       <div slot="left">
-        <!--<div v-if="open" style="padding-bottom: 10px;">-->
-        <div style="padding-bottom: 10px;">
+        <div v-if="open" style="padding-bottom: 10px;">
+          <!--<div style="padding-bottom: 10px;">-->
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="ctrl" mini>遥控</x-button>
         </div>
       </div>
-      <div slot="right" style="display: none;">
+      <div slot="right">
         <div v-if="!open" style="padding-bottom: 10px;">
           <x-button :gradients="['#3F9DE7','#3F9DE7']" @click.native="open_model" mini>开通</x-button>
         </div>
@@ -77,7 +77,7 @@
       <popup v-model="show" height="270px" is-transparent>
         <div style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
           <group :title="'请选择开通续费时长(单位：小时)'">
-            <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue"
+            <radio :selected-label-style="{color: '#FF9900'}" fill-mode :options="hours" v-model="hoursValue" fill-placeholder="1小时起"
                    @on-change="changehours"></radio>
             <div style="padding:20px 15px;">
               <x-button type="primary" @click.native="otherbuy">确定</x-button>
@@ -338,17 +338,17 @@
       }, toplay(list) {
         // console.log(list)
         // cmd=game_run 		立即运行（参数：gamename=游戏目录名称&gameid=游戏编号&type=2D运行维度&vol=默认音量）;
-        // if (this.open) {
-        this.common.playvideo = list;
-        localStorage.setItem("playtype", 5);
-        localStorage.setItem("playname", list.name);
+        if (this.open) {
+          this.common.playvideo = list;
+          localStorage.setItem("playtype", 5);
+          localStorage.setItem("playname", list.name);
 
-        var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
-        // alert(cm)
-        this.sendcmd(cm)
-        // } else {
-        //   this.$vux.toast.text("请先开通", "center")
-        // }
+          var cm = "cmd=game_run&gamename=" + list.exe_path + "&gameid=" + list.id + "&type=2D";
+          // alert(cm)
+          this.sendcmd(cm)
+        } else {
+          this.$vux.toast.text("请先开通", "center")
+        }
       }, sendcmd(cmd) {
         // var cmd = "cmd=poweroff"
         // alert(cmd)

@@ -18,7 +18,8 @@
           <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span></div>
+            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span>
+            </div>
             <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
         </div>
@@ -96,23 +97,18 @@
     mounted(res) {
 
 
-
-
       var that = this;
       var sid = this.$router.currentRoute.query.sid;
       var tsid = this.$router.currentRoute.query.openid;
       that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
 
       this.api_post("api/vod/" + sid, function (res) {
-        console.log("----",res)
+        console.log("----", res)
         that.list = res.data
-      },function () {
+      }, function () {
         console.log("----0000000000")
       });
       // alert(that.movie.name)
-
-
-
 
 
     }, methods: {
@@ -199,6 +195,7 @@
           {key: "come_from", val: "1"},
           {key: "t", val: time},
           {key: "openid", val: user.openId},
+          {key: "unionid", val: user.unionId},
           {key: "nickname", val: user.nickname},
           {key: "sex", val: user.sexId},
           {key: "province", val: user.province},
@@ -227,11 +224,11 @@
         token = token.toString().toUpperCase()
 
 
-        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&nickname=" + encodeURIComponent(user.nickname)
+        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&unionid=" + user.unionId + "&nickname=" + encodeURIComponent(user.nickname)
           + "&sex=" + user.sexId + "&province=" + encodeURIComponent(user.province) + "&city=" + encodeURIComponent(user.city) + "&country=" + encodeURIComponent(user.country) +
           "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
-        location.href=this.url
+        location.href = this.url
       }, ctrl() {
         this.$router.push("/video/ctrl")
       }, menud(res) {

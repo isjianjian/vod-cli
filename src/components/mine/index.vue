@@ -270,6 +270,7 @@
           {key: "come_from", val: "1"},
           {key: "t", val: time},
           {key: "openid", val: user.openId},
+          {key: "unionid", val: user.unionId},
           {key: "order_state", val: order_state},
           {key: "yxtoken", val: that.common.TOKEN.token},
         ];
@@ -288,7 +289,7 @@
         console.log(s);
         var token = md5(s)
 
-        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&order_state=" + order_state +
+        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&unionid=" + user.unionId+ "&order_state=" + order_state +
           "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
         location.href = this.url

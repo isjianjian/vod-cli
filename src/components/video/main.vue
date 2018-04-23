@@ -160,18 +160,24 @@
     width: 98%;
     height: 98%;
     border-radius: 4px;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   .mwmh {
     width: 96%;
     height: 96%;
     border-radius: 4px;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   .bwmh {
     width: 98%;
     height: 98%;
     border-radius: 4px;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
 

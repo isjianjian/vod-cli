@@ -1,7 +1,7 @@
 <template>
   <div>
     <group title="购买影片">
-      <cell :title="movie.name" :inline-desc="'点播费用: ￥' + movie.price + ' (有效期1个月)'">
+      <cell :title="movie.name" :inline-desc="'点播费用: ￥' + preorder.price + ' (有效期1个月)'">
         <img slot="icon" width="44" height="56" style="display:block;margin-right:10px;" :src="movie.pic"/>
       </cell>
       <cell v-if="preorder.discounts" title="优惠观看">
@@ -10,10 +10,14 @@
           <span style="color: red">-￥{{preorder.discounts_amount}}</span>
         </div>
       </cell>
-      <x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +
-       '  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"
-                :inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' "
-                prevent-default @on-click="dis"></x-switch>
+      <!--<x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +-->
+      <!--'  -￥'+ preorder.can_use_credits/preorder.credits_ratio+'</span>'"-->
+      <!--:inline-desc="'使用积分抵扣现金,将消耗 ' + preorder.can_use_credits +' 积分' "-->
+      <!--prevent-default @on-click="dis"></x-switch>-->
+    </group>
+    <group>
+      <x-number :min="0" :max="preorder.credits<preorder.can_use_credits?preorder.credits:preorder.can_use_credits"
+                title="积分抵扣" fillable @on-change="changecredit"></x-number>
     </group>
     <flexbox class="buybar">
       <flexbox-item :span="4">
@@ -41,6 +45,7 @@
 
 <script>
   import Group from "vux/src/components/group/index";
+  import XNumber from "vux/src/components/x-number/index";
   import Cell from "vux/src/components/cell/index";
   import XSwitch from "vux/src/components/x-switch/index";
   import youhui from "../../assets/images/youhui.png"
@@ -63,7 +68,8 @@
       XSwitch,
       Cell,
       Group,
-      JQ
+      JQ,
+      XNumber,
     },
     name: "buy",
     mounted() {
@@ -96,10 +102,10 @@
           that.api_post(url, function (res) {
             console.log("sssssssssssssssss", res);
             that.preorder = res.data;
-            that.total = that.movie.price;
+            that.total = that.preorder.price;
             if (that.preorder.discounts) {
               that.total = preorder.discounts_amount;
-              that.discounts = that.movie.price - that.total
+              that.discounts = that.preorder.price - that.total
             }
 
           }, function (res) {
@@ -155,6 +161,8 @@
         pay_done: false,
 
 
+        endcredits: 0,
+
       }
     },
     beforeRouteLeave(to, from, next) {
@@ -172,12 +180,12 @@
       order: function () {
         var that = this;
         console.log('提交订单');
-        var url = 'api/vod/order?sid=' + this.movie.lib_id;
-        if (this.use_credit) {
-          url += '&credits=' + this.preorder.can_use_credits
-        } else {
-          url += '&credits=' + 0
-        }
+        var url = 'api/vod/order?sid=' + this.movie.lib_id + '&credits=' + this.endcredits;
+        // if (this.use_credit) {
+        //   url += '&credits=' + this.preorder.can_use_credits
+        // } else {
+        //   url += '&credits=' + 0
+        // }
         this.api_post(url, function (res) {
             console.log(res);
             var data = res.data;
@@ -242,6 +250,12 @@
         }
         this.use_credit = !this.use_credit
       },
+      changecredit(res) {
+        this.endcredits = res
+        this.total = (this.preorder.price - res / this.preorder.credits_ratio).toFixed(2);
+        this.discounts = res / this.preorder.credits_ratio
+      },
+
       use_credits: function (res) {
 
         if (res) {

@@ -394,6 +394,7 @@
   .desc {
     background: #393a3f;
     padding: 20px 20px;
+    margin-top: 20px;
     font-size: 13px;
     color: #fff;
   }

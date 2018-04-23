@@ -127,7 +127,8 @@
       },
       wxPay: function () {
         var that = this;
-        var url = this.common.SERVER_URL + "api/vod/mppay?mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
+        var url = this.common.SERVER_URL + "api/vod/mppay?mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.unionId
+        // var url = this.common.SERVER_URL + "api/vod/mppay?mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
           + "&token=" + this.common.TOKEN.token + "&tokenType=1"
           + "&billid=" + this.billid;
         this.$http.post(url)

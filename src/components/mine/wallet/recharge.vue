@@ -115,8 +115,10 @@
       pay_1: function () {
         this.show_pay = false;
         var that = this;
-        var url = this.common.SERVER_URL + "api/mp/recharge/order?amount=" + this.amount + "&mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
+        var url = this.common.SERVER_URL + "api/mp/recharge/order?amount=" + this.amount + "&mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.unionId
+        // var url = this.common.SERVER_URL + "api/mp/recharge/order?amount=" + this.amount + "&mopenid=" + this.wxinfo.user.openId + "&openid=" + this.wxinfo.user.openId
           + "&token=" + this.common.TOKEN.token + "&tokenType=1";
+
         this.$http.post(url)
           .then(function (res) {
             console.log("微信支付", res);

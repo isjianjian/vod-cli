@@ -9,11 +9,17 @@
 
 </body>
 <script>
-  const socket = io.connect('ws://192.168.44.123');
+  const socket = io.connect('http://192.168.2.4:8000');
   console.log("开始连接..");
   socket.on('connect', function (data) {
     console.log("连接成功");
-    // socket.emit('register',"08:00:27:0d:19:88");
+    socket.emit('register',"YY122003");
+
+    var data = {}
+    data.id = 'YY122003001'
+    data.data = 1
+    socket.emit('ol_statu',JSON.stringify(data))
+
   });
 
   socket.on('subtitle', function (data) {
