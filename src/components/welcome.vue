@@ -27,7 +27,9 @@
           .then(function (res) {
             this.wxinfo.user = res.data.data;
             this.common.TOKEN = res.data.token;
-            this.wxinfo.user.level = res.data.level;
+            if (res.data.level != null && res.data.level != '') {
+              this.wxinfo.user.level = res.data.level;
+            }
             this.common.TOKEN.expireTime = new Date(new Date().getTime() + (this.common.TOKEN.expire * 1000) - 60 * 1000);
             var roomid = that.roomid;
             if (roomid != null) {
@@ -50,7 +52,7 @@
                 that.$router.replace(that.common.lastPage)
               })
             }
-          },function () {
+          }, function () {
 
 
             var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.wxinfo.APPID
@@ -70,7 +72,6 @@
         //+ "&response_type=code&scope=snsapi_base&state=123#wechat_redirect"
         window.location.href = url
       }
-
 
 
     },

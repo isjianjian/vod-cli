@@ -110,6 +110,7 @@
           d2: '2D 播放',
           d3: '3D 播放'
         },
+
       }
     },
     mounted(res) {
@@ -142,14 +143,18 @@
 
       var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
       var type = that.common.hotel.type;
-      var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + this.toHighId(vid, type, 1);
+      // var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + this.toHighId(vid, type, 1);
+      var link = basdUel + "#/act?openid=" + that.wxinfo.user.unionId + "&sid=" + this.toHighId(vid, type, 1);
       // console.log("link", link)
+
+
       that.$wechat.onMenuShareAppMessage({
-        title: '好友赠送你一部影片', // 分享标题
+        title: '好友分享你一部影片' + that.sname, // 分享标题
         // desc: '好友赠送你一部影片', // 分享描述
         link: link, // 分享链接
         imgUrl: 'http://mp.11yuanxian.com/logo1.jpg', // 分享图标
         success: function () {
+          // alert(that.sname)
           that.show_share = false;
           that.$vux.toast.text('分享成功！', 'center')
         },
@@ -221,6 +226,7 @@
               el.id = JQ(e).find("[name='id']").html();
               el.lib_id = JQ(e).find("[name='lib_id']").html();
               el.pic = JQ(e).find("[name='org_poster']").html();
+
               el.name = JQ(e).find("[name='name']").html();
               el.year = JQ(e).find("[name='year']").html();
               el.cName = JQ(e).find("[name='name']").html();
@@ -236,7 +242,30 @@
               listtmp.push(el)
             });
             that.list = listtmp[0]
-            // console.log("--------------", that.list)
+            var name = that.list.name
+
+            console.log(name + '-------------')
+            var vid = that.$router.currentRoute.query.id;
+            var basdUel = window.location.href.substring(0, window.location.href.indexOf("#"));
+            var type = that.common.hotel.type;
+            // var link = basdUel + "#/act?openid=" + that.wxinfo.user.openId + "&sid=" + this.toHighId(vid, type, 1);
+            var link = basdUel + "#/act?openid=" + that.wxinfo.user.unionId + "&sid=" + this.toHighId(vid, type, 1);
+            // console.log("link", link)
+            that.$wechat.onMenuShareAppMessage({
+              title: '好友分享你一部影片《' + name + "》", // 分享标题
+              // desc: '好友赠送你一部影片', // 分享描述
+              link: link, // 分享链接
+              imgUrl: 'http://mp.11yuanxian.com/logo1.jpg', // 分享图标
+              success: function () {
+                that.show_share = false;
+                that.$vux.toast.text('分享成功！', 'center')
+              },
+              cancel: function () {
+                that.$vux.toast.text('已取消分享！', 'center')
+              }
+            });
+
+
           }
         )
       },

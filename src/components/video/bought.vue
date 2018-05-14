@@ -15,7 +15,7 @@
 
               <flexbox orient="vertical">
                 <flexbox-item>
-                  <div>{{item.name}}</div>
+                  <div style="color: #fff;">{{item.name}}</div>
                 </flexbox-item>
                 <flexbox-item>
                   <div class="star">购买时间：{{item.buyTime}}</div>

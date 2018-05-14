@@ -7,7 +7,7 @@
       <cell v-if="preorder.discounts" title="优惠观看">
         <img slot="icon" width="20" style="display:block;" :src="youhui"/>
         <div>
-          <span style="color: red">-￥{{preorder.discounts_amount}}</span>
+          <span style="color: red">￥{{preorder.discounts_amount}}</span>
         </div>
       </cell>
       <!--<x-switch v-model="use_credit" @on-change="use_credits" :title="'<span >积分抵扣</span>&nbsp;<span style=\'color:red;\'>' +-->
@@ -104,8 +104,8 @@
             that.preorder = res.data;
             that.total = that.preorder.price;
             if (that.preorder.discounts) {
-              that.total = preorder.discounts_amount;
-              that.discounts = that.preorder.price - that.total
+              that.total = that.preorder.discounts_amount;
+              // that.discounts = that.preorder.price - that.total
             }
 
           }, function (res) {
@@ -282,7 +282,7 @@
           text: 'Loading'
         });
         var that = this;
-        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.openId
+        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.unionId
           + "&token=" + this.common.TOKEN.token + "&tokenType=1";
         this.$http.post(url).then(function (res) {
           console.log(res.data.code);

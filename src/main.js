@@ -224,7 +224,7 @@ Vue.prototype.api_post = function (url, success, fail) {
   var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.unionId
   // var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.openId
     + "&token=" + this.common.TOKEN.token + "&tokenType=1";
-  // console.log(local_url)
+  console.log(local_url)
   this.$http.post(local_url)
     .then(function (res) {
       if (res.data.code == 0) {

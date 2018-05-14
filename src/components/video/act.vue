@@ -18,7 +18,10 @@
           <div style="width: 60vw;"> 类型：{{list.language}}</div>
 
           <div class="price-bottom">
-            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">{{list.price!=null?"￥"+list.price:'未设置价格'}}</span>
+            <div class="playAmount"><span>收费：</span><span style="font-size: 22px; color: #da251c;">
+              {{list.price!=null?"￥"+list.price:'未设置价格'}}
+              <!--{{ preorder.price}}-->
+            </span>
             </div>
             <div class="price" style="display: none">播放量: {{list.playAmount}}</div>
           </div>
@@ -90,26 +93,52 @@
           d3: '3D 播放'
         },
 
-        url: "http://1.dev-reservation.ffun360.com/site_admin/nearby_hotel?",
+        // url: "http://1.dev-reservation.ffun360.com/site_admin/nearby_hotel?",
+        url: " http://1.reservation.11yuanxian.com/site_admin/nearby_hotel?",
+        preorder: "",
+        account: '',
+        state: '',
 
       }
     },
     mounted(res) {
 
 
-      var that = this;
+      that = this;
       var sid = this.$router.currentRoute.query.sid;
       var tsid = this.$router.currentRoute.query.openid;
       that.windowHeight = "height: " + window.innerHeight + "px;background: #ececec;";
+      var url = "api/tuisong/add?sid=" + sid + "&tsid=" + tsid;
+      this.api_post(url, function (res) {
+        that.account = res.data;
+        that.state = 1;
+      }, function (res) {
+        that.state = res.code;
+        that.$vux.toast.text(res.msg, 'center');
+      });
 
       this.api_post("api/vod/" + sid, function (res) {
         console.log("----", res)
-        that.list = res.data
+        // that.list = res.data
       }, function () {
         console.log("----0000000000")
       });
-      // alert(that.movie.name)
 
+
+      this.getlib_id(sid % 10000000000);
+
+      var url = "api/vod/queryVod";
+      console.log(url);
+      that.api_post(url, function (res) {
+        console.log(res);
+        if (res.offerPrice != null) {
+          that.list.price = res.offerPrice
+        } else {
+          if (res.firstPrice != null) {
+            that.list.price = res.firstPrice
+          }
+        }
+      })
 
     }, methods: {
       toad() {
@@ -146,6 +175,16 @@
 
           }
         )
+
+        // var url2 = 'api/vod/preorder?sid=' + id;
+        // console.log("sssssssssssssssss", url2);
+        // that.api_post(url2, function (res) {
+        //   console.log("sssssssssssssssss", res);
+        //   that.preorder = res.data;
+        // }, function (res) {
+        //   that.$vux.toast.text(res.msg, "center")
+        // })
+
       },
       getdetail() {
         var url = "http://" + localStorage.getItem("hs") + "/if/movie_detail.php?id=" + that.id;
@@ -182,42 +221,52 @@
         )
       },
       buy(list) {
+        var that = this
+        that.$vux.confirm.show({
+          confirmText: "确定",
+          cancelText:"取消",
+          title: "温馨提示",
+          content: "观看影片需要入住我们的电影酒店哦，点击确定进入订房系统，选择您心仪的酒店。如您已经入住点击取消",
+          onCancel() {
+          },
+          onConfirm() {
+            that.to(list);
+          }
+        })
 
+
+      }, to(list) {
         var that = this
         var user = this.wxinfo.user
         var time = Math.round(new Date().getTime() / 1000);
         var order_state = 100
-
-        var that = this
-        var time = Math.round(new Date().getTime() / 1000);
-        var user = this.wxinfo.user
         var eidtionTypeList = [
-          {key: "come_from", val: "1"},
-          {key: "t", val: time},
-          {key: "openid", val: user.openId},
-          {key: "unionid", val: user.unionId},
-          {key: "nickname", val: user.nickname},
-          {key: "sex", val: user.sexId},
-          {key: "province", val: user.province},
           {key: "city", val: user.city},
+          {key: "come_from", val: "1"},
           {key: "country", val: user.country},
           {key: "headimgurl", val: user.headImgUrl},
+          {key: "nickname", val: user.nickname},
+          {key: "openid", val: user.openId},
+          {key: "province", val: user.province},
+          {key: "sex", val: user.sexId},
+          {key: "t", val: time},
+          {key: "unionid", val: user.unionId},
           {key: "yxtoken", val: that.common.TOKEN.token},
         ];
-        eidtionTypeList.sort(function (a, b) {
-          return a.key > b.key;
-        });
+        // eidtionTypeList.sort(function (a, b) {
+        //   return a.key + "" > b.key + "";
+        // });
 
-
-        console.log(eidtionTypeList[0].key + "" + eidtionTypeList[0].val);
 
         var s = ""
         for (var i = 0; i < eidtionTypeList.length; i++) {
           s += eidtionTypeList[i].key + "" + eidtionTypeList[i].val
+
+          // console.log(eidtionTypeList[i].key + "----" + eidtionTypeList[i].val);
         }
         s = "8cff406dd2e5897bf0581723e95fe246" + s + "8cff406dd2e5897bf0581723e95fe246";
         // 8cff406dd2e5897bf0581723e95fe2467892E144620F8264634487B77C2BE562
-        console.log(s);
+        // console.log(s);
 
 
         var token = md5(s)
@@ -229,6 +278,7 @@
           "&headimgurl=" + encodeURIComponent(user.headImgUrl) + "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
         location.href = this.url
+
       }, ctrl() {
         this.$router.push("/video/ctrl")
       }, menud(res) {

@@ -18,7 +18,7 @@
                   <div class="star">{{item.lastTime}}</div>
                 </flexbox-item>
                 <flexbox-item>
-                  <div>{{item.sdesc}}</div>
+                  <div style="color: #fff;">{{item.sdesc}}</div>
                 </flexbox-item>
                 <flexbox-item>
                   <div class="star">上次观看至{{item.m}}分钟{{item.s}}秒</div>

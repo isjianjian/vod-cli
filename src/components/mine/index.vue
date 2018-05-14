@@ -68,7 +68,7 @@
           <img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">
         </cell>
         <!--<cell title="测试" is-link link="/video/otherbuy?hour=1&type=2">-->
-          <!--<img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">-->
+        <!--<img slot="icon" width="26" style="display:block;margin-right:5px;" src="../../assets/images/receipt.png">-->
         <!--</cell>-->
 
       </group>
@@ -85,7 +85,7 @@
               <span style="color: #7ED479" slot="label">订房</span>
             </grid-item>
             <grid-item @click.native="otype(3)">
-              <img style=""  slot="icon" src="../../assets/images/shop_order_no.png">
+              <img style="" slot="icon" src="../../assets/images/shop_order_no.png">
               <span style="color: #CECECE" slot="label">商城</span>
             </grid-item>
           </grid>
@@ -157,7 +157,18 @@
   import md5 from 'js-md5';
 
   let Base64 = require('js-base64').Base64;
-  import {Divider, Card, Group, Cell, CellBox, Grid, GridItem, Actionsheet,XDialog,TransferDomDirective as TransferDom} from 'vux'
+  import {
+    Divider,
+    Card,
+    Group,
+    Cell,
+    CellBox,
+    Grid,
+    GridItem,
+    Actionsheet,
+    XDialog,
+    TransferDomDirective as TransferDom
+  } from 'vux'
   import XImg from "vux/src/components/x-img/index";
   import ViewBox from "vux/src/components/view-box/index";
   import man_img from '../../assets/images/man.png'
@@ -169,7 +180,8 @@
     },
     data() {
       return {
-        url: "http://1.dev-reservation.ffun360.com/site_admin/order_entrance?",
+        // url: "http://1.dev-reservation.ffun360.com/site_admin/order_entrance?",
+        url: "http://1.reservation.11yuanxian.com/site_admin/order_entrance?",
         typeindex: 0,
         otypeshow: false,
         otypemenus: {
@@ -204,7 +216,7 @@
       showtype(res) {
 
         this.typeindex = res
-        if (res == 4){
+        if (res == 4) {
           this.otype(2)
           return
         }
@@ -268,28 +280,29 @@
 
         var eidtionTypeList = [
           {key: "come_from", val: "1"},
-          {key: "t", val: time},
           {key: "openid", val: user.openId},
-          {key: "unionid", val: user.unionId},
           {key: "order_state", val: order_state},
+          {key: "t", val: time},
+          {key: "unionid", val: user.unionId},
           {key: "yxtoken", val: that.common.TOKEN.token},
+
         ];
 
-        eidtionTypeList.sort(function (a, b) {
-          return a.key > b.key;
-        });
+        // eidtionTypeList.sort(function (a, b) {
+        //   return a.key + "" > b.key + "";
+        // });
 
-        console.log(eidtionTypeList[0].key + "" + eidtionTypeList[0].val);
 
         var s = ""
         for (var i = 0; i < eidtionTypeList.length; i++) {
           s += eidtionTypeList[i].key + "" + eidtionTypeList[i].val
+          console.log(eidtionTypeList[i].key + "----" + eidtionTypeList[i].val);
         }
         s = "8cff406dd2e5897bf0581723e95fe246" + s + "8cff406dd2e5897bf0581723e95fe246";
         console.log(s);
         var token = md5(s)
 
-        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&unionid=" + user.unionId+ "&order_state=" + order_state +
+        this.url = this.url + "come_from=1" + "&t=" + time + "&openid=" + user.openId + "&unionid=" + user.unionId + "&order_state=" + order_state +
           "&token=" + token + "&yxtoken=" + this.common.TOKEN.token;
 
         location.href = this.url

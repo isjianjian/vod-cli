@@ -275,7 +275,7 @@
           text: 'Loading'
         });
         var that = this;
-        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.openId
+        var url = that.common.SERVER_URL + "api/mp/canorder?billid=" + billid + "&openid=" + this.wxinfo.user.unionId
           + "&token=" + this.common.TOKEN.token + "&tokenType=1";
         this.$http.post(url).then(function (res) {
           console.log(res.data.code);
