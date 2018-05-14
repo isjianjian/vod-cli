@@ -183,7 +183,8 @@ Vue.prototype.common = {
   // SERVER_URL: "http://192.168.2.17:8080/hotel_vod/",//lv
   // SERVER_URL: "http://192.168.2.4:8080/hotel_vod/",//zhu
   //  SERVER_URL: "http://shengvideo.com/hotel_vod/",//公司
-  SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  // SERVER_URL: "https://11yuanxian.com/hotel_vod/",//广州
+  SERVER_URL: "https://test.11yuanxian.com/hotel_vod/",//test
   // SERVER_URL: "http://192.168.44.120:8080/hotel_vod/",//调试
   TOKEN: {},
   lastPage: '',
@@ -222,7 +223,7 @@ Vue.prototype.api_post = function (url, success, fail) {
     url += "?now_time=" + new Date().getTime()
   }
   var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.unionId
-  // var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.openId
+    // var local_url = this.common.SERVER_URL + url + "&openid=" + this.wxinfo.user.openId
     + "&token=" + this.common.TOKEN.token + "&tokenType=1";
   console.log(local_url)
   this.$http.post(local_url)
